@@ -2,9 +2,9 @@
 
 1. Fill in the configs for the monetdb and ahn3.
 ```
-vim geodan-collaboration/configs/monetdb.cfg
+vim 3D_geospatial_risk_management/configs/monetdb.cfg
 
-vim geodan-collaboration/configs/ahn3.cfg
+vim 3D_geospatial_risk_management/configs/ahn3.cfg
 ```
 
 2. Generate the DDLs files and follow the outputed instructions.
