@@ -205,6 +205,7 @@ create table bgt_onbegroeidterreindeel (
 	kmlgeometry geometry
 );
 
+--Supporting water
 create table bgt_ondersteunendwaterdeel (
 	gml_id string,
 	creationDa date,
@@ -221,6 +222,7 @@ create table bgt_ondersteunendwaterdeel (
 	kmlgeometry geometry
 );
 
+--unclassified object
 create table bgt_ongeclassificeerdobject (
 	gml_id string,
 	creationDa date,
@@ -235,6 +237,7 @@ create table bgt_ongeclassificeerdobject (
 	kmlgeometry geometry
 );
 
+--Public space tag
 create table bgt_openbareruimtelabel (
 	gml_id string,
 	creationDa date,
@@ -253,6 +256,7 @@ create table bgt_openbareruimtelabel (
 	kmlgeometry geometry
 );
 
+--Other construction
 create table bgt_overigbouwwerk (
 	gml_id string,
 	creationDa date,
@@ -270,6 +274,7 @@ create table bgt_overigbouwwerk (
 	kmlgeometry geometry
 );
 
+--Other seperation
 create table bgt_overigescheiding (
 	gml_id string,
 	creationDa date,
@@ -286,6 +291,7 @@ create table bgt_overigescheiding (
 	kmlgeometry geometry
 );
 
+--pole pool
 create table bgt_paal (
 	gml_id string,
 	creationDa date,
