@@ -1,22 +1,25 @@
+/*
 create table bgt_auxiliarytrafficarea (
+	WKT geometry,
 	gml_id string,
-	creationDa date,
+	creationDate string,
+	terminationDate string,
 	namespace string,
 	lokaalID string,
-	relatieveH integer,
-	LV_publica timestamp,
-	inOnderzoe integer,
-	tijdstipRe timestamp,
+	relatieveHoogteligging integer,
+	LV_publicatiedatum timestamp,
+	inOnderzoek integer,
+	tijdstipRegistratie timestamp,
+	eindRegistratie string,
 	bgt_status string,
-	plus_statu string,
+	plus_status string,
 	bronhouder string,
-	func string,
-	surfaceMat string,
-	ondersteun integer,
-	plus_fysie string,
-	kmlgeometry geometry
+	"function" string,
+	surfaceMaterial string,
+	ondersteunendWegdeelOpTalud integer,
+	plus_fysiekVoorkomenOndersteunendWegdeel string
 );
-
+*/
 create table bgt_bak (
 	gml_id string,
 	creationDa date,
