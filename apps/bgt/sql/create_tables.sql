@@ -1,4 +1,3 @@
-/*
 create table bgt_auxiliarytrafficarea (
 	WKT geometry,
 	gml_id string,
@@ -19,73 +18,81 @@ create table bgt_auxiliarytrafficarea (
 	ondersteunendWegdeelOpTalud integer,
 	plus_fysiekVoorkomenOndersteunendWegdeel string
 );
-*/
+
 create table bgt_bak (
+	WKT geometry,
 	gml_id string,
-	creationDa date,
-	LV_publica timestamp,
-	relatieveH integer,
-	inOnderzoe integer,
-	tijdstipRe timestamp,
+	creationDate string,
+	LV_publicatiedatum timestamp,
+	relatieveHoogteligging integer,
+	inOnderzoek integer,
+	tijdstipRegistratie timestamp,
 	namespace string,
 	lokaalID string,
 	bronhouder string,
 	bgt_status string,
-	plus_statu string,
-	func string,
+	plus_status string,
+	"function" string,
 	plus_type string,
-	kmlgeometry geometry
+	eindRegistratie string,
+	terminationDate string
 );
 
 create table bgt_bord (
+	WKT geometry,
 	gml_id string,
-	creationDa date,
-	LV_publica timestamp,
-	tijdstipRe timestamp,
-	inOnderzoe integer,
-	relatieveH integer,
+	creationDate string,
+	LV_publicatiedatum timestamp,
+	tijdstipRegistratie timestamp,
+	inOnderzoek integer,
+	relatieveHoogteligging integer,
 	namespace string,
 	lokaalID string,
 	bgt_status string,
-	plus_statu string,
+	plus_status string,
 	bronhouder string,
-	func string,
+	"function" string,
 	plus_type string,
-	kmlgeometry geometry
+	eindRegistratie string,
+	terminationDate string
 );
 
 create table bgt_bridgeconstructionelement (
-	gml_id string,
-	creationDa date,
-	inOnderzoe integer,
-	relatieveH integer,
-	LV_publica timestamp,
-	tijdstipRe timestamp,
-	namespace string,
-	lokaalID string,
-	bgt_status string,
-	bronhouder string,
-	class string,
-	overbruggi integer,
-	hoortBijTy string,
-	kmlgeometry geometry
+WKT geometry,
+gml_id string,
+creationDate string,
+inOnderzoek integer,
+relatieveHoogteligging integer,
+LV_publicatiedatum timestamp,
+tijdstipRegistratie timestamp,
+namespace string,
+lokaalID string,
+bgt_status string,
+bronhouder string,
+"class" string,
+overbruggingIsBeweegbaar integer,
+hoortBijTypeOverbrugging string,
+eindRegistratie string,
+terminationDate string
 );
 
 create table bgt_buildinginstallation (
-	gml_id string,
-	creationDa date,
-	namespace string,
-	lokaalID string,
-	relatieveH integer,
-	LV_publica timestamp,
-	inOnderzoe integer,
-	tijdstipRe timestamp,
-	plus_statu string,
-	bgt_status string,
-	bronhouder string,
-	func string,
-	plus_type string,
-	kmlgeometry geometry
+WKT geometry,
+gml_id string,
+creationDate string,
+namespace string,
+lokaalID string,
+relatieveHoogteligging integer,
+LV_publicatiedatum timestamp,
+inOnderzoek integer,
+tijdstipRegistratie timestamp,
+plus_status string,
+bgt_status string,
+bronhouder string,
+"function" string,
+plus_typeGebouwInstallatie string,
+terminationDate string,
+eindRegistratie string
 );
 
 create table bgt_buildingpart (
