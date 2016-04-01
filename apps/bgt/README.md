@@ -1,6 +1,11 @@
 Load BGT into MonetDB
 =====================
 
+#Convert GML to CSV new style
+```
+for f in *.gml; do ogr2ogr  -f csv  -lco GEOMETRY=AS_WKT $f.csv $f; done
+```
+
 #Convert GML to CSV
 
 1. Copy the gml files into the directory scripts/extract.
