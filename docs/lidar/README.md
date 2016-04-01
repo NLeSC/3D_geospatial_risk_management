@@ -45,6 +45,6 @@ make -j install
 
 4. Set the paths to their installation (liblas_home, laszip_home, and boost_home) in monetdb.cfg.
 ```
-cd geodan-collaboration/configs
+cd 3D_geospatial_risk_management/configs
 vim monetdb.cfg
 ```

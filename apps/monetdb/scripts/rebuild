@@ -36,7 +36,7 @@ else
 fi
 
 src="/home/$1/MonetDB/current"
-geodangit="/home/$1/geodan-collaboration/monetdb"
+3D_geospatial_risk_managementgit="/home/$1/3D_geospatial_risk_management/monetdb"
 prefix="/home/$1/scratch/MonetDB"
 fcal=""
 location="MonetDB"
@@ -60,11 +60,11 @@ cd $src
 hg update -C
 hg pull
 hg update
-hg import --no-commit $geodangit/gadget_vaults_optimizer.diff
+hg import --no-commit $3D_geospatial_risk_managementgit/gadget_vaults_optimizer.diff
 
 # copy files
-cp $geodangit/optimizer/opt_gadget.* $src/monetdb5/optimizer/
-cp -r $geodangit/gadget/ $src/sql/backends/monet5/vaults/
+cp $3D_geospatial_risk_managementgit/optimizer/opt_gadget.* $src/monetdb5/optimizer/
+cp -r $3D_geospatial_risk_managementgit/gadget/ $src/sql/backends/monet5/vaults/
 
 bootstraap $location
 if_error "The bootstraap failed"

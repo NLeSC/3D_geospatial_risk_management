@@ -22,15 +22,15 @@ for f in *.gml; do ogr2ogr  -f csv  -lco GEOMETRY=AS_WKT $f.csv $f; done
 
 #Data loading
 
-1. If monetDB is not installed, please follow the instructions in the [MonetDB README] (geodan-collaboration/docs/monetdb/README.md) and start a MonetDB mserver.
+1. If monetDB is not installed, please follow the instructions in the [MonetDB README] (3D_geospatial_risk_management/docs/monetdb/README.md) and start a MonetDB mserver.
 
 2. Create tables.
 ```
-./geodan-collaboration/apps/monetdb/scripts/mclient optimized sql < sql/create_tables.sql
+./3D_geospatial_risk_management/apps/monetdb/scripts/mclient optimized sql < sql/create_tables.sql
 ``` 
 
 3. Load data.
 ```
-./geodan-collaboration/apps/monetdb/scripts/mclient optimized sql < sql/load_data.sql
+./3D_geospatial_risk_management/apps/monetdb/scripts/mclient optimized sql < sql/load_data.sql
 ``` 
 
