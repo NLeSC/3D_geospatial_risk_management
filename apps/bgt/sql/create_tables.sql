@@ -236,19 +236,21 @@ terminationDate string
 
 --Supporting water
 create table bgt_ondersteunendwaterdeel (
-	gml_id string,
-	creationDa date,
-	namespace string,
-	lokaalID string,
-	LV_publica timestamp,
-	relatieveH integer,
-	inOnderzoe integer,
-	tijdstipRe timestamp,
-	bgt_status string,
-	plus_statu string,
-	bronhouder string,
-	class string,
-	kmlgeometry geometry
+WKT geometry,
+gml_id string,
+creationDate string,
+namespace string,
+lokaalID string,
+LV_publicatiedatum timestamp,
+relatieveHoogteligging integer,
+inOnderzoek integer,
+tijdstipRegistratie timestamp,
+bgt_status string,
+plus_status string,
+bronhouder string,
+"class" string,
+eindRegistratie string,
+terminationDate string
 );
 
 --unclassified object
@@ -351,21 +353,23 @@ create table bgt_plaatsbepalingspunt (
 );
 
 create table bgt_plantcover (
-	gml_id string,
-	creationDa date,
-	namespace string,
-	lokaalID string,
-	relatieveH integer,
-	LV_publica timestamp,
-	tijdstipRe timestamp,
-	inOnderzoe integer,
-	bgt_status string,
-	plus_statu string,
-	bronhouder string,
-	class string,
-	begroeidTe integer,
-	plus_fysie string,
-	kmlgeometry geometry
+WKT geometry,
+gml_id string,
+creationDate string,
+namespace string,
+lokaalID string,
+relatieveHoogteligging integer,
+LV_publicatiedatum timestamp,
+tijdstipRegistratie timestamp,
+inOnderzoek integer,
+bgt_status string,
+plus_status string,
+bronhouder string,
+"class" string,
+begroeidTerreindeelOpTalud integer,
+plus_fysiekVoorkomen string,
+terminationDate string,
+eindRegistratie string
 );
 
 create table bgt_put (
