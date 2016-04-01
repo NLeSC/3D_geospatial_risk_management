@@ -1,0 +1,85 @@
+#!/bin/bash
+set -o errexit
+set -o nounset
+LOG=/tmp/mylog
+
+##################
+function if_error
+##################
+{
+if [[ $? -ne 0 ]]; then # check return code passed to function
+print "$1 TIME:$TIME" | tee -a $LOG # if rc > 0 then print error msg and quit
+exit $?
+fi
+}
+
+EXPECTED_ARGS=2
+ARGS="rebuild <user> <{debug | optimized}>"
+
+declare -a modules
+
+if [ $# -lt $EXPECTED_ARGS ]; then
+        echo "$ARGS"
+        exit
+else
+        case "$2" in
+		debug)
+			conf_options="--enable-debug --disable-strict --enable-assert"
+                	style=$2 ;;
+		optimized)
+			conf_options="--disable-debug --enable-optimize --enable-strict --disable-assert --enable-bits=64"
+                	style=$2 ;;
+		*)
+                	echo "$ARGS"
+			exit;;
+        esac
+fi
+
+src="/home/$1/MonetDB/current"
+geodangit="/home/$1/geodan-collaboration/monetdb"
+prefix="/home/$1/scratch/MonetDB"
+fcal=""
+location="MonetDB"
+
+function configure {
+	pref=$1
+		
+	env PATH=$prefix/$style/$pref/bin/:${PATH} \
+	PKG_CONFIG_PATH=$prefix/$style/$pref/lib/pkgconfig \
+	$src/configure --enable-gadget --enable-geom --disable-probxml --enable-odbc --disable-jdbc --disable-xrpcwrapper --disable-merocontrol --disable-java --prefix=$prefix/$style/$pref/ $conf_options
+}
+
+function bootstraap {
+	pref=$1
+
+	env PATH=$prefix/$style/$pref/bin:$src/buildtools/autogen:${PATH} PYTHONPATH=$src/buildtools/autogen ./bootstrap
+}
+
+cd $src 
+# rebuild patch
+hg update -C
+hg pull
+hg update
+hg import --no-commit $geodangit/gadget_vaults_optimizer.diff
+
+# copy files
+cp $geodangit/optimizer/opt_gadget.* $src/monetdb5/optimizer/
+cp -r $geodangit/gadget/ $src/sql/backends/monet5/vaults/
+
+bootstraap $location
+if_error "The bootstraap failed"
+
+rm -fr $prefix/$style/$location/ &&
+mkdir -p $prefix/$style/$location/build 
+
+cd $prefix/$style/$location/build 
+configure $location
+if_error "The configure failed"
+
+cd $prefix/$style/MonetDB/build 
+
+make -j && make install -j
+if_error "The installation for $style failed"
+
+echo "MonetDB was successfully installed with $style compilation!!!"
+

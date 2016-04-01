@@ -1,0 +1,98 @@
+#!/bin/bash
+set -o errexit
+set -o nounset
+LOG=/tmp/mylog
+
+##################
+function if_error
+##################
+{
+if [[ $? -ne 0 ]]; then # check return code passed to function
+print "$1 TIME:$TIME" | tee -a $LOG # if rc > 0 then print error msg and quit
+exit $?
+fi
+}
+
+DIR="$(cd "$(dirname "$0")" && pwd)"
+
+echo ""
+echo "Reading monetdb config..." >&2
+. $DIR/../../../configs/monetdb.cfg
+src=$monetdb_src
+echo "MonetDB sources are located at: $monetdb_src" >&2
+
+prefix=$monetdb_prefix
+echo "MonetDB prefix is: $monetdb_prefix" >&2
+location="MonetDB"
+
+mOut="`pwd`/monet.out"
+mErr="`pwd`/monet.err"
+echo "The stdout will be saved at $mOut" >&2
+echo "The stderr will be saved at $mErr" >&2
+echo ""
+
+function configure {
+	pref=$1
+		
+	env PATH=$prefix/$style/$pref/bin/:${PATH} \
+	PKG_CONFIG_PATH=$prefix/$style/$pref/lib/pkgconfig \
+	$src/configure --with-liblas --enable-geom --enable-odbc --disable-jdbc --disable-merocontrol --prefix=$prefix/$style/$pref/ $conf_options
+}
+
+function bootstraap {
+	pref=$1
+
+	env PATH=$prefix/$style/$pref/bin:$src/buildtools/autogen:${PATH} PYTHONPATH=$src/buildtools/autogen ./bootstrap
+}
+
+EXPECTED_ARGS=1
+ARGS="usage: monetdb <{debug | optimized}>"
+
+declare -a modules
+
+if [ $# -lt $EXPECTED_ARGS ]; then
+        echo "$ARGS"
+        exit
+else
+        case "$1" in
+		debug)
+			conf_options="--enable-debug --disable-strict --enable-assert"
+                	style=$1 ;;
+		optimized)
+			conf_options="--disable-debug --enable-optimize --enable-strict --disable-assert --enable-bits=64"
+                	style=$1 ;;
+		*)
+                	echo "$ARGS $1"
+			exit;;
+        esac
+fi
+
+cd $src 
+
+#The followin exports are required for --with-liblidar
+export PATH=$LIBLAS_HOME/bin:${PATH}
+export LD_RUN_PATH=${LD_RUN_PATH:=$BOOST_HOME/lib:$LASZIP_HOME/lib:$LIBLAS_HOME/lib}
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH:=$BOOST_HOME/lib:$LASZIP_HOME/lib:$LIBLAS_HOME/lib}
+export LIBRARY_PATH=${LIBRARY_PATH:=$BOOST_HOME/lib:$LASZIP_HOME/lib:$LIBLAS_HOME/lib}
+export C_INCLUDE_PATH=${C_INCLUDE_PATH:=$LIBLAS_HOME/include}
+
+echo "Running bootstraap..." >&2
+bootstraap $location 1>$mOut 2>$mErr
+if_error "The bootstraap failed"
+
+rm -fr $prefix/$style/$location/ &&
+mkdir -p $prefix/$style/$location/build 
+
+echo "Running configure..." >&2
+cd $prefix/$style/$location/build 
+configure $location 1>$mOut 2>$mErr
+if_error "The configure failed"
+
+cd $prefix/$style/MonetDB/build 
+
+echo "Running make..." >&2
+make -j 1>$mOut 2>$mErr && echo "Running make install.." >&2 && make install -j 1>$mOut 2>$mErr
+if_error "The installation for $style failed!!! For more info check $mErr"
+
+echo "MonetDB was successfully installed with $style compilation!!!"
+

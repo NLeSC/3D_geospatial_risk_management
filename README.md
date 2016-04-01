@@ -1,1 +1,2 @@
-# 3D_geospatial_risk_management
+Repository for COMMIT valorization project: 3D geospatial risk management
+=========================================================================

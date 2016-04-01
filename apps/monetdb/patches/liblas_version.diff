@@ -1,0 +1,14 @@
+diff -r 20c1b93106b3 configure.ag
+--- a/configure.ag	Mon Feb 29 16:43:42 2016 +0100
++++ b/configure.ag	Wed Mar 02 10:01:10 2016 +0100
+@@ -2617,8 +2617,8 @@
+ 	have_liblas="$withval")
+ case "$have_lidar" in
+ yes|auto)
+-	# liblas >= 1.8.0 required
+-	LIBLAS_VERSION_REQUIRED_MIN=1.8.0
++	# liblas >= 1.7.0 required
++	LIBLAS_VERSION_REQUIRED_MIN=1.7.0
+ 	LIBLAS_CONFIG=''
+ 	# locate liblas-config
+ 	if test "x$have_liblas" != xno; then

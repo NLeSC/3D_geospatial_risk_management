@@ -1,0 +1,71 @@
+#!/bin/bash
+set -o errexit
+set -o nounset
+LOG=/tmp/mylog
+
+##################
+function if_error
+##################
+{
+if [[ $? -ne 0 ]]; then # check return code passed to function
+print "$1 TIME:$TIME" | tee -a $LOG # if rc > 0 then print error msg and quit
+exit $?
+fi
+}
+
+DIR="$(cd "$(dirname "$0")" && pwd)"
+
+echo ""
+echo "Reading monetdb config..." >&2
+. $DIR/../../../configs/monetdb.cfg
+prefix=$monetdb_prefix
+echo "MonetDB prefix is: $prefix" >&2
+location="MonetDB"
+
+port=$monetdb_mapi_port
+echo "MonetDB mapi_port is: $port" >&2
+readOnly=""
+
+threads=$monetdb_num_threads
+echo "MonetDB will run with $threads threads!!!" >&2
+
+if [ $monetdb_readonly -eq 1 ]; then
+    readOnly="--readonly"
+    echo "MonetDB will run in read_only mode!" >&2
+fi
+
+#The followin exports are required for --with-liblidar
+export PATH=$LIBLAS_HOME/bin:${PATH}
+export LD_RUN_PATH=${LD_RUN_PATH:=$BOOST_HOME/lib:$LASZIP_HOME/lib:$LIBLAS_HOME/lib}
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH:=$BOOST_HOME/lib:$LASZIP_HOME/lib:$LIBLAS_HOME/lib}
+export LIBRARY_PATH=${LIBRARY_PATH:=$BOOST_HOME/lib:$LASZIP_HOME/lib:$LIBLAS_HOME/lib}
+export C_INCLUDE_PATH=${C_INCLUDE_PATH:=$LIBLAS_HOME/include}
+echo ""
+
+EXPECTED_ARGS=1
+ARGS="usage: server <{optimized | debug}>"
+
+if [ $# -lt $EXPECTED_ARGS ]; then
+        echo "$ARGS"
+        exit
+else
+	if [[ $1 == "debug" ||  $1 == "optimized" ]]; then 
+                style=$1
+        else
+                echo "$ARGS"
+		exit
+        fi
+fi
+
+dbpath="$monetdb_dbfarm/$monetdb_dbname"
+dblogs=$dbpath
+
+if [ $style == "debug" ]; then
+    gdb  -ex "python sys.path.append(\"/usr/share/gcc-4.8/python\");" -ex "set pagination 0" -ex "r" --args $prefix/$style/$location/bin/mserver5 --set mapi_port=$port --dbinit="include geom; include sql;" --dbpath=$dbpath --set sql_logdir=$dblogs --set gdk_nr_threads=$threads $readOnly
+else
+	$prefix/$style/$location/bin/mserver5 --set mapi_port=$port --dbinit="include geom; include sql;" --dbpath=$dbpath --set sql_logdir=$dblogs --set gdk_nr_threads=$threads $readOnly
+fi
+
+if_error "Check if MonetDB is installed with $style installation. Run ./monet $style!!!"
+
+

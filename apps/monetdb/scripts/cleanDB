@@ -1,0 +1,35 @@
+#!/bin/bash
+set -o errexit
+set -o nounset
+LOG=/tmp/mylog
+
+##################
+function if_error
+##################
+{
+if [[ $? -ne 0 ]]; then # check return code passed to function
+print "$1 TIME:$TIME" | tee -a $LOG # if rc > 0 then print error msg and quit
+exit $?
+fi
+}
+
+DIR="$(cd "$(dirname "$0")" && pwd)"
+
+echo ""
+echo "Reading monetdb config..." >&2
+. $DIR/../../../configs/monetdb.cfg
+
+dbfarm=$monetdb_dbfarm
+echo "MonetDB dbfarm is: $dbfarm" >&2
+echo ""
+
+EXPECTED_ARGS=1
+ARGS="usage: cleanDB  <dbname>"
+
+if [ $# -lt $EXPECTED_ARGS ]; then
+        echo "$ARGS"
+        exit
+fi
+
+echo "Removing $dbfarm/$1"
+rm -fr $dbfarm/$1

@@ -1,0 +1,70 @@
+#!/bin/bash
+set -o errexit
+set -o nounset
+LOG=/tmp/mylog
+
+##################
+function if_error
+##################
+{
+if [[ $? -ne 0 ]]; then # check return code passed to function
+print "$1 TIME:$TIME" | tee -a $LOG # if rc > 0 then print error msg and quit
+exit $?
+fi
+}
+
+DIR="$(cd "$(dirname "$0")" && pwd)"
+
+echo ""
+echo "Reading monetdb config..." >&2
+. $DIR/../../../configs/monetdb.cfg
+prefix=$monetdb_prefix
+echo "MonetDB prefix is: $prefix" >&2
+location="MonetDB"
+
+port="-p$monetdb_mapi_port"
+echo "MonetDB mapi_port is: $port" >&2
+
+dbname=$monetdb_dbname
+echo "MonetDB dbname is: $dbname" >&2
+
+#The followin exports are required for --with-liblidar
+export PATH=$LIBLAS_HOME/bin:${PATH}
+export LD_RUN_PATH=${LD_RUN_PATH:=$BOOST_HOME/lib:$LASZIP_HOME/lib:$LIBLAS_HOME/lib}
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH:=$BOOST_HOME/lib:$LASZIP_HOME/lib:$LIBLAS_HOME/lib}
+export LIBRARY_PATH=${LIBRARY_PATH:=$BOOST_HOME/lib:$LASZIP_HOME/lib:$LIBLAS_HOME/lib}
+export C_INCLUDE_PATH=${C_INCLUDE_PATH:=$LIBLAS_HOME/include}
+echo ""
+
+lang=""
+version=""
+style=""
+user="-umonetdb"
+
+EXPECTED_ARGS=2
+ARGS="usage: mclient <{optimized | debug}> <{sql,mal}>"
+
+if [ $# -lt $EXPECTED_ARGS ]; then
+        echo "$ARGS"
+        exit
+else
+	if [[ $1 == "debug" ||  $1 == "optimized" ]]; then 
+                style=$1
+        else
+                echo "$ARGS"
+		exit
+        fi
+
+	if [[ $2 == "sql" ||  $2 == "mal" || $2 == "msql" ]]; then 
+                lang="-l$2"
+        else
+                echo "$ARGS"
+		exit
+        fi
+	if [[ $# -eq 5 && ($3 &&  $4) ]]; then 
+                user=$3
+        fi
+fi
+
+shift 2
+$prefix/$style/MonetDB/bin/mclient -fraw $port -d $dbname $lang $@
