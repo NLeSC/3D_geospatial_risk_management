@@ -1,0 +1,238 @@
+diff -r 19533cdf222b geom/monetdb5/Makefile.ag
+--- a/geom/monetdb5/Makefile.ag	Mon Apr 04 12:41:26 2016 +0200
++++ b/geom/monetdb5/Makefile.ag	Fri Apr 08 15:42:17 2016 +0200
+@@ -10,7 +10,7 @@
+            ../../common/stream \
+            ../../common/options \
+            ../../monetdb5/mal \
+-           $(GEOS_INCS) $(PROJ_INCS)
++           $(GEOS_INCS) $(PROJ_INCS) $(GDAL_CFLAGS)
+ 
+ lib__geom = {
+ 	MODULE
+@@ -20,7 +20,7 @@
+ 		   ../../gdk/libbat \
+ 	       ../../common/stream/libstream \
+ 	       ../../monetdb5/tools/libmonetdb5 \
+-	       $(GEOS_LIBS) $(PROJ_LIBS)
++	       $(GEOS_LIBS) $(PROJ_LIBS) $(GDAL_CFLAGS)
+ }
+ 
+ headers_mal = {
+diff -r 19533cdf222b geom/monetdb5/geom.c
+--- a/geom/monetdb5/geom.c	Mon Apr 04 12:41:26 2016 +0200
++++ b/geom/monetdb5/geom.c	Fri Apr 08 15:42:17 2016 +0200
+@@ -1801,6 +1801,53 @@
+ 	return MAL_SUCCEED;
+ }
+ 
++str wkbPolygonize(wkb** outWKB, wkb** geom){
++	GEOSGeom geosGeometry = wkb2geos(*geom);
++	int i = 0, geometriesNum = GEOSGetNumGeometries(geosGeometry);
++	GEOSGeometry* outGeometry;
++	GEOSGeom* multiGeometry = NULL;
++
++	multiGeometry = (GEOSGeom*) malloc(sizeof(GEOSGeom) * geometriesNum);
++	for(i=0; i<geometriesNum; i++) {
++		multiGeometry[i] = GEOSGetGeometryN(geosGeometry, i);
++	}
++
++	if(!(outGeometry = GEOSPolygonize(multiGeometry, geometriesNum))) {
++		*outWKB = NULL;
++		for (i = 0; i < geometriesNum; i++) {
++			GEOSGeom_destroy(multiGeometry[i]);
++		}
++		return createException(MAL, "geom.Polygonize", "GEOSPolygonize failed");
++	}
++
++	for (i = 0; i < geometriesNum; i++) {
++		GEOSGeom_destroy(multiGeometry[i]);
++	}
++
++	*outWKB = geos2wkb(outGeometry);
++	GEOSGeom_destroy(outGeometry);
++
++	return MAL_SUCCEED;
++}
++
++str wkbSimplifyPreserveTopology(wkb** outWKB, wkb** geom, float* tolerance){
++	GEOSGeom geosGeometry = wkb2geos(*geom);
++	GEOSGeometry* outGeometry;
++
++	if(!(outGeometry = GEOSTopologyPreserveSimplify(geosGeometry, *tolerance))) {
++		*outWKB = NULL;
++		GEOSGeom_destroy(geosGeometry);
++		return createException(MAL, "geom.SimplifyPreserveTopology", "GEOSSimplifyPreserveTopology failed");
++	}
++
++	GEOSGeom_destroy(geosGeometry);
++
++	*outWKB = geos2wkb(outGeometry);
++	GEOSGeom_destroy(outGeometry);
++
++	return MAL_SUCCEED;
++}
++
+ str geom_2_geom(wkb** resWKB, wkb **valueWKB, int* columnType, int* columnSRID) {
+ 	GEOSGeom geosGeometry;
+ 	int geoCoordinatesNum = 2;
+@@ -4903,6 +4950,63 @@
+ 	return MAL_SUCCEED;
+ }
+ 
++/* SFCGDAL functionality */
++str
++wkbExtrude(wkb **res, wkb **geom, double *ex, double ey, double *ez)
++{
++	sfcgal_geometry_t *outGeom, *inGeom;
++	size_t *len;
++	char *buf[BUFSIZ];
++
++	//TODO: Generate the inGeom out of geom
++	if (!(outGeom = sfcgal_geometry_extrude (inGeom, *ex, *ey, *ez))) {
++		*res = NULL;
++		return createException(MAL, "geom.Extrude", "GEOSExtrude failed");
++	}
++
++	sfcgal_geometry_as_text(outGeom, buf, len);
++	*res = geos2wkb(GEOSGeomFromWKT(buf));
++	return MAL_SUCCEED;
++}
++
++str
++wkbStraightSkeleton(wkb **res, wkb **geom)
++{
++	sfcgal_geometry_t *outGeom, *inGeom;
++	size_t *len;
++	char *buf[BUFSIZ];
++
++	//TODO: Generate the inGeom out of geom
++	if (!(outGeom = sfcgal_geometry_straight_skeleton(inGeom))) {
++		*res = NULL;
++		return createException(MAL, "geom.StraightSkeleton", "GEOSStraightSkeleton failed");
++	}
++
++	sfcgal_geometry_as_text(outGeom, buf, len);
++	*res = geos2wkb(GEOSGeomFromWKT(buf));
++	return MAL_SUCCEED;
++}
++
++str
++wkbTesselate(wkb **res, wkb **geom)
++{
++	sfcgal_geometry_t *outGeom, *inGeom;
++	size_t *len;
++	char *buf[BUFSIZ];
++
++	//TODO: Generate the inGeom out of geom
++	if (!(outGeom = sfcgal_geometry_tesselate(inGeom))) {
++		*res = NULL;
++		return createException(MAL, "geom.Tesselate", "GEOSTesselate failed");
++	}
++
++	sfcgal_geometry_as_text(outGeom, buf, len);
++	*res = geos2wkb(GEOSGeomFromWKT(buf));
++	sfcgal_geometry_tesselate (const sfcgal_geometry_t *geom)
++	return MAL_SUCCEED;
++}
++
++
+ /***********************************************/
+ /************* wkb type functions **************/
+ /***********************************************/
+diff -r 19533cdf222b geom/monetdb5/geom.h
+--- a/geom/monetdb5/geom.h	Mon Apr 04 12:41:26 2016 +0200
++++ b/geom/monetdb5/geom.h	Fri Apr 08 15:42:17 2016 +0200
+@@ -12,6 +12,7 @@
+ 
+ #include <monetdb_config.h>
+ #include "libgeom.h"
++#include <gdal.h>
+ 
+ #include <mal.h>
+ #include <mal_atom.h>
+@@ -226,6 +227,8 @@
+ 
+ geom_export str wkbDump(bat* idBAT_id, bat* geomBAT_id, wkb**);
+ geom_export str wkbDumpPoints(bat* idBAT_id, bat* geomBAT_id, wkb**);
++geom_export str wkbPolygonize(wkb **res, wkb **geom);
++geom_export str wkbSimplifyPreserveTopology(wkb **res, wkb **geom, float *tolerance);
+ 
+ geom_export str geom_2_geom(wkb** resWKB, wkb **valueWKB, int* columnType, int* columnSRID); 
+ 
+@@ -266,6 +269,11 @@
+ 
+ geom_export str ordinatesMBR(mbr **res, flt *minX, flt *minY, flt *maxX, flt *maxY);
+ 
++/* SFCGDAL functionality */
++geom_export str wkbExtrude(wkb **res, wkb **geom, double *ex, double ey, double *ez);
++geom_export str wkbStraightSkeleton(wkb **res, wkb **geom);
++geom_export str wkbTesselate(wkb **res, wkb **geom);
++
+ /* BULK */
+ 
+ geom_export str wkbDistance_bat(bat* outBAT_id, bat*, bat*);
+diff -r 19533cdf222b geom/monetdb5/geom.mal
+--- a/geom/monetdb5/geom.mal	Mon Apr 04 12:41:26 2016 +0200
++++ b/geom/monetdb5/geom.mal	Fri Apr 08 15:42:17 2016 +0200
+@@ -334,6 +334,10 @@
+ comment "Gets a MultiPolygon and returns the Polygons in it";
+ command DumpPoints(a:wkb) (id:bat[:oid, :str], geom:bat[:oid, :wkb]) address wkbDumpPoints
+ comment "Gets a Geometry and returns the Points in it";
++command Polygonize(a:wkb) :wkb address wkbPolygonize
++comment "Creates a GeometryCollection containing possible polygons formed from the constituent linework of a set of geometries.";
++command SimplifyPreserveTopology(a:wkb, t:flt) :wkb address wkbSimplifyPreserveTopology
++comment "Returns a \"simplified\" version of the given geometry using the Douglas-Peucker algorithm.";
+ 
+ command Segmentize(g:wkb, sz:dbl) :wkb address wkbSegmentize
+ comment "It creates a new geometry with all segments on it smaller or equal to sz";
+@@ -512,6 +516,16 @@
+ 	return x;
+ end YMaxFromMBR;
+ 
++#SFCGDAL functionality
++command Extrude(a:wkb, ex:dbl, ey:dbl, ez:dbl) :wkb address wkbExtrude
++comment "Extrude a surface to a related volume.";
++
++command StraightSkeleton(a:wkb) :wkb address wkbStraightSkeleton
++comment "Compute a straight skeleton from a geometry";
++
++command ST_Tesselate(a:wkb) :wkb address wkbTesselate
++comment "Perform surface Tesselation of a polygon or polyhedralsurface and returns as a TIN or collection of TINS.";
++
+ 
+ #command mbr(:flt,:flt,:flt,:flt) :mbr
+ #address ordinatesMBR
+diff -r 19533cdf222b geom/sql/40_geom.sql
+--- a/geom/sql/40_geom.sql	Mon Apr 04 12:41:26 2016 +0200
++++ b/geom/sql/40_geom.sql	Fri Apr 08 15:42:17 2016 +0200
+@@ -4372,14 +4372,14 @@
+ --CREATE FUNCTION ST_MakeValid RETURNS EXTERNAL NAME
+ --CREATE FUNCTION ST_MemUnion RETURNS EXTERNAL NAME
+ --CREATE FUNCTION ST_MinimumBoundingCircle RETURNS EXTERNAL NAME
+---CREATE FUNCTION ST_Polygonize RETURNS EXTERNAL NAME
++CREATE FUNCTION ST_Polygonize(gemo1 Geometry) RETURNS Geometry EXTERNAL NAME geom."Polygonize";
+ --CREATE FUNCTION ST_Node RETURNS EXTERNAL NAME
+ --CREATE FUNCTION ST_OffsetCurve RETURNS EXTERNAL NAME
+ --CREATE FUNCTION ST_RemoveRepeatedPoints RETURNS EXTERNAL NAME
+ --CREATE FUNCTION ST_SharedPaths RETURNS EXTERNAL NAME
+ --CREATE FUNCTION ST_Shift_Longitude RETURNS EXTERNAL NAME
+ --CREATE FUNCTION ST_Simplify RETURNS EXTERNAL NAME
+---CREATE FUNCTION ST_SimplifyPreserveTopology RETURNS EXTERNAL NAME
++CREATE FUNCTION ST_SimplifyPreserveTopology(geom1 Geometry, tolerance real) RETURNS Geometry EXTERNAL NAME geom."SimplifyPreserveTopology";
+ --CREATE FUNCTION ST_Split RETURNS EXTERNAL NAME
+ --CREATE FUNCTION ST_Union(geometry set geoms)?????
+ --CREATE FUNCTION ST_UnaryUnion RETURNS EXTERNAL NAME
+@@ -4456,3 +4456,12 @@
+ ---------------------------- Miscellaneous ------------------------------
+ -------------------------------------------------------------------------
+ CREATE FUNCTION Contains(a Geometry, x double, y double) RETURNS BOOLEAN external name geom."Contains";
++
++-------------------------------------------------------------------------
++-------------------------------- SFCGAL ---------------------------------
++-------------------------------------------------------------------------
++
++CREATE FUNCTION geometry ST_Extrude(geometry geom, double x, double y, double z) RETURNS geometry EXTERNAL NAME geom."Extrude";
++CREATE FUNCTION geometry ST_StraightSkeleton(geometry geom) RETURNS geometry EXTERNAL NAME geom."StraightSkeleton";
++CREATE FUNCTION geometry ST_Tesselate(geometry geom) RETURNS geometry EXTERNAL NAME geom."Tesselate";;
++--CREATE FUNCTION geometry ST_Triangulate2DZ(geometry geom) RETURNS geometry EXTERNAL NAME geom."Triangulate2DZ";;
