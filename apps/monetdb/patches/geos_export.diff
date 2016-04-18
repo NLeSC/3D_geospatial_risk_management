@@ -1,6 +1,6 @@
 diff -r d3612c7f9d7b geom/lib/libgeom.h
 --- a/geom/lib/libgeom.h	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/lib/libgeom.h	Mon Apr 18 16:05:40 2016 +0200
++++ b/geom/lib/libgeom.h	Mon Apr 18 19:40:38 2016 +0200
 @@ -90,6 +90,9 @@
  9 = MULTILINESTRING
  10 = MULTISURFACE
@@ -25,7 +25,7 @@ diff -r d3612c7f9d7b geom/lib/libgeom.h
  libgeom_export const char *geom_type2str(int t, int flag);
 diff -r d3612c7f9d7b geom/monetdb5/Makefile.ag
 --- a/geom/monetdb5/Makefile.ag	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/monetdb5/Makefile.ag	Mon Apr 18 16:05:40 2016 +0200
++++ b/geom/monetdb5/Makefile.ag	Mon Apr 18 19:40:38 2016 +0200
 @@ -16,7 +16,7 @@
  lib__geom = {
  	MODULE
@@ -37,7 +37,7 @@ diff -r d3612c7f9d7b geom/monetdb5/Makefile.ag
  	       ../../common/stream/libstream \
 diff -r d3612c7f9d7b geom/monetdb5/geom.c
 --- a/geom/monetdb5/geom.c	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/monetdb5/geom.c	Mon Apr 18 16:05:40 2016 +0200
++++ b/geom/monetdb5/geom.c	Mon Apr 18 19:40:38 2016 +0200
 @@ -1801,6 +1801,53 @@
  	return MAL_SUCCEED;
  }
@@ -150,32 +150,94 @@ diff -r d3612c7f9d7b geom/monetdb5/geom.c
  /*returns true if the two
   * 	mbrs overlap */
  str mbrOverlaps(bit *out, mbr **b1, mbr **b2) {
-@@ -5689,3 +5787,22 @@
+@@ -5689,3 +5787,84 @@
  	*out = TRUE;
  	return MAL_SUCCEED;
  }
 +
 +/* Exported from PostGIS */
 +str
-+wkbAsX3D(str *res, wkb **geomWKB, int maxDecDigits, int options)
++wkbAsX3D(str *res, wkb **geomWKB, int *maxDecDigits, int *option)
 +{
-+	char *defid = ""; //TODO: find out what is this
++    static const char* default_defid = "x3d:"; /* default defid */
++    const char* defid = default_defid;
 +	GEOSGeom geom = wkb2geos(*geomWKB);
-+	*res = geom_to_x3d_3(geom, maxDecDigits, options, defid);
++    int srid = (*geomWKB)->srid;
++
++    if (*option & GEOM_X3D_USE_GEOCOORDS) {
++        if (srid != 4326) {
++		    throw(MAL, "geom.wkbAsX3D", "Only SRID 4326 is supported for geocoordinates.");
++        }
++    }
++
++	if ( (*res = geom_to_x3d_3(geom, *maxDecDigits, *option, defid)) == NULL )
++		throw(MAL, "geom.wkbAsX3D", "Failed, XML returned is NULL!!!");
 +	return MAL_SUCCEED;
 +}
 +
 +str
-+wkbAsGeoJson(str *res, wkb **geomWBK, int maxDecDigits, int options)
++wkbAsGeoJson(str *res, wkb **geomWBK, int *maxDecDigits, int *option)
 +{
 +	GEOSGeom geom = wkb2geos(*geomWBK);
-+	char *srs = NULL; //TODO: find out what is this
-+	*res = geom_to_geojson(geom, srs, maxDecDigits, options);
++    int has_bbox = 0;
++	char *srs = NULL;
++    int precision = DBL_DIG;
++    int srid = (*geomWBK)->srid;
++
++    if ( *maxDecDigits > DBL_DIG )
++        precision = DBL_DIG;
++    else if ( *maxDecDigits < 0 )
++        precision = 0;
++
++    if (*option) {
++        if (*option & 1)  
++            has_bbox = 1; 
++    }
++
++    if ( srid != 0 ) 
++    { 
++        if ( *option & 2 ) {
++			char* sridTxt = "SRID:";
++			char* sridIntToString = NULL;
++			size_t len2 = 0;
++			int digitsNum = 10; //MAX_INT = 2,147,483,647
++
++
++			//count the number of digits in srid
++			if(srid < 0)
++				throw(MAL, "geom.wkbAsGeoJson", "Negative SRID");
++
++			sridIntToString = GDKmalloc(digitsNum+1);
++			if(sridIntToString == NULL) {
++				throw(MAL, "geom.wkbAsGeoJson", MAL_MALLOC_FAIL);
++			}
++			digitsNum = sprintf(sridIntToString, "%d", srid);
++
++			len2 = strlen(sridIntToString)+strlen(sridTxt)+2;
++			srs = GDKmalloc(len2);
++			if(srs == NULL) {
++				GDKfree(sridIntToString);
++				throw(MAL, "geom.wkbAsGeoJson", MAL_MALLOC_FAIL);
++			}
++
++			memcpy(srs, sridTxt, strlen(sridTxt));
++			memcpy(srs+strlen(sridTxt), sridIntToString, strlen(sridIntToString));
++			(srs)[strlen(sridTxt)+strlen(sridIntToString)] = ';';
++			(srs)[len2-1] = '\0';
++
++			GDKfree(sridIntToString);
++        }
++        if ( *option & 4 ) 
++		    throw(MAL, "geom.wkbAsGeoJson", "Failed, SRID long version not supported!!!");
++    }
++
++	if ( (*res = geom_to_geojson(geom, srs, precision, has_bbox)) == NULL )
++		throw(MAL, "geom.wkbAsGeoJson", "Failed, GeoJson returned is NULL!!!");
 +	return MAL_SUCCEED;
 +}
 diff -r d3612c7f9d7b geom/monetdb5/geom.h
 --- a/geom/monetdb5/geom.h	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/monetdb5/geom.h	Mon Apr 18 16:05:40 2016 +0200
++++ b/geom/monetdb5/geom.h	Mon Apr 18 19:40:38 2016 +0200
 @@ -226,6 +226,8 @@
  
  geom_export str wkbDump(bat* idBAT_id, bat* geomBAT_id, wkb**);
@@ -185,7 +247,7 @@ diff -r d3612c7f9d7b geom/monetdb5/geom.h
  
  geom_export str geom_2_geom(wkb** resWKB, wkb **valueWKB, int* columnType, int* columnSRID); 
  
-@@ -294,3 +296,24 @@
+@@ -294,3 +296,28 @@
  
  geom_export int geom_catalog_upgrade(void *, int);
  geom_export str geom_sql_upgrade(int);
@@ -196,6 +258,10 @@ diff -r d3612c7f9d7b geom/monetdb5/geom.h
 +#define OUT_SHOW_DIGS_DOUBLE 20
 +#define OUT_MAX_DOUBLE_PRECISION 15
 +#define OUT_MAX_DIGS_DOUBLE (OUT_SHOW_DIGS_DOUBLE + 2)
++#define GEOM_X3D_FLIP_XY         (1<<0)
++#define GEOM_X3D_USE_GEOCOORDS   (1<<1)
++#define X3D_USE_GEOCOORDS(x) ((x) & GEOM_X3D_USE_GEOCOORDS)
++
 +
 +typedef struct {
 +    double xmin; 
@@ -208,11 +274,11 @@ diff -r d3612c7f9d7b geom/monetdb5/geom.h
 +
 +geom_export char *geom_to_geojson(GEOSGeom geom, char *srs, int precision, int has_bbox);
 +geom_export char *geom_to_x3d_3(GEOSGeom geom, int precision, int opts, const char *defid);
-+geom_export str wkbAsX3D(str *res, wkb **geom, int maxDecDigits, int options);
-+geom_export str wkbAsGeoJson(str *res, wkb **geom, int maxDecDigits, int options);
++geom_export str wkbAsX3D(str *res, wkb **geom, int *maxDecDigits, int *options);
++geom_export str wkbAsGeoJson(str *res, wkb **geom, int *maxDecDigits, int *options);
 diff -r d3612c7f9d7b geom/monetdb5/geom.mal
 --- a/geom/monetdb5/geom.mal	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/monetdb5/geom.mal	Mon Apr 18 16:05:40 2016 +0200
++++ b/geom/monetdb5/geom.mal	Mon Apr 18 19:40:38 2016 +0200
 @@ -334,6 +334,10 @@
  comment "Gets a MultiPolygon and returns the Polygons in it";
  command DumpPoints(a:wkb) (id:bat[:oid, :str], geom:bat[:oid, :wkb]) address wkbDumpPoints
@@ -254,7 +320,7 @@ diff -r d3612c7f9d7b geom/monetdb5/geom.mal
 +comment "Return the geometry as a GeoJSON element."
 diff -r d3612c7f9d7b geom/monetdb5/sfcgal.c
 --- a/geom/monetdb5/sfcgal.c	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/monetdb5/sfcgal.c	Mon Apr 18 16:05:40 2016 +0200
++++ b/geom/monetdb5/sfcgal.c	Mon Apr 18 19:40:38 2016 +0200
 @@ -13,6 +13,15 @@
  
  #include "sfcgal.h"
@@ -569,7 +635,7 @@ diff -r d3612c7f9d7b geom/monetdb5/sfcgal.c
 +}
 diff -r d3612c7f9d7b geom/monetdb5/sfcgal.h
 --- a/geom/monetdb5/sfcgal.h	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/monetdb5/sfcgal.h	Mon Apr 18 16:05:40 2016 +0200
++++ b/geom/monetdb5/sfcgal.h	Mon Apr 18 19:40:38 2016 +0200
 @@ -39,3 +39,7 @@
  #endif
  
@@ -580,7 +646,7 @@ diff -r d3612c7f9d7b geom/monetdb5/sfcgal.h
 +
 diff -r d3612c7f9d7b geom/monetdb5/sfcgal.mal
 --- a/geom/monetdb5/sfcgal.mal	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/monetdb5/sfcgal.mal	Mon Apr 18 16:05:40 2016 +0200
++++ b/geom/monetdb5/sfcgal.mal	Mon Apr 18 19:40:38 2016 +0200
 @@ -9,3 +9,12 @@
  command version() :str address geom_sfcgal_version
  comment "Returns the version number of the SFCGAL library";
@@ -596,7 +662,7 @@ diff -r d3612c7f9d7b geom/monetdb5/sfcgal.mal
 +
 diff -r d3612c7f9d7b geom/sql/40_geom.sql
 --- a/geom/sql/40_geom.sql	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/sql/40_geom.sql	Mon Apr 18 16:05:40 2016 +0200
++++ b/geom/sql/40_geom.sql	Mon Apr 18 19:40:38 2016 +0200
 @@ -4372,14 +4372,14 @@
  --CREATE FUNCTION ST_MakeValid RETURNS EXTERNAL NAME
  --CREATE FUNCTION ST_MemUnion RETURNS EXTERNAL NAME
@@ -622,7 +688,7 @@ diff -r d3612c7f9d7b geom/sql/40_geom.sql
 +CREATE FUNCTION ST_AsGeoJson(a Geometry, maxDecDigits int, options int) returns string external name geom."asGeoJson";
 diff -r d3612c7f9d7b geom/sql/41_sfcgal.sql
 --- a/geom/sql/41_sfcgal.sql	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/sql/41_sfcgal.sql	Mon Apr 18 16:05:40 2016 +0200
++++ b/geom/sql/41_sfcgal.sql	Mon Apr 18 19:40:38 2016 +0200
 @@ -5,3 +5,7 @@
  -- Copyright 1997 - July 2008 CWI, August 2008 - 2016 MonetDB B.V.
  

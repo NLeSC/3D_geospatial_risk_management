@@ -1,9 +1,5 @@
 #include "geom.h"
 
-#define LW_X3D_FLIP_XY     (1<<0)
-#define LW_X3D_USE_GEOCOORDS     (1<<1)
-#define X3D_USE_GEOCOORDS(x) ((x) & LW_X3D_USE_GEOCOORDS)
-
 static size_t x3d_3_point_size(GEOSGeom point, int precision);
 static char *x3d_3_point(GEOSGeom point, int precision, int opts);
 static size_t x3d_3_line_size(GEOSGeom line, int precision, int opts, const char *defid);
@@ -47,9 +43,12 @@ geom_to_x3d_3(GEOSGeom geom, int precision, int opts, const char *defid)
                 /** We might change this later, but putting a polygon in an indexed face set
                  * seems like the simplest way to go so treat just like a mulitpolygon
                  */
-                GEOSGeom tmp = NULL; //TODO: = geom_as_multi(geom);
-                char *ret = x3d_3_multi(tmp, precision, opts, defid);
-                //TODO: free(tmp);
+                char *ret;
+                GEOSGeom tmp, geoms[1];
+                geoms[0] = geom;
+                tmp = GEOSGeom_createCollection(GEOS_MULTIPOLYGON, geoms, 1);
+                ret = x3d_3_multi(tmp, precision, opts, defid);
+                GEOSGeom_destroy(tmp);
                 return ret;
             }
 
@@ -71,7 +70,7 @@ geom_to_x3d_3(GEOSGeom geom, int precision, int opts, const char *defid)
             return x3d_3_collection(geom, precision, opts, defid);
 
         default:
-            //TODO: Fix throw(MAL, "geom_to_geojson", "Unknown geometry type");
+            assert(0);
             return NULL;
     }
 }
@@ -137,7 +136,7 @@ x3d_3_line_buf(GEOSGeom line, char *output, int precision, int opts, const char 
 
     ptr += sprintf(ptr, "<LineSet %s vertexCount='%d'>", defid, npoints);
 
-    if ( X3D_USE_GEOCOORDS(opts) ) ptr += sprintf(ptr, "<GeoCoordinate geoSystem='\"GD\" \"WE\" \"%s\"' point='", ( (opts & LW_X3D_FLIP_XY) ? "latitude_first" : "longitude_first") );
+    if ( X3D_USE_GEOCOORDS(opts) ) ptr += sprintf(ptr, "<GeoCoordinate geoSystem='\"GD\" \"WE\" \"%s\"' point='", ( (opts & GEOM_X3D_FLIP_XY) ? "latitude_first" : "longitude_first") );
     else
         ptr += sprintf(ptr, "<Coordinate point='");
     ptr += geom_toX3D3(line, ptr, precision, opts, GEOSisClosed(line));
@@ -390,12 +389,11 @@ x3d_3_multi_buf(GEOSGeom col, char *output, int precision, int opts, const char 
             ptr += sprintf(ptr, "'>");
             break;
         default:
-            //TODO: Fix throw(MAL, "geom_to_geojson", "Unknown geometry type");
-            return 0;
+            assert(0);
     }
     if (dimension == 3){
         if ( X3D_USE_GEOCOORDS(opts) ) 
-            ptr += sprintf(ptr, "<GeoCoordinate geoSystem='\"GD\" \"WE\" \"%s\"' point='", ((opts & LW_X3D_FLIP_XY) ? "latitude_first" : "longitude_first") );
+            ptr += sprintf(ptr, "<GeoCoordinate geoSystem='\"GD\" \"WE\" \"%s\"' point='", ((opts & GEOM_X3D_FLIP_XY) ? "latitude_first" : "longitude_first") );
         else
             ptr += sprintf(ptr, "<Coordinate point='");
     }
@@ -501,7 +499,7 @@ x3d_3_psurface_buf(GEOSGeom psur, char *output, int precision, int opts, const c
     }
 
     if ( X3D_USE_GEOCOORDS(opts) ) 
-        ptr += sprintf(ptr, "'><GeoCoordinate geoSystem='\"GD\" \"WE\" \"%s\"' point='", ( (opts & LW_X3D_FLIP_XY) ? "latitude_first" : "longitude_first") );
+        ptr += sprintf(ptr, "'><GeoCoordinate geoSystem='\"GD\" \"WE\" \"%s\"' point='", ( (opts & GEOM_X3D_FLIP_XY) ? "latitude_first" : "longitude_first") );
     else ptr += sprintf(ptr, "'><Coordinate point='");
 
     for (i=0; i<ngeoms; i++)
@@ -570,7 +568,7 @@ x3d_3_tin_buf(GEOSGeom tin, char *output, int precision, int opts, const char *d
         k += 3;
     }
 
-    if ( X3D_USE_GEOCOORDS(opts) ) ptr += sprintf(ptr, "'><GeoCoordinate geoSystem='\"GD\" \"WE\" \"%s\"' point='", ( (opts & LW_X3D_FLIP_XY) ? "latitude_first" : "longitude_first") );
+    if ( X3D_USE_GEOCOORDS(opts) ) ptr += sprintf(ptr, "'><GeoCoordinate geoSystem='\"GD\" \"WE\" \"%s\"' point='", ( (opts & GEOM_X3D_FLIP_XY) ? "latitude_first" : "longitude_first") );
     else ptr += sprintf(ptr, "'><Coordinate point='");
 
     for (i=0; i<ngeoms; i++)
@@ -634,8 +632,8 @@ x3d_3_collection_size(GEOSGeom col, int precision, int opts, const char *defid)
                 size += x3d_3_multi_size(subgeom, precision, opts, defid);
                 break;
             default:
-                //TODO: Fix throw(MAL, "geom_to_geojson", "Unknown geometry type");
-                size = 0;
+                assert(0);
+                size += 0;
         }
     }
 
@@ -679,8 +677,7 @@ x3d_3_collection_buf(GEOSGeom col, char *output, int precision, int opts, const 
                 ptr += x3d_3_multi_buf(subgeom, ptr, precision, opts, defid);
                 break;
             default:
-                //TODO: Fix throw(MAL, "geom_to_geojson", "Unknown geometry type");
-                ptr += printf(ptr, "");
+                assert(0);
         }
 
         ptr += printf(ptr, "</Shape>");
@@ -741,7 +738,7 @@ geom_toX3D3(GEOSGeom geom, char *output, int precision, int opts, int is_closed)
                 if ( i )
                     ptr += sprintf(ptr, " ");
 
-                if ( ( opts & LW_X3D_FLIP_XY) )
+                if ( ( opts & GEOM_X3D_FLIP_XY) )
                     ptr += sprintf(ptr, "%s %s", y, x);
                 else
                     ptr += sprintf(ptr, "%s %s", x, y);
@@ -781,7 +778,7 @@ geom_toX3D3(GEOSGeom geom, char *output, int precision, int opts, int is_closed)
                 if ( i )
                     ptr += sprintf(ptr, " ");
 
-                if ( ( opts & LW_X3D_FLIP_XY) )
+                if ( ( opts & GEOM_X3D_FLIP_XY) )
                     ptr += sprintf(ptr, "%s %s %s", y, x, z);
                 else
                     ptr += sprintf(ptr, "%s %s %s", x, y, z);

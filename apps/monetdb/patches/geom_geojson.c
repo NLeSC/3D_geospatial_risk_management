@@ -49,7 +49,8 @@ geom_to_geojson(GEOSGeom geom, char *srs, int precision, int has_bbox)
         case wkbGeometryCollection_mdb:
             return asgeojson_collection(geom, srs, bbox, precision);
         default:
-            return NULL; //TODO: Fix throw(MAL, "geom_to_geojson", "Unknown geometry type");
+            assert(0);
+            return NULL;
     }
 
     return NULL;
@@ -548,14 +549,14 @@ asgeojson_geom_size(GEOSGeom geom, box3D *bbox, int precision)
             break;
 
         default:
+            assert(0);
             size = 0;
-            //TODO: Fix throw(MAL, "GeoJson", "Unknown geometry type");
     }
 
     return size;
 }
 
-    static size_t
+static size_t
 asgeojson_geom_buf(GEOSGeom geom, char *output, box3D *bbox, int precision)
 {
     int type = GEOSGeomTypeId(geom)+1;
@@ -590,7 +591,7 @@ asgeojson_geom_buf(GEOSGeom geom, char *output, box3D *bbox, int precision)
         default:
             if (bbox)
                 GDKfree(bbox);
-            //TODO:Fix throw(MAL, "GeoJson", "Unknown geometry type");
+            assert(0);
     }
 
     return (ptr-output);
