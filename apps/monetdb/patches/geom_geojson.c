@@ -1,4 +1,4 @@
-#include "geom_geojson.h"	/* strlen */
+#include "geom_export.h"
 
 static char *asgeojson_point(GEOSGeom point, char *srs, box3D *bbox, int precision);
 static char *asgeojson_line(GEOSGeom line, char *srs, box3D *bbox, int precision);

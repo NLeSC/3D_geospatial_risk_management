@@ -1,6 +1,6 @@
 diff -r d3612c7f9d7b geom/lib/libgeom.h
 --- a/geom/lib/libgeom.h	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/lib/libgeom.h	Fri Apr 15 18:14:31 2016 +0200
++++ b/geom/lib/libgeom.h	Mon Apr 18 15:27:04 2016 +0200
 @@ -90,6 +90,9 @@
  9 = MULTILINESTRING
  10 = MULTISURFACE
@@ -25,13 +25,13 @@ diff -r d3612c7f9d7b geom/lib/libgeom.h
  libgeom_export const char *geom_type2str(int t, int flag);
 diff -r d3612c7f9d7b geom/monetdb5/Makefile.ag
 --- a/geom/monetdb5/Makefile.ag	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/monetdb5/Makefile.ag	Fri Apr 15 18:14:31 2016 +0200
++++ b/geom/monetdb5/Makefile.ag	Mon Apr 18 15:27:04 2016 +0200
 @@ -16,7 +16,7 @@
  lib__geom = {
  	MODULE
  	DIR = libdir/monetdb5
 -	SOURCES = geom.h geom.c geomBulk.c geom_upgrade.c
-+	SOURCES = geom.h geom.c geomBulk.c geom_upgrade.c geom_geojson.h geom_geojson.c
++	SOURCES = geom.h geom.c geomBulk.c geom_upgrade.c geom_export.h geom_geojson.c geom_x3d.c
  	LIBS = ../lib/libgeom \
  		   ../../gdk/libbat \
  	       ../../common/stream/libstream \
@@ -46,12 +46,12 @@ diff -r d3612c7f9d7b geom/monetdb5/Makefile.ag
  	       ../../common/stream/libstream \
 diff -r d3612c7f9d7b geom/monetdb5/geom.c
 --- a/geom/monetdb5/geom.c	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/monetdb5/geom.c	Fri Apr 15 18:14:31 2016 +0200
++++ b/geom/monetdb5/geom.c	Mon Apr 18 15:27:04 2016 +0200
 @@ -12,6 +12,7 @@
   */
  
  #include "geom.h"
-+#include "geom_geojson.h"
++#include "geom_export.h"
  
  int TYPE_mbr;
  
@@ -193,7 +193,7 @@ diff -r d3612c7f9d7b geom/monetdb5/geom.c
 +}
 diff -r d3612c7f9d7b geom/monetdb5/geom.h
 --- a/geom/monetdb5/geom.h	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/monetdb5/geom.h	Fri Apr 15 18:14:31 2016 +0200
++++ b/geom/monetdb5/geom.h	Mon Apr 18 15:27:04 2016 +0200
 @@ -226,6 +226,8 @@
  
  geom_export str wkbDump(bat* idBAT_id, bat* geomBAT_id, wkb**);
@@ -213,7 +213,7 @@ diff -r d3612c7f9d7b geom/monetdb5/geom.h
 +geom_export str wkbAsGeoJson(str *res, wkb **geom, int maxDecDigits, int options);
 diff -r d3612c7f9d7b geom/monetdb5/geom.mal
 --- a/geom/monetdb5/geom.mal	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/monetdb5/geom.mal	Fri Apr 15 18:14:31 2016 +0200
++++ b/geom/monetdb5/geom.mal	Mon Apr 18 15:27:04 2016 +0200
 @@ -334,6 +334,10 @@
  comment "Gets a MultiPolygon and returns the Polygons in it";
  command DumpPoints(a:wkb) (id:bat[:oid, :str], geom:bat[:oid, :wkb]) address wkbDumpPoints
@@ -255,7 +255,7 @@ diff -r d3612c7f9d7b geom/monetdb5/geom.mal
 +comment "Return the geometry as a GeoJSON element."
 diff -r d3612c7f9d7b geom/monetdb5/sfcgal.c
 --- a/geom/monetdb5/sfcgal.c	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/monetdb5/sfcgal.c	Fri Apr 15 18:14:31 2016 +0200
++++ b/geom/monetdb5/sfcgal.c	Mon Apr 18 15:27:04 2016 +0200
 @@ -12,6 +12,7 @@
   */
  
@@ -339,7 +339,7 @@ diff -r d3612c7f9d7b geom/monetdb5/sfcgal.c
 +
 diff -r d3612c7f9d7b geom/monetdb5/sfcgal.h
 --- a/geom/monetdb5/sfcgal.h	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/monetdb5/sfcgal.h	Fri Apr 15 18:14:31 2016 +0200
++++ b/geom/monetdb5/sfcgal.h	Mon Apr 18 15:27:04 2016 +0200
 @@ -39,3 +39,7 @@
  #endif
  
@@ -350,7 +350,7 @@ diff -r d3612c7f9d7b geom/monetdb5/sfcgal.h
 +
 diff -r d3612c7f9d7b geom/monetdb5/sfcgal.mal
 --- a/geom/monetdb5/sfcgal.mal	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/monetdb5/sfcgal.mal	Fri Apr 15 18:14:31 2016 +0200
++++ b/geom/monetdb5/sfcgal.mal	Mon Apr 18 15:27:04 2016 +0200
 @@ -9,3 +9,12 @@
  command version() :str address geom_sfcgal_version
  comment "Returns the version number of the SFCGAL library";
@@ -366,7 +366,7 @@ diff -r d3612c7f9d7b geom/monetdb5/sfcgal.mal
 +
 diff -r d3612c7f9d7b geom/sql/40_geom.sql
 --- a/geom/sql/40_geom.sql	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/sql/40_geom.sql	Fri Apr 15 18:14:31 2016 +0200
++++ b/geom/sql/40_geom.sql	Mon Apr 18 15:27:04 2016 +0200
 @@ -4372,14 +4372,14 @@
  --CREATE FUNCTION ST_MakeValid RETURNS EXTERNAL NAME
  --CREATE FUNCTION ST_MemUnion RETURNS EXTERNAL NAME
@@ -392,7 +392,7 @@ diff -r d3612c7f9d7b geom/sql/40_geom.sql
 +CREATE FUNCTION ST_AsGeoJson(a Geometry, maxDecDigits int, options int) returns string external name geom."asGeoJson";
 diff -r d3612c7f9d7b geom/sql/41_sfcgal.sql
 --- a/geom/sql/41_sfcgal.sql	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/sql/41_sfcgal.sql	Fri Apr 15 18:14:31 2016 +0200
++++ b/geom/sql/41_sfcgal.sql	Mon Apr 18 15:27:04 2016 +0200
 @@ -5,3 +5,7 @@
  -- Copyright 1997 - July 2008 CWI, August 2008 - 2016 MonetDB B.V.
  
