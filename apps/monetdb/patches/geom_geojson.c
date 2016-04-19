@@ -1,14 +1,14 @@
 #include "geom.h"
 
-static char *asgeojson_point(GEOSGeom point, char *srs, box3D *bbox, int precision);
-static char *asgeojson_line(GEOSGeom line, char *srs, box3D *bbox, int precision);
-static char *asgeojson_poly(GEOSGeom poly, char *srs, box3D *bbox, int precision);
-static char * asgeojson_multipoint(GEOSGeom mpoint, char *srs, box3D *bbox, int precision);
-static char * asgeojson_multiline(GEOSGeom mline, char *srs, box3D *bbox, int precision);
-static char * asgeojson_multipolygon(GEOSGeom mpoly, char *srs, box3D *bbox, int precision);
-static char * asgeojson_collection(GEOSGeom col, char *srs, box3D *bbox, int precision);
-static size_t asgeojson_geom_size(GEOSGeom geom, box3D *bbox, int precision);
-static size_t asgeojson_geom_buf(GEOSGeom geom, char *output, box3D *bbox, int precision);
+static char *asgeojson_point(GEOSGeom point, char *srs, bbox3D *bbox, int precision);
+static char *asgeojson_line(GEOSGeom line, char *srs, bbox3D *bbox, int precision);
+static char *asgeojson_poly(GEOSGeom poly, char *srs, bbox3D *bbox, int precision);
+static char * asgeojson_multipoint(GEOSGeom mpoint, char *srs, bbox3D *bbox, int precision);
+static char * asgeojson_multiline(GEOSGeom mline, char *srs, bbox3D *bbox, int precision);
+static char * asgeojson_multipolygon(GEOSGeom mpoly, char *srs, bbox3D *bbox, int precision);
+static char * asgeojson_collection(GEOSGeom col, char *srs, bbox3D *bbox, int precision);
+static size_t asgeojson_geom_size(GEOSGeom geom, bbox3D *bbox, int precision);
+static size_t asgeojson_geom_buf(GEOSGeom geom, char *output, bbox3D *bbox, int precision);
 
 static size_t points_to_geojson(GEOSGeom geom, char *buf, int precision);
 static size_t points_geojson_size(GEOSGeom geom, int precision);
@@ -20,16 +20,13 @@ char*
 geom_to_geojson(GEOSGeom geom, char *srs, int precision, int has_bbox)
 {
     int type = GEOSGeomTypeId(geom)+1;
-    box3D *bbox = NULL;
+    bbox3D *bbox;
 
     if ( precision > OUT_MAX_DOUBLE_PRECISION ) precision = OUT_MAX_DOUBLE_PRECISION;
 
     if (has_bbox) 
     {
-        /* Whether these are geography or geometry, 
-           the GeoJSON expects a cartesian bounding box */
-        //TODO
-        //wkbMBR(&bbox, geom);
+        bbox3DFromGeos(&bbox, geom);
     }		
 
     switch (type)
@@ -99,7 +96,7 @@ asgeojson_bbox_size(int hasz, int precision)
 }
 
     static size_t
-asgeojson_bbox_buf(char *output, box3D *bbox, int hasz, int precision)
+asgeojson_bbox_buf(char *output, bbox3D *bbox, int hasz, int precision)
 {
     char *ptr = output;
 
@@ -116,7 +113,7 @@ asgeojson_bbox_buf(char *output, box3D *bbox, int hasz, int precision)
 }
 
     static size_t
-asgeojson_point_size(GEOSGeom point, char *srs, box3D *bbox, int precision)
+asgeojson_point_size(GEOSGeom point, char *srs, bbox3D *bbox, int precision)
 {
     int size;
 
@@ -134,7 +131,7 @@ asgeojson_point_size(GEOSGeom point, char *srs, box3D *bbox, int precision)
 }
 
     static size_t
-asgeojson_point_buf(GEOSGeom point, char *srs, char *output, box3D *bbox, int precision)
+asgeojson_point_buf(GEOSGeom point, char *srs, char *output, bbox3D *bbox, int precision)
 {
     char *ptr = output;
 
@@ -152,7 +149,7 @@ asgeojson_point_buf(GEOSGeom point, char *srs, char *output, box3D *bbox, int pr
 }
 
     static char *
-asgeojson_point(GEOSGeom point, char *srs, box3D *bbox, int precision)
+asgeojson_point(GEOSGeom point, char *srs, bbox3D *bbox, int precision)
 {
     char *output;
     int size;
@@ -164,7 +161,7 @@ asgeojson_point(GEOSGeom point, char *srs, box3D *bbox, int precision)
 }
 
     static size_t
-asgeojson_line_size(GEOSGeom line, char *srs, box3D *bbox, int precision)
+asgeojson_line_size(GEOSGeom line, char *srs, bbox3D *bbox, int precision)
 {
     int size;
 
@@ -178,7 +175,7 @@ asgeojson_line_size(GEOSGeom line, char *srs, box3D *bbox, int precision)
 }
 
     static size_t
-asgeojson_line_buf(GEOSGeom line, char *srs, char *output, box3D *bbox, int precision)
+asgeojson_line_buf(GEOSGeom line, char *srs, char *output, bbox3D *bbox, int precision)
 {
     char *ptr=output;
 
@@ -193,7 +190,7 @@ asgeojson_line_buf(GEOSGeom line, char *srs, char *output, box3D *bbox, int prec
 }
 
     static char *
-asgeojson_line(GEOSGeom line, char *srs, box3D *bbox, int precision)
+asgeojson_line(GEOSGeom line, char *srs, bbox3D *bbox, int precision)
 {
     char *output;
     int size;
@@ -206,7 +203,7 @@ asgeojson_line(GEOSGeom line, char *srs, box3D *bbox, int precision)
 }
 
     static size_t
-asgeojson_poly_size(GEOSGeom poly, char *srs, box3D *bbox, int precision)
+asgeojson_poly_size(GEOSGeom poly, char *srs, bbox3D *bbox, int precision)
 {
     size_t size;
     int i, nrings = GEOSGetNumInteriorRings(poly);
@@ -227,7 +224,7 @@ asgeojson_poly_size(GEOSGeom poly, char *srs, box3D *bbox, int precision)
 }
 
     static size_t
-asgeojson_poly_buf(GEOSGeom poly, char *srs, char *output, box3D *bbox, int precision)
+asgeojson_poly_buf(GEOSGeom poly, char *srs, char *output, bbox3D *bbox, int precision)
 {
     int i, nrings = GEOSGetNumInteriorRings(poly);
     char *ptr=output;
@@ -249,7 +246,7 @@ asgeojson_poly_buf(GEOSGeom poly, char *srs, char *output, box3D *bbox, int prec
 }
 
     static char *
-asgeojson_poly(GEOSGeom poly, char *srs, box3D *bbox, int precision)
+asgeojson_poly(GEOSGeom poly, char *srs, bbox3D *bbox, int precision)
 {
     char *output;
     int size;
@@ -262,7 +259,7 @@ asgeojson_poly(GEOSGeom poly, char *srs, box3D *bbox, int precision)
 }
 
     static size_t
-asgeojson_multipoint_size(GEOSGeom mpoint, char *srs, box3D *bbox, int precision)
+asgeojson_multipoint_size(GEOSGeom mpoint, char *srs, bbox3D *bbox, int precision)
 {
     GEOSGeom  point;
     int size;
@@ -284,7 +281,7 @@ asgeojson_multipoint_size(GEOSGeom mpoint, char *srs, box3D *bbox, int precision
 }
 
     static size_t
-asgeojson_multipoint_buf(GEOSGeom mpoint, char *srs, char *output, box3D *bbox, int precision)
+asgeojson_multipoint_buf(GEOSGeom mpoint, char *srs, char *output, bbox3D *bbox, int precision)
 {
     GEOSGeom point;
     int i, ngeoms = GEOSGetNumGeometries(mpoint);
@@ -307,7 +304,7 @@ asgeojson_multipoint_buf(GEOSGeom mpoint, char *srs, char *output, box3D *bbox, 
 }
 
     static char *
-asgeojson_multipoint(GEOSGeom mpoint, char *srs, box3D *bbox, int precision)
+asgeojson_multipoint(GEOSGeom mpoint, char *srs, bbox3D *bbox, int precision)
 {
     char *output;
     int size;
@@ -320,7 +317,7 @@ asgeojson_multipoint(GEOSGeom mpoint, char *srs, box3D *bbox, int precision)
 }
 
     static size_t
-asgeojson_multiline_size(GEOSGeom mline, char *srs, box3D *bbox, int precision)
+asgeojson_multiline_size(GEOSGeom mline, char *srs, bbox3D *bbox, int precision)
 {
     GEOSGeom  line;
     int size;
@@ -343,7 +340,7 @@ asgeojson_multiline_size(GEOSGeom mline, char *srs, box3D *bbox, int precision)
 }
 
     static size_t
-asgeojson_multiline_buf(GEOSGeom mline, char *srs, char *output, box3D *bbox, int precision)
+asgeojson_multiline_buf(GEOSGeom mline, char *srs, char *output, bbox3D *bbox, int precision)
 {
     GEOSGeom line;
     int i, ngeoms = GEOSGetNumGeometries(mline);
@@ -369,7 +366,7 @@ asgeojson_multiline_buf(GEOSGeom mline, char *srs, char *output, box3D *bbox, in
 }
 
     static char *
-asgeojson_multiline(GEOSGeom mline, char *srs, box3D *bbox, int precision)
+asgeojson_multiline(GEOSGeom mline, char *srs, bbox3D *bbox, int precision)
 {
     char *output;
     int size;
@@ -382,7 +379,7 @@ asgeojson_multiline(GEOSGeom mline, char *srs, box3D *bbox, int precision)
 }
 
     static size_t
-asgeojson_multipolygon_size(GEOSGeom mpoly, char *srs, box3D *bbox, int precision)
+asgeojson_multipolygon_size(GEOSGeom mpoly, char *srs, bbox3D *bbox, int precision)
 {
     GEOSGeom poly;
     int size;
@@ -412,7 +409,7 @@ asgeojson_multipolygon_size(GEOSGeom mpoly, char *srs, box3D *bbox, int precisio
 }
 
     static size_t
-asgeojson_multipolygon_buf(GEOSGeom mpoly, char *srs, char *output, box3D *bbox, int precision)
+asgeojson_multipolygon_buf(GEOSGeom mpoly, char *srs, char *output, bbox3D *bbox, int precision)
 {
     GEOSGeom poly;
     int i, j, ngeoms = GEOSGetNumGeometries(mpoly);
@@ -444,7 +441,7 @@ asgeojson_multipolygon_buf(GEOSGeom mpoly, char *srs, char *output, box3D *bbox,
 }
 
     static char *
-asgeojson_multipolygon(GEOSGeom mpoly, char *srs, box3D *bbox, int precision)
+asgeojson_multipolygon(GEOSGeom mpoly, char *srs, bbox3D *bbox, int precision)
 {
     char *output;
     int size;
@@ -457,7 +454,7 @@ asgeojson_multipolygon(GEOSGeom mpoly, char *srs, box3D *bbox, int precision)
 }
 
     static size_t
-asgeojson_collection_size(GEOSGeom col, char *srs, box3D *bbox, int precision)
+asgeojson_collection_size(GEOSGeom col, char *srs, bbox3D *bbox, int precision)
 {
     int i,ngeoms = GEOSGetNumGeometries(col);
     int size;
@@ -480,7 +477,7 @@ asgeojson_collection_size(GEOSGeom col, char *srs, box3D *bbox, int precision)
 }
 
     static size_t
-asgeojson_collection_buf(GEOSGeom col, char *srs, char *output, box3D *bbox, int precision)
+asgeojson_collection_buf(GEOSGeom col, char *srs, char *output, bbox3D *bbox, int precision)
 {
     int i, ngeoms = GEOSGetNumGeometries(col);
     char *ptr=output;
@@ -504,7 +501,7 @@ asgeojson_collection_buf(GEOSGeom col, char *srs, char *output, box3D *bbox, int
 }
 
     static char *
-asgeojson_collection(GEOSGeom col, char *srs, box3D *bbox, int precision)
+asgeojson_collection(GEOSGeom col, char *srs, bbox3D *bbox, int precision)
 {
     char *output;
     int size;
@@ -517,7 +514,7 @@ asgeojson_collection(GEOSGeom col, char *srs, box3D *bbox, int precision)
 }
 
     static size_t
-asgeojson_geom_size(GEOSGeom geom, box3D *bbox, int precision)
+asgeojson_geom_size(GEOSGeom geom, bbox3D *bbox, int precision)
 {
     int type = GEOSGeomTypeId(geom)+1;
     size_t size = 0;
@@ -557,7 +554,7 @@ asgeojson_geom_size(GEOSGeom geom, box3D *bbox, int precision)
 }
 
 static size_t
-asgeojson_geom_buf(GEOSGeom geom, char *output, box3D *bbox, int precision)
+asgeojson_geom_buf(GEOSGeom geom, char *output, bbox3D *bbox, int precision)
 {
     int type = GEOSGeomTypeId(geom)+1;
     char *ptr=output;
@@ -658,7 +655,7 @@ points_to_geojson(GEOSGeom geom, char *output, int precision)
             double pt_x, pt_y, pt_z;
             GEOSGeomGetX(point, &pt_x);
             GEOSGeomGetY(point, &pt_y);
-            GEOSGeomGetY(point, &pt_z);
+            GEOSGeomGetZ(point, &pt_z);
 
             print_double(pt_x, precision, x, BUFSIZE);
             trim_trailing_zeros(x);

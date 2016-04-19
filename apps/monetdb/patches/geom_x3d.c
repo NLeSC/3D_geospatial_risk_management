@@ -17,7 +17,6 @@ static size_t geom_toX3D3(GEOSGeom geom, char *buf, int precision, int opts, int
 
 static size_t geom_X3Dsize(GEOSGeom geom, int precision);
 static void trim_trailing_zeros(char *str);
-static void GEOSGeomGetZ(GEOSGeom geom, double *z);
 
 /*
  * VERSION X3D 3.0.2 http://www.web3d.org/specifications/x3d-3.0.dtd
@@ -817,10 +816,3 @@ trim_trailing_zeros(char *str)
         else *totrim = '\0';
     }
 }
-
-static void GEOSGeomGetZ(GEOSGeom geom, double *z) {
-    const GEOSCoordSequence* gcs_new;
-    gcs_new = GEOSGeom_getCoordSeq(geom);	
-    GEOSCoordSeq_getZ(gcs_new, 0, z);
-}
-

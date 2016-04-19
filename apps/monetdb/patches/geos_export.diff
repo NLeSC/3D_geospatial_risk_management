@@ -1,6 +1,6 @@
 diff -r d3612c7f9d7b geom/lib/libgeom.h
 --- a/geom/lib/libgeom.h	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/lib/libgeom.h	Tue Apr 19 14:45:42 2016 +0200
++++ b/geom/lib/libgeom.h	Tue Apr 19 17:17:08 2016 +0200
 @@ -90,6 +90,9 @@
  9 = MULTILINESTRING
  10 = MULTISURFACE
@@ -23,9 +23,17 @@ diff -r d3612c7f9d7b geom/lib/libgeom.h
  } wkb_type;
  
  libgeom_export const char *geom_type2str(int t, int flag);
+@@ -141,7 +147,6 @@
+ libgeom_export int getMbrGeos(mbr *mbr, const GEOSGeom geosGeometry);
+ libgeom_export int getMbrGeom(mbr *res, wkb *geom);
+ libgeom_export GEOSGeom wkb2geos(wkb* geomWKB);
+-
+ //libgeom_export str geomerty_2_geometry(wkb *res, wkb **geom, int* columnType, int* columnSRID, int* valueSRID);
+ 
+ #endif /* LIBGEOM_H */
 diff -r d3612c7f9d7b geom/monetdb5/Makefile.ag
 --- a/geom/monetdb5/Makefile.ag	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/monetdb5/Makefile.ag	Tue Apr 19 14:45:42 2016 +0200
++++ b/geom/monetdb5/Makefile.ag	Tue Apr 19 17:17:08 2016 +0200
 @@ -16,7 +16,7 @@
  lib__geom = {
  	MODULE
@@ -37,7 +45,7 @@ diff -r d3612c7f9d7b geom/monetdb5/Makefile.ag
  	       ../../common/stream/libstream \
 diff -r d3612c7f9d7b geom/monetdb5/geom.c
 --- a/geom/monetdb5/geom.c	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/monetdb5/geom.c	Tue Apr 19 14:45:42 2016 +0200
++++ b/geom/monetdb5/geom.c	Tue Apr 19 17:17:08 2016 +0200
 @@ -1801,6 +1801,53 @@
  	return MAL_SUCCEED;
  }
@@ -92,7 +100,212 @@ diff -r d3612c7f9d7b geom/monetdb5/geom.c
  str geom_2_geom(wkb** resWKB, wkb **valueWKB, int* columnType, int* columnSRID) {
  	GEOSGeom geosGeometry;
  	int geoCoordinatesNum = 2;
-@@ -3108,7 +3155,6 @@
+@@ -1854,6 +1901,23 @@
+ 	return MAL_SUCCEED;
+ }
+ 
++str GEOSGeomGetZ(GEOSGeom geom, double *z) {
++    const GEOSCoordSequence* gcs_new;
++    gcs_new = GEOSGeom_getCoordSeq(geom);	
++
++	if(gcs_new == NULL) {
++		*z = dbl_nil;
++		return createException(MAL, "geom.GEOSGeomGetZ", "GEOSGeom_getCoordSeq failed");
++	}
++
++    if(!GEOSCoordSeq_getZ(gcs_new, 0, z)) {
++		*z = dbl_nil;
++        return createException(MAL, "geom.GEOSGeomGetZ", "GEOSCoordSeq_getZ failed");
++    }
++
++    return MAL_SUCCEED;
++}
++
+ /* initialise geos */
+ str geom_prelude(void *ret) {
+ 	(void) ret;
+@@ -2101,9 +2165,177 @@
+ 	return geomMBR;
+ }
+ 
+-
+-
+-
++/* gets the bbox3D from the geometry */
++
++static str
++minMaxZLineString(double *zmin, double *zmax, const GEOSGeometry* geosGeometry) {
++	/* get the coordinates of the points comprising the geometry */
++	const GEOSCoordSequence* coordSeq = GEOSGeom_getCoordSeq(geosGeometry);
++    uint32_t i, npoints = 0;
++    double zval;
++    str err;
++
++	if(coordSeq == NULL)
++		return createException(MAL, "geom.MinMaxZ", "GEOSGeom_getCoordSeq failed");
++
++	/* get the number of points in the geometry */
++    if (!GEOSCoordSeq_getSize(coordSeq, &npoints)) {
++        *zmin = dbl_nil;
++        *zmax = dbl_nil;
++		return createException(MAL, "geom.MinMaxZ", "GEOSGeomGetNumPoints failed");
++    }
++
++    for (i = 0; i < npoints; i++) {
++        GEOSGeom point = (GEOSGeom) GEOSGetGeometryN(geosGeometry, i);
++        if((err = GEOSGeomGetZ(point, &zval)) != MAL_SUCCEED) {
++            str msg = createException(MAL, "geom.MinMaxZ", "%s", err);
++		    GDKfree(err);
++    		return msg;
++        }
++        if (zval <= *zmin)
++            *zmin = zval;
++        if (zval > *zmax)
++            *zmax = zval;
++    }
++
++	return MAL_SUCCEED;
++}
++
++static str minMaxZPolygon(double *zmin, double *zmax, const GEOSGeometry* geosGeometry) {
++	const GEOSGeometry* exteriorRingGeometry;
++	int numInteriorRings=0, i=0;
++	str err;
++
++	/* get the exterior ring of the polygon */
++	exteriorRingGeometry = GEOSGetExteriorRing(geosGeometry);
++	if(!exteriorRingGeometry) {
++		*zmin = dbl_nil;
++		*zmax = dbl_nil;
++		return createException(MAL, "geom.MinMaxZ","GEOSGetExteriorRing failed");
++	}
++	//get the zmin and zmax in the exterior ring
++	if((err = minMaxZLineString(zmin, zmax, exteriorRingGeometry)) != MAL_SUCCEED) {
++		str msg = createException(MAL, "geom.MinMaxZ", "%s", err);
++		*zmin = dbl_nil;
++		*zmax = dbl_nil;
++		GDKfree(err);
++		return msg;
++	}
++
++	//check the interior rings
++	numInteriorRings = GEOSGetNumInteriorRings(geosGeometry);
++	if (numInteriorRings == -1 ) {
++		*zmin = dbl_nil;
++		*zmax = dbl_nil;
++		return createException(MAL, "geom.MinMaxZ", "GEOSGetNumInteriorRings failed");
++	}
++	// iterate over the interiorRing and transform each one of them
++	for(i=0; i<numInteriorRings; i++) {
++		if((err = minMaxZLineString(zmin, zmax, GEOSGetInteriorRingN(geosGeometry, i))) != MAL_SUCCEED) {
++			str msg = createException(MAL, "geom.MinMaxZ", "%s", err);
++		    *zmin = dbl_nil;
++    		*zmax = dbl_nil;
++			GDKfree(err);
++			return msg;
++		}
++	}
++
++	return MAL_SUCCEED;
++}
++
++static str minMaxZGeometry(double * zmin, double *zmax, const GEOSGeometry *geosGeometry);
++static str minMaxZMultiGeometry(double *zmin, double *zmax, const GEOSGeometry *geosGeometry) {
++	int geometriesNum, i;
++	const GEOSGeometry *multiGeometry = NULL;
++	str err;
++
++	geometriesNum = GEOSGetNumGeometries(geosGeometry);
++
++	for(i=0; i<geometriesNum; i++) {
++		multiGeometry = GEOSGetGeometryN(geosGeometry, i);
++		if((err = minMaxZGeometry(zmin, zmax, multiGeometry)) != MAL_SUCCEED) {
++			str msg = createException(MAL, "geom.MinMaxZ", "%s", err);
++			GDKfree(err);
++		    *zmin = dbl_nil;
++    		*zmax = dbl_nil;
++			return msg;
++		}
++	}
++
++	return MAL_SUCCEED;
++}
++
++static
++str minMaxZGeometry(double * zmin, double *zmax, const GEOSGeometry *geosGeometry) {
++    int geometryType = GEOSGeomTypeId(geosGeometry)+1;
++    str err;
++
++    //check the type of the geometry
++    switch(geometryType) {
++        case wkbPoint_mdb:
++        case wkbLineString_mdb:
++        case wkbLinearRing_mdb:
++            if((err = minMaxZLineString(zmin, zmax, geosGeometry)) != MAL_SUCCEED){
++                str msg = createException(MAL, "geom.minMaxZ", "%s",err);
++                GDKfree(err);
++                return msg;
++            }
++            break;
++        case wkbPolygon_mdb:
++            if((err = minMaxZPolygon(zmin, zmax, geosGeometry)) != MAL_SUCCEED){
++                str msg = createException(MAL, "geom.minMaxZ", "%s",err);
++                GDKfree(err);
++                return msg;
++            }
++            break;
++        case wkbMultiPoint_mdb:
++        case wkbMultiLineString_mdb:
++        case wkbMultiPolygon_mdb:
++        case  wkbGeometryCollection_mdb:
++            if((err = minMaxZMultiGeometry(zmin, zmax, geosGeometry)) != MAL_SUCCEED){
++                str msg = createException(MAL, "geom.minMaxZ", "%s",err);
++                GDKfree(err);
++                return msg;
++            }
++            break;
++        default:
++            return createException(MAL, "geom.minMaxZ", "%s Unknown geometry type", geom_type2str(geometryType,0));
++    }
++
++    return MAL_SUCCEED;
++}
++
++str bbox3DFromGeos(bbox3D **out, const GEOSGeom geosGeometry) {
++    mbr* geomMBR;
++    double zmin=0, zmax=0;
++    bbox3D *bbox;
++    str err;
++
++    bbox = (bbox3D*) GDKmalloc(sizeof(bbox3D));
++
++    geomMBR = mbrFromGeos(geosGeometry);
++	if (mbr_isnil(geomMBR)){
++        str msg = createException(MAL, "geom.MinMaxZ", "Failed to create mbr");
++        return msg;
++    }
++    if((err = minMaxZGeometry(&zmin, &zmax, geosGeometry)) != MAL_SUCCEED) {
++        str msg = createException(MAL, "geom.MinMaxZ", "%s", err);
++        GDKfree(err);
++        zmin = dbl_nil;
++        zmax = dbl_nil;
++        return msg;
++    }
++
++    bbox->xmin = geomMBR->xmin;
++    bbox->ymin = geomMBR->ymin;
++    bbox->zmin = zmin;
++    bbox->xmax = geomMBR->xmax;
++    bbox->ymax = geomMBR->ymax;
++    bbox->zmax = zmax;
++
++    *out = bbox;
++    return MAL_SUCCEED;
++}
+ 
+ //Returns the wkb in a hex representation */
+ static char hexit[] = "0123456789ABCDEF";
+@@ -3108,7 +3340,6 @@
  	return MAL_SUCCEED;
  }
  
@@ -100,7 +313,7 @@ diff -r d3612c7f9d7b geom/monetdb5/geom.c
  static str numPointsMultiGeometry(unsigned int *out, const GEOSGeometry* geosGeometry) {
  	int geometriesNum, i;
  	const GEOSGeometry* multiGeometry = NULL;
-@@ -3132,7 +3178,7 @@
+@@ -3132,7 +3363,7 @@
  	return MAL_SUCCEED;
  }
  
@@ -109,7 +322,7 @@ diff -r d3612c7f9d7b geom/monetdb5/geom.c
  	str err;
  	int geometryType = GEOSGeomTypeId(geosGeometry)+1;
  
-@@ -4347,6 +4393,57 @@
+@@ -4347,6 +4578,57 @@
  	return MAL_SUCCEED;
  }
  
@@ -167,7 +380,7 @@ diff -r d3612c7f9d7b geom/monetdb5/geom.c
  /*returns true if the two
   * 	mbrs overlap */
  str mbrOverlaps(bit *out, mbr **b1, mbr **b2) {
-@@ -5689,3 +5786,84 @@
+@@ -5689,3 +5971,85 @@
  	*out = TRUE;
  	return MAL_SUCCEED;
  }
@@ -252,10 +465,19 @@ diff -r d3612c7f9d7b geom/monetdb5/geom.c
 +		throw(MAL, "geom.wkbAsGeoJson", "Failed, GeoJson returned is NULL!!!");
 +	return MAL_SUCCEED;
 +}
++
 diff -r d3612c7f9d7b geom/monetdb5/geom.h
 --- a/geom/monetdb5/geom.h	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/monetdb5/geom.h	Tue Apr 19 14:45:42 2016 +0200
-@@ -172,6 +172,7 @@
++++ b/geom/monetdb5/geom.h	Tue Apr 19 17:17:08 2016 +0200
+@@ -42,6 +42,7 @@
+ geom_export str geoHasZ(int* res, int* info);
+ geom_export str geoHasM(int* res, int* info);
+ geom_export str geoGetType(char** res, int* info, int* flag);
++geom_export str GEOSGeomGetZ(GEOSGeom geom, double *z);
+ 
+ geom_export str geom_prelude(void *ret);
+ geom_export str geom_epilogue(void *ret);
+@@ -172,6 +173,7 @@
  
  geom_export str wkbNumPoints(int *out, wkb **geom, int *check);
  geom_export str wkbNumPoints_bat(bat *outBAT_id, bat *inBAT_id, int* flag);
@@ -263,7 +485,7 @@ diff -r d3612c7f9d7b geom/monetdb5/geom.h
  
  geom_export str wkbPointN(wkb **out, wkb **geom, int *n);
  geom_export str wkbEnvelope(wkb **out, wkb **geom);
-@@ -226,6 +227,8 @@
+@@ -226,6 +228,8 @@
  
  geom_export str wkbDump(bat* idBAT_id, bat* geomBAT_id, wkb**);
  geom_export str wkbDumpPoints(bat* idBAT_id, bat* geomBAT_id, wkb**);
@@ -272,7 +494,7 @@ diff -r d3612c7f9d7b geom/monetdb5/geom.h
  
  geom_export str geom_2_geom(wkb** resWKB, wkb **valueWKB, int* columnType, int* columnSRID); 
  
-@@ -294,3 +297,28 @@
+@@ -294,3 +298,29 @@
  
  geom_export int geom_catalog_upgrade(void *, int);
  geom_export str geom_sql_upgrade(int);
@@ -295,15 +517,16 @@ diff -r d3612c7f9d7b geom/monetdb5/geom.h
 +    double xmax; 
 +    double ymax; 
 +    double zmax; 
-+} box3D;
++} bbox3D;
 +
++geom_export str bbox3DFromGeos(bbox3D **bbox, const GEOSGeom geosGeometry);
 +geom_export char *geom_to_geojson(GEOSGeom geom, char *srs, int precision, int has_bbox);
 +geom_export char *geom_to_x3d_3(GEOSGeom geom, int precision, int opts, const char *defid);
 +geom_export str wkbAsX3D(str *res, wkb **geom, int *maxDecDigits, int *options);
 +geom_export str wkbAsGeoJson(str *res, wkb **geom, int *maxDecDigits, int *options);
 diff -r d3612c7f9d7b geom/monetdb5/geom.mal
 --- a/geom/monetdb5/geom.mal	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/monetdb5/geom.mal	Tue Apr 19 14:45:42 2016 +0200
++++ b/geom/monetdb5/geom.mal	Tue Apr 19 17:17:08 2016 +0200
 @@ -334,6 +334,10 @@
  comment "Gets a MultiPolygon and returns the Polygons in it";
  command DumpPoints(a:wkb) (id:bat[:oid, :str], geom:bat[:oid, :wkb]) address wkbDumpPoints
@@ -345,7 +568,7 @@ diff -r d3612c7f9d7b geom/monetdb5/geom.mal
 +comment "Return the geometry as a GeoJSON element.";
 diff -r d3612c7f9d7b geom/monetdb5/sfcgal.c
 --- a/geom/monetdb5/sfcgal.c	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/monetdb5/sfcgal.c	Tue Apr 19 14:45:42 2016 +0200
++++ b/geom/monetdb5/sfcgal.c	Tue Apr 19 17:17:08 2016 +0200
 @@ -13,6 +13,15 @@
  
  #include "sfcgal.h"
@@ -660,7 +883,7 @@ diff -r d3612c7f9d7b geom/monetdb5/sfcgal.c
 +}
 diff -r d3612c7f9d7b geom/monetdb5/sfcgal.h
 --- a/geom/monetdb5/sfcgal.h	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/monetdb5/sfcgal.h	Tue Apr 19 14:45:42 2016 +0200
++++ b/geom/monetdb5/sfcgal.h	Tue Apr 19 17:17:08 2016 +0200
 @@ -39,3 +39,7 @@
  #endif
  
@@ -671,7 +894,7 @@ diff -r d3612c7f9d7b geom/monetdb5/sfcgal.h
 +
 diff -r d3612c7f9d7b geom/monetdb5/sfcgal.mal
 --- a/geom/monetdb5/sfcgal.mal	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/monetdb5/sfcgal.mal	Tue Apr 19 14:45:42 2016 +0200
++++ b/geom/monetdb5/sfcgal.mal	Tue Apr 19 17:17:08 2016 +0200
 @@ -9,3 +9,12 @@
  command version() :str address geom_sfcgal_version
  comment "Returns the version number of the SFCGAL library";
@@ -687,7 +910,7 @@ diff -r d3612c7f9d7b geom/monetdb5/sfcgal.mal
 +
 diff -r d3612c7f9d7b geom/sql/40_geom.sql
 --- a/geom/sql/40_geom.sql	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/sql/40_geom.sql	Tue Apr 19 14:45:42 2016 +0200
++++ b/geom/sql/40_geom.sql	Tue Apr 19 17:17:08 2016 +0200
 @@ -4372,14 +4372,14 @@
  --CREATE FUNCTION ST_MakeValid RETURNS EXTERNAL NAME
  --CREATE FUNCTION ST_MemUnion RETURNS EXTERNAL NAME
@@ -713,7 +936,7 @@ diff -r d3612c7f9d7b geom/sql/40_geom.sql
 +CREATE FUNCTION ST_AsGeoJson(a Geometry, maxDecDigits int, options int) returns string external name geom."asGeoJson";
 diff -r d3612c7f9d7b geom/sql/41_sfcgal.sql
 --- a/geom/sql/41_sfcgal.sql	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/sql/41_sfcgal.sql	Tue Apr 19 14:45:42 2016 +0200
++++ b/geom/sql/41_sfcgal.sql	Tue Apr 19 17:17:08 2016 +0200
 @@ -5,3 +5,7 @@
  -- Copyright 1997 - July 2008 CWI, August 2008 - 2016 MonetDB B.V.
  
