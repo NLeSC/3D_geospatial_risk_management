@@ -613,7 +613,7 @@ print_double(double d, int maxdd, char *buf, size_t bufsize)
     }
 }
 
-    static size_t
+static size_t
 points_to_geojson(GEOSGeom geom, char *output, int precision)
 {
     uint32_t i;
@@ -621,11 +621,9 @@ points_to_geojson(GEOSGeom geom, char *output, int precision)
     char x[BUFSIZE+1];
     char y[BUFSIZE+1];
     char z[BUFSIZE+1];
-    const GEOSCoordSequence* gcs_new = GEOSGeom_getCoordSeq(geom);
-    uint32_t npoints;
-    double *px = NULL, *py = NULL, *pz = NULL; //TODO:initialize them
+    uint32_t npoints = 0;
 
-    GEOSCoordSeq_getSize(gcs_new, &npoints);
+    numPointsGeometry(&npoints, geom);
     assert ( precision <= OUT_MAX_DOUBLE_PRECISION );
 
     x[BUFSIZE] = '\0';
@@ -634,13 +632,18 @@ points_to_geojson(GEOSGeom geom, char *output, int precision)
 
     ptr = output;
 
-    if (!pz)
+    if ( GEOS_getWKBOutputDims(geom) == 2)
     {
         for (i=0; i<npoints; i++)
         {
-            print_double(px[i], precision, x, BUFSIZE);
+            GEOSGeom point = (GEOSGeom) GEOSGetGeometryN(geom, i);
+            double pt_x, pt_y;
+            GEOSGeomGetX(point, &pt_x);
+            GEOSGeomGetY(point, &pt_y);
+
+            print_double(pt_x, precision, x, BUFSIZE);
             trim_trailing_zeros(x);
-            print_double(py[i], precision, y, BUFSIZE);
+            print_double(pt_y, precision, y, BUFSIZE);
             trim_trailing_zeros(y);
 
             if ( i ) ptr += sprintf(ptr, ",");
@@ -651,11 +654,17 @@ points_to_geojson(GEOSGeom geom, char *output, int precision)
     {
         for (i=0; i<npoints; i++)
         {
-            print_double(px[i], precision, x, BUFSIZE);
+            GEOSGeom point = (GEOSGeom) GEOSGetGeometryN(geom, i);
+            double pt_x, pt_y, pt_z;
+            GEOSGeomGetX(point, &pt_x);
+            GEOSGeomGetY(point, &pt_y);
+            GEOSGeomGetY(point, &pt_z);
+
+            print_double(pt_x, precision, x, BUFSIZE);
             trim_trailing_zeros(x);
-            print_double(py[i], precision, y, BUFSIZE);
+            print_double(pt_y, precision, y, BUFSIZE);
             trim_trailing_zeros(y);
-            print_double(pz[i], precision, z, BUFSIZE);
+            print_double(pt_z, precision, z, BUFSIZE);
             trim_trailing_zeros(z);
 
             if ( i ) ptr += sprintf(ptr, ",");
@@ -669,10 +678,8 @@ points_to_geojson(GEOSGeom geom, char *output, int precision)
     static size_t
 points_geojson_size(GEOSGeom geom, int precision)
 {
-    const GEOSCoordSequence* gcs_new = GEOSGeom_getCoordSeq(geom);
-    uint32_t npoints;
-
-    GEOSCoordSeq_getSize(gcs_new, &npoints);
+    uint32_t npoints = 0;
+    numPointsGeometry(&npoints, geom);
 
     assert ( precision <= OUT_MAX_DOUBLE_PRECISION );
     if (GEOS_getWKBOutputDims(geom) == 2)

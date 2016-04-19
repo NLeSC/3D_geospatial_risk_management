@@ -130,9 +130,8 @@ x3d_3_line_size(GEOSGeom line, int precision, int opts, const char *defid)
 x3d_3_line_buf(GEOSGeom line, char *output, int precision, int opts, const char *defid)
 {
     char *ptr=output;
-    const GEOSCoordSequence* gcs_new = GEOSGeom_getCoordSeq(line);
-    uint32_t npoints;
-    GEOSCoordSeq_getSize(gcs_new, &npoints);
+    uint32_t npoints = 0;
+    numPointsGeometry(&npoints, line);
 
     ptr += sprintf(ptr, "<LineSet %s vertexCount='%d'>", defid, npoints);
 
@@ -166,11 +165,9 @@ x3d_3_mline_coordindex(GEOSGeom mgeom, char *output)
     j = 0;
     for (i=0; i < ngeoms; i++)
     {
-        const GEOSCoordSequence* gcs_new;
-        uint32_t k, npoints;
+        uint32_t k, npoints = 0;
         geom = (GEOSGeom ) GEOSGetGeometryN(mgeom, i);
-        gcs_new = GEOSGeom_getCoordSeq(geom);
-        GEOSCoordSeq_getSize(gcs_new, &npoints);
+        numPointsGeometry(&npoints, geom);
         si = j;
         for (k=0; k < npoints ; k++)
         {
@@ -212,9 +209,8 @@ x3d_3_mpoly_coordindex(GEOSGeom psur, char *output)
         for (l=0; l < nrings; l++)
         {
             GEOSGeom ring = *(GEOSGeom*)GEOSGetInteriorRingN(patch, l);
-            const GEOSCoordSequence* gcs_new = GEOSGeom_getCoordSeq(ring);
-            uint32_t k, npoints;
-            GEOSCoordSeq_getSize(gcs_new, &npoints);
+            uint32_t k, npoints = 0;
+            numPointsGeometry(&npoints, ring);
 
             for (k=0; k < npoints ; k++)
             {
@@ -474,14 +470,11 @@ x3d_3_psurface_buf(GEOSGeom psur, char *output, int precision, int opts, const c
     j = 0;
     for (i=0; i<ngeoms; i++)
     {
-        uint32_t k, npoints;
+        uint32_t k, npoints = 0;
         GEOSGeom ring;
-        const GEOSCoordSequence* gcs_new;
         patch = (GEOSGeom ) GEOSGetGeometryN(psur, i);
         ring =*(GEOSGeom*)GEOSGetInteriorRingN(patch, 0);
-
-        gcs_new = GEOSGeom_getCoordSeq(ring);
-        GEOSCoordSeq_getSize(gcs_new, &npoints);
+        numPointsGeometry(&npoints, ring);
 
         for (k=0; k < npoints ; k++)
         {
@@ -706,14 +699,13 @@ geom_toX3D3(GEOSGeom geom, char *output, int precision, int opts, int is_closed)
     char x[OUT_MAX_DIGS_DOUBLE+OUT_MAX_DOUBLE_PRECISION+1];
     char y[OUT_MAX_DIGS_DOUBLE+OUT_MAX_DOUBLE_PRECISION+1];
     char z[OUT_MAX_DIGS_DOUBLE+OUT_MAX_DOUBLE_PRECISION+1];
-    const GEOSCoordSequence* gcs_new = GEOSGeom_getCoordSeq(geom);
-    uint32_t npoints;
+    uint32_t npoints = 0;
+    numPointsGeometry(&npoints, geom);
 
     ptr = output;
 
     if ( GEOS_getWKBOutputDims(geom) == 2)
     {
-        GEOSCoordSeq_getSize(gcs_new, &npoints);
         for (i=0; i<npoints; i++)
         {
             if ( !is_closed || i < (npoints - 1) )
@@ -792,9 +784,8 @@ geom_toX3D3(GEOSGeom geom, char *output, int precision, int opts, int is_closed)
 static size_t
 geom_X3Dsize(GEOSGeom geom, int precision)
 {
-    const GEOSCoordSequence* gcs_new = GEOSGeom_getCoordSeq(geom);
-    uint32_t npoints;
-    GEOSCoordSeq_getSize(gcs_new, &npoints);
+    uint32_t npoints = 0;
+    numPointsGeometry(&npoints, geom);
 
     if (GEOS_getWKBOutputDims(geom) == 2)
         return (OUT_MAX_DIGS_DOUBLE + precision + sizeof(" "))
