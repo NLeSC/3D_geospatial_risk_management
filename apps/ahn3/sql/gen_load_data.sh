@@ -53,10 +53,26 @@ done > "count_tables.sql"
 echo "Defining count tables done..."
 
 for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
+	echo "select x from $f where x between -1 and 0;";
+done > "build_imprints_x.sql"
+echo "Defining buildimprints..."
+
+for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
+	echo "select y from $f where y between -1 and 0;";
+done > "build_imprints_y.sql"
+echo "Defining buildimprints..."
+
+for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
 	echo "alter table $f set read only;";
-done > "set_readonlys.sql"
+done > "set_readonly.sql"
 echo "Defining iset read only done..."
 
+for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
+	echo "analyze sys.$f (x,y,z,c) minmax;";
+done > "analyze_tables.sql"
+echo "call vacuum('sys', 'statistics');" >> "analyze_tables.sql"
+
+echo "Defining iset read only done..."
 for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
 	echo "call lidarattach('$data_path/$f.LAZ');";
 done > "attach_data.sql"
