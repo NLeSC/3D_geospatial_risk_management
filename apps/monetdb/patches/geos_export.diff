@@ -1,6 +1,6 @@
-diff -r d3612c7f9d7b geom/lib/libgeom.h
---- a/geom/lib/libgeom.h	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/lib/libgeom.h	Tue Apr 19 17:28:25 2016 +0200
+diff -r 5b5dd6c2d7d0 geom/lib/libgeom.h
+--- a/geom/lib/libgeom.h	Mon Apr 25 12:28:57 2016 +0200
++++ b/geom/lib/libgeom.h	Wed Apr 27 12:53:34 2016 +0200
 @@ -90,6 +90,9 @@
  9 = MULTILINESTRING
  10 = MULTISURFACE
@@ -23,7 +23,7 @@ diff -r d3612c7f9d7b geom/lib/libgeom.h
  } wkb_type;
  
  libgeom_export const char *geom_type2str(int t, int flag);
-@@ -141,7 +147,6 @@
+@@ -140,7 +146,6 @@
  libgeom_export int getMbrGeos(mbr *mbr, const GEOSGeom geosGeometry);
  libgeom_export int getMbrGeom(mbr *res, wkb *geom);
  libgeom_export GEOSGeom wkb2geos(wkb* geomWKB);
@@ -31,9 +31,9 @@ diff -r d3612c7f9d7b geom/lib/libgeom.h
  //libgeom_export str geomerty_2_geometry(wkb *res, wkb **geom, int* columnType, int* columnSRID, int* valueSRID);
  
  #endif /* LIBGEOM_H */
-diff -r d3612c7f9d7b geom/monetdb5/Makefile.ag
---- a/geom/monetdb5/Makefile.ag	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/monetdb5/Makefile.ag	Tue Apr 19 17:28:25 2016 +0200
+diff -r 5b5dd6c2d7d0 geom/monetdb5/Makefile.ag
+--- a/geom/monetdb5/Makefile.ag	Mon Apr 25 12:28:57 2016 +0200
++++ b/geom/monetdb5/Makefile.ag	Wed Apr 27 12:53:34 2016 +0200
 @@ -16,7 +16,7 @@
  lib__geom = {
  	MODULE
@@ -43,10 +43,84 @@ diff -r d3612c7f9d7b geom/monetdb5/Makefile.ag
  	LIBS = ../lib/libgeom \
  		   ../../gdk/libbat \
  	       ../../common/stream/libstream \
-diff -r d3612c7f9d7b geom/monetdb5/geom.c
---- a/geom/monetdb5/geom.c	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/monetdb5/geom.c	Tue Apr 19 17:28:25 2016 +0200
-@@ -1801,6 +1801,53 @@
+diff -r 5b5dd6c2d7d0 geom/monetdb5/geom.c
+--- a/geom/monetdb5/geom.c	Mon Apr 25 12:28:57 2016 +0200
++++ b/geom/monetdb5/geom.c	Wed Apr 27 12:53:34 2016 +0200
+@@ -15,8 +15,6 @@
+ 
+ int TYPE_mbr;
+ 
+-static wkb *geos2wkb(const GEOSGeometry *geosGeometry);
+-
+ static inline int
+ geometryHasZ(int info)
+ {
+@@ -1343,32 +1341,38 @@
+ 		throw(MAL, "geom.Translate", "GEOSGetInteriorRingN failed.");
+ 	}
+ 
+-	/* iterate over the interiorRing and translate each one of them */
+-	transformedInteriorRingGeometries = GDKmalloc(numInteriorRings * sizeof(GEOSGeometry *));
+-	if (transformedInteriorRingGeometries == NULL) {
+-		*outGeometry = NULL;
+-		GEOSGeom_destroy(transformedExteriorRingGeometry);
+-		throw(MAL, "geom.Translate", MAL_MALLOC_FAIL);
+-	}
+-	for (i = 0; i < numInteriorRings; i++) {
+-		if ((err = translateLinearRing(&transformedInteriorRingGeometries[i], GEOSGetInteriorRingN(geosGeometry, i), dx, dy, dz)) != MAL_SUCCEED) {
+-			while (--i >= 0)
+-				GEOSGeom_destroy(transformedInteriorRingGeometries[i]);
+-			GDKfree(transformedInteriorRingGeometries);
+-			GEOSGeom_destroy(transformedExteriorRingGeometry);
+-			*outGeometry = NULL;
+-			return err;
+-		}
+-	}
+-
+-	*outGeometry = GEOSGeom_createPolygon(transformedExteriorRingGeometry, transformedInteriorRingGeometries, numInteriorRings);
+-	if (*outGeometry == NULL) {
+-		for (i = 0; i < numInteriorRings; i++)
+-			GEOSGeom_destroy(transformedInteriorRingGeometries[i]);
+-		err = createException(MAL, "geom.Translate", "GEOSGeom_createPolygon failed");
+-	}
+-	GDKfree(transformedInteriorRingGeometries);
+-	GEOSGeom_destroy(transformedExteriorRingGeometry);
++    /* iterate over the interiorRing and translate each one of them */
++    if (numInteriorRings) {
++        transformedInteriorRingGeometries = GDKmalloc(numInteriorRings * sizeof(GEOSGeometry *));
++        if (transformedInteriorRingGeometries == NULL) {
++            *outGeometry = NULL;
++            GEOSGeom_destroy(transformedExteriorRingGeometry);
++            throw(MAL, "geom.Translate", MAL_MALLOC_FAIL);
++        }
++        for (i = 0; i < numInteriorRings; i++) {
++            if ((err = translateLinearRing(&transformedInteriorRingGeometries[i], GEOSGetInteriorRingN(geosGeometry, i), dx, dy, dz)) != MAL_SUCCEED) {
++                while (--i >= 0)
++                    GEOSGeom_destroy(transformedInteriorRingGeometries[i]);
++                GDKfree(transformedInteriorRingGeometries);
++                GEOSGeom_destroy(transformedExteriorRingGeometry);
++                *outGeometry = NULL;
++                return err;
++            }
++        }
++
++        *outGeometry = GEOSGeom_createPolygon(transformedExteriorRingGeometry, transformedInteriorRingGeometries, numInteriorRings);
++        if (*outGeometry == NULL) {
++            for (i = 0; i < numInteriorRings; i++)
++                GEOSGeom_destroy(transformedInteriorRingGeometries[i]);
++            err = createException(MAL, "geom.Translate", "GEOSGeom_createPolygon failed");
++        }
++        GDKfree(transformedInteriorRingGeometries);
++        GEOSGeom_destroy(transformedExteriorRingGeometry);
++    } else {
++        //*outGeometry = transformedExteriorRingGeometry;
++        fprintf(stderr, "Here\n");
++        *outGeometry = GEOSGeom_createPolygon(transformedExteriorRingGeometry, NULL, 0);
++    }
+ 
+ 	return err;
+ }
+@@ -1927,6 +1931,53 @@
  	return MAL_SUCCEED;
  }
  
@@ -97,14 +171,14 @@ diff -r d3612c7f9d7b geom/monetdb5/geom.c
 +	return MAL_SUCCEED;
 +}
 +
- str geom_2_geom(wkb** resWKB, wkb **valueWKB, int* columnType, int* columnSRID) {
- 	GEOSGeom geosGeometry;
- 	int geoCoordinatesNum = 2;
-@@ -1854,6 +1901,30 @@
+ str
+ geom_2_geom(wkb **resWKB, wkb **valueWKB, int *columnType, int *columnSRID)
+ {
+@@ -2008,6 +2059,30 @@
  	return MAL_SUCCEED;
  }
  
-+str GEOSGeomGetZ(GEOSGeom geom, double *z) {
++str GEOSGeomGetZ(const GEOSGeometry *geom, double *z) {
 +    const GEOSCoordSequence* gcs_new;
 +    int type = GEOSGeomTypeId(geom)+1;
 +    
@@ -128,16 +202,22 @@ diff -r d3612c7f9d7b geom/monetdb5/geom.c
 +    return MAL_SUCCEED;
 +}
 +
- /* initialise geos */
- str geom_prelude(void *ret) {
- 	(void) ret;
-@@ -2101,9 +2172,177 @@
+ /* initialize geos */
+ str
+ geom_prelude(void *ret)
+@@ -2196,7 +2271,7 @@
+  * It makes sure to make all checks before returning
+  * the input geosGeometry should not be altered by this function
+  * return NULL on error */
+-static wkb *
++wkb *
+ geos2wkb(const GEOSGeometry *geosGeometry)
+ {
+ 	size_t wkbLen = 0;
+@@ -2293,6 +2368,178 @@
  	return geomMBR;
  }
  
--
--
--
 +/* gets the bbox3D from the geometry */
 +
 +static str
@@ -309,27 +389,43 @@ diff -r d3612c7f9d7b geom/monetdb5/geom.c
 +    *out = bbox;
 +    return MAL_SUCCEED;
 +}
- 
++ 
  //Returns the wkb in a hex representation */
  static char hexit[] = "0123456789ABCDEF";
-@@ -3108,7 +3347,6 @@
+ 
+@@ -3285,7 +3532,6 @@
  	return MAL_SUCCEED;
  }
  
--static str numPointsGeometry(unsigned int *out, const GEOSGeometry* geosGeometry);
- static str numPointsMultiGeometry(unsigned int *out, const GEOSGeometry* geosGeometry) {
- 	int geometriesNum, i;
- 	const GEOSGeometry* multiGeometry = NULL;
-@@ -3132,7 +3370,7 @@
+-static str numPointsGeometry(unsigned int *out, const GEOSGeometry *geosGeometry);
+ static str
+ numPointsMultiGeometry(unsigned int *out, const GEOSGeometry *geosGeometry)
+ {
+@@ -3309,7 +3555,7 @@
  	return MAL_SUCCEED;
  }
  
--static str numPointsGeometry(unsigned int *out, const GEOSGeometry* geosGeometry) {
-+str numPointsGeometry(unsigned int *out, const GEOSGeometry* geosGeometry) {
- 	str err;
- 	int geometryType = GEOSGeomTypeId(geosGeometry)+1;
- 
-@@ -4347,6 +4585,57 @@
+-static str
++str
+ numPointsGeometry(unsigned int *out, const GEOSGeometry *geosGeometry)
+ {
+ 	int geometryType = GEOSGeomTypeId(geosGeometry) + 1;
+@@ -4427,11 +4673,14 @@
+ 		throw(MAL, "geom.GeometryN", "GEOSGetNumGeometries failed");
+ 	}
+ 	//geometry is not a multi geometry
++    /*
+ 	if (geometriesNum == 1) {
+ 		if ((*out = wkbNULLcopy()) == NULL)
+ 			throw(MAL, "geom.GeometryN", MAL_MALLOC_FAIL);
+ 		return MAL_SUCCEED;
+ 	}
++    */
++
+ 	//no geometry at this position
+ 	if (geometriesNum < *geometryNum) {
+ 		if ((*out = wkbNULLcopy()) == NULL)
+@@ -4552,6 +4801,57 @@
  	return MAL_SUCCEED;
  }
  
@@ -386,8 +482,8 @@ diff -r d3612c7f9d7b geom/monetdb5/geom.c
 +
  /*returns true if the two
   * 	mbrs overlap */
- str mbrOverlaps(bit *out, mbr **b1, mbr **b2) {
-@@ -5689,3 +5978,85 @@
+ str
+@@ -5989,3 +6289,85 @@
  	*out = TRUE;
  	return MAL_SUCCEED;
  }
@@ -473,18 +569,26 @@ diff -r d3612c7f9d7b geom/monetdb5/geom.c
 +	return MAL_SUCCEED;
 +}
 +
-diff -r d3612c7f9d7b geom/monetdb5/geom.h
---- a/geom/monetdb5/geom.h	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/monetdb5/geom.h	Tue Apr 19 17:28:25 2016 +0200
+diff -r 5b5dd6c2d7d0 geom/monetdb5/geom.h
+--- a/geom/monetdb5/geom.h	Mon Apr 25 12:28:57 2016 +0200
++++ b/geom/monetdb5/geom.h	Wed Apr 27 12:53:34 2016 +0200
 @@ -42,6 +42,7 @@
  geom_export str geoHasZ(int* res, int* info);
  geom_export str geoHasM(int* res, int* info);
  geom_export str geoGetType(char** res, int* info, int* flag);
-+geom_export str GEOSGeomGetZ(GEOSGeom geom, double *z);
++geom_export str GEOSGeomGetZ(const GEOSGeometry *geom, double *z);
  
  geom_export str geom_prelude(void *ret);
  geom_export str geom_epilogue(void *ret);
-@@ -172,6 +173,7 @@
+@@ -103,6 +104,7 @@
+ /* gets a GEOSGeometry and returns the mbr of it 
+  * works only for 2D geometries */
+ geom_export mbr* mbrFromGeos(const GEOSGeom geosGeometry);
++geom_export wkb* geos2wkb(const GEOSGeometry *geosGeometry);
+ 
+ 
+ geom_export str wkbFromText(wkb **geomWKB, str *geomWKT, int* srid, int *tpe);
+@@ -170,6 +172,7 @@
  
  geom_export str wkbNumPoints(int *out, wkb **geom, int *check);
  geom_export str wkbNumPoints_bat(bat *outBAT_id, bat *inBAT_id, int* flag);
@@ -492,7 +596,7 @@ diff -r d3612c7f9d7b geom/monetdb5/geom.h
  
  geom_export str wkbPointN(wkb **out, wkb **geom, int *n);
  geom_export str wkbEnvelope(wkb **out, wkb **geom);
-@@ -226,6 +228,8 @@
+@@ -224,6 +227,8 @@
  
  geom_export str wkbDump(bat* idBAT_id, bat* geomBAT_id, wkb**);
  geom_export str wkbDumpPoints(bat* idBAT_id, bat* geomBAT_id, wkb**);
@@ -501,7 +605,7 @@ diff -r d3612c7f9d7b geom/monetdb5/geom.h
  
  geom_export str geom_2_geom(wkb** resWKB, wkb **valueWKB, int* columnType, int* columnSRID); 
  
-@@ -294,3 +298,29 @@
+@@ -292,3 +297,29 @@
  
  geom_export int geom_catalog_upgrade(void *, int);
  geom_export str geom_sql_upgrade(int);
@@ -531,9 +635,9 @@ diff -r d3612c7f9d7b geom/monetdb5/geom.h
 +geom_export char *geom_to_x3d_3(GEOSGeom geom, int precision, int opts, const char *defid);
 +geom_export str wkbAsX3D(str *res, wkb **geom, int *maxDecDigits, int *options);
 +geom_export str wkbAsGeoJson(str *res, wkb **geom, int *maxDecDigits, int *options);
-diff -r d3612c7f9d7b geom/monetdb5/geom.mal
---- a/geom/monetdb5/geom.mal	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/monetdb5/geom.mal	Tue Apr 19 17:28:25 2016 +0200
+diff -r 5b5dd6c2d7d0 geom/monetdb5/geom.mal
+--- a/geom/monetdb5/geom.mal	Mon Apr 25 12:28:57 2016 +0200
++++ b/geom/monetdb5/geom.mal	Wed Apr 27 12:53:34 2016 +0200
 @@ -334,6 +334,10 @@
  comment "Gets a MultiPolygon and returns the Polygons in it";
  command DumpPoints(a:wkb) (id:bat[:oid, :str], geom:bat[:oid, :wkb]) address wkbDumpPoints
@@ -562,7 +666,14 @@ diff -r d3612c7f9d7b geom/monetdb5/geom.mal
  
  #command mbr(:flt,:flt,:flt,:flt) :mbr
  #address ordinatesMBR
-@@ -789,3 +803,10 @@
+@@ -783,9 +797,16 @@
+ 
+ 
+ 
+-#module geom;
++module geom;
+ #loading string without the need to use st_wkbtosql OR st_wkttosql
+ function calc.wkb( wkt:str, srid:int, type:int ) :wkb;
          x := geom.FromText(wkt,0,0);
          return x;
  end wkb;
@@ -573,99 +684,397 @@ diff -r d3612c7f9d7b geom/monetdb5/geom.mal
 +
 +command asGeoJson(geom:wkb, maxDecDigits:int, options:int) :str address wkbAsGeoJson
 +comment "Return the geometry as a GeoJSON element.";
-diff -r d3612c7f9d7b geom/monetdb5/sfcgal.c
---- a/geom/monetdb5/sfcgal.c	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/monetdb5/sfcgal.c	Tue Apr 19 17:28:25 2016 +0200
-@@ -13,6 +13,15 @@
+diff -r 5b5dd6c2d7d0 geom/monetdb5/geom_upgrade.c
+--- a/geom/monetdb5/geom_upgrade.c	Mon Apr 25 12:28:57 2016 +0200
++++ b/geom/monetdb5/geom_upgrade.c	Wed Apr 27 12:53:34 2016 +0200
+@@ -182,6 +182,10 @@
+ 				type = "geometry";
+ 				digits = wkbGeometryCollection_mdb << 2;
+ 				scale = 0;
++			} else if (strcasecmp(type, "polyehdralsurface") == 0) {
++				type = "geometry";
++				digits = wkbGeometryCollection_mdb << 2;
++				scale = 0;
+ 			}  else if (strcasecmp(type, "geometry") == 0) {
+ 				type = "geometry";
+ 				digits = 0;
+@@ -279,6 +283,7 @@
+ 		pos += snprintf(buf + pos, bufsize - pos, "drop type \"multisurface\";\n");
+ 		pos += snprintf(buf + pos, bufsize - pos, "drop type \"multipolygon\";\n");
+ 		pos += snprintf(buf + pos, bufsize - pos, "drop type \"geomcollection\";\n");
++		pos += snprintf(buf + pos, bufsize - pos, "drop type \"polyehdralsurface\";\n");
+ 	}
+ 
+ 	/* create the new geometry types */
+diff -r 5b5dd6c2d7d0 geom/monetdb5/sfcgal.c
+--- a/geom/monetdb5/sfcgal.c	Mon Apr 25 12:28:57 2016 +0200
++++ b/geom/monetdb5/sfcgal.c	Wed Apr 27 12:53:34 2016 +0200
+@@ -13,6 +13,628 @@
  
  #include "sfcgal.h"
  
-+static sfcgal_geometry_t* geom_to_SFCGAL(str *ret, GEOSGeom geom, int type);
-+static str geos2sfcgal(sfcgal_geometry_t **res, GEOSGeom geosGeometry);
++static sfcgal_geometry_t* sfcgal_from_geom(str *ret, const GEOSGeometry *geom, int type);
++static str geom_to_sfcgal(sfcgal_geometry_t **res, GEOSGeom geosGeometry);
++static str sfcgal_to_geom(GEOSGeom *res, const sfcgal_geometry_t* geom, int force3D, int srid);
 +
-+static void GEOSGeomGetZ(GEOSGeom geom, double *z) {
-+    const GEOSCoordSequence* gcs_new;
-+    gcs_new = GEOSGeom_getCoordSeq(geom);	
-+    GEOSCoordSeq_getZ(gcs_new, 0, z);
++static str
++sfcgal_type_to_geom_type(int *res, sfcgal_geometry_type_t type)
++{
++    str ret = MAL_SUCCEED;
++    switch (type)
++    {
++        case SFCGAL_TYPE_POINT:
++            *res = wkbPoint_mdb;
++            break;
++
++        case SFCGAL_TYPE_LINESTRING:
++            *res = wkbLineString_mdb;
++            break;
++
++        case SFCGAL_TYPE_POLYGON:
++            *res = wkbPolygon_mdb;
++            break;
++
++        case SFCGAL_TYPE_MULTIPOINT:
++            *res = wkbMultiPoint_mdb;
++            break;
++
++        case SFCGAL_TYPE_MULTILINESTRING:
++            *res = wkbMultiLineString_mdb;
++            break;
++
++        case SFCGAL_TYPE_MULTIPOLYGON:
++            *res = wkbMultiPolygon_mdb;
++            break;
++
++        case SFCGAL_TYPE_MULTISOLID:
++        case SFCGAL_TYPE_GEOMETRYCOLLECTION:
++        case SFCGAL_TYPE_POLYHEDRALSURFACE:
++        case SFCGAL_TYPE_SOLID:
++            //*res = wkbPolyehdralSurface_mdb;
++            *res = wkbGeometryCollection_mdb;
++            break;
++
++        case SFCGAL_TYPE_TRIANGULATEDSURFACE:
++        case SFCGAL_TYPE_TRIANGLE:
++            *res = wkbTin_mdb;
++            break;
++
++        default:
++            *res = -1;
++            throw(MAL, "cgal2geom", "Unknown sfcgal geometry type");
++    }
++
++    return ret;
 +}
 +
- char *
- geom_sfcgal_version(char **ret)
- {
-@@ -20,3 +29,295 @@
- 
- 	return MAL_SUCCEED;
- }
-+
-+/* SFCGDAL functionality */
-+str
-+geom_sfcgal_extrude(wkb **res, wkb **geom, double *ex, double *ey, double *ez)
++static str
++ring_from_sfcgal(GEOSGeom *res, const sfcgal_geometry_t* geom, int want3d)
 +{
-+	sfcgal_geometry_t *outGeom, *inGeom;
-+	GEOSGeom geosGeometry = wkb2geos(*geom);
-+	size_t len;
-+	char *buf; //[BUFSIZ];
++    uint32_t i, npoints;
++    double point_x, point_y, point_z;
++    str ret = MAL_SUCCEED;
++    GEOSGeom outGeometry;
++    GEOSCoordSeq outCoordSeq;
 +
-+	if (geos2sfcgal(&inGeom, geosGeometry) != MAL_SUCCEED) {
-+		*res = NULL;
-+		return createException(MAL, "geom.Extrude", "GEOSExtrude failed");
-+	}
-+	if (!(outGeom = sfcgal_geometry_extrude (inGeom, *ex, *ey, *ez))) {
-+		*res = NULL;
-+		return createException(MAL, "geom.Extrude", "GEOSExtrude failed");
-+	}
++    assert(geom);
++    npoints = sfcgal_linestring_num_points(geom);
++    //create the coordSeq for the new geometry
++    if (!(outCoordSeq = GEOSCoordSeq_create(npoints, want3d ? 3 : 2))) {
++        *res = NULL;
++        throw(MAL, "ring_from_sfcgal", "GEOSCoordSeq_create failed");
++    }
 +
-+	sfcgal_geometry_as_text(outGeom, &buf, &len);
-+	*res = geos2wkb(GEOSGeomFromWKT(buf));
-+	return MAL_SUCCEED;
++    for (i = 0; i < npoints; i++)
++    {
++        const sfcgal_geometry_t* pt = sfcgal_linestring_point_n(geom, i);
++        point_x = sfcgal_point_x(pt);
++        point_y = sfcgal_point_y(pt);
++        GEOSCoordSeq_setX(outCoordSeq, i, point_x);
++        GEOSCoordSeq_setY(outCoordSeq, i, point_y);
++
++        if (sfcgal_geometry_is_3d(geom)) {
++            point_z = sfcgal_point_z(pt);
++            GEOSCoordSeq_setZ(outCoordSeq, i, point_z);
++        } else if (want3d) {
++            point_z = 0.0;
++            GEOSCoordSeq_setZ(outCoordSeq, i, point_z);
++        }
++    }
++
++    if (!(outGeometry = GEOSGeom_createLinearRing(outCoordSeq))) {
++        *res = NULL;
++        throw(MAL, "ring_from_sfcgal", "GEOSGeom_createLinearRing failed");
++    }
++    *res = outGeometry;
++    return ret;
 +}
 +
 +str
-+geom_sfcgal_straightSkeleton(wkb **res, wkb **geom)
++sfcgal_to_geom(GEOSGeom *res, const sfcgal_geometry_t* geom, int force3D, int srid)
 +{
-+	sfcgal_geometry_t *outGeom, *inGeom;
-+	GEOSGeom geosGeometry = wkb2geos(*geom);
-+	size_t len;
-+	char *buf; //[BUFSIZ];
++    uint32_t ngeoms, nshells, npoints;
++    double point_x, point_y, point_z;
++    uint32_t i, j, k, nrings;
++    int type, want3d;
++    str ret = MAL_SUCCEED;
++    GEOSGeom* geoms = NULL;
++    GEOSGeom outGeometry;
++    GEOSCoordSeq outCoordSeq;
++    GEOSGeom externalRing, *internalRings;
 +
-+	if (geos2sfcgal(&inGeom, geosGeometry) != MAL_SUCCEED) {
-+		*res = NULL;
-+		return createException(MAL, "geom.StraightSkeleton", "GEOSStraightSkeleton failed");
-+	}
-+	if (!(outGeom = sfcgal_geometry_straight_skeleton(inGeom))) {
-+		*res = NULL;
-+		return createException(MAL, "geom.StraightSkeleton", "GEOSStraightSkeleton failed");
-+	}
++    assert(geom);
 +
-+	sfcgal_geometry_as_text(outGeom, &buf, &len);
-+	*res = geos2wkb(GEOSGeomFromWKT(buf));
-+	return MAL_SUCCEED;
-+}
++    want3d = force3D || sfcgal_geometry_is_3d(geom);
 +
-+str
-+geom_sfcgal_tesselate(wkb **res, wkb **geom)
-+{
-+	sfcgal_geometry_t *outGeom, *inGeom;
-+	GEOSGeom geosGeometry = wkb2geos(*geom);
-+	size_t len;
-+	char *buf; //[BUFSIZ];
++    switch (sfcgal_geometry_type_id(geom))
++    {
++        case SFCGAL_TYPE_POINT:
++            if (sfcgal_geometry_is_empty(geom)) {
++                //TODO: How to build an empty GEOSGeom??
++                *res = NULL;
++                break;
++            }
 +
-+	if (geos2sfcgal(&inGeom, geosGeometry) != MAL_SUCCEED) {
-+		*res = NULL;
-+		return createException(MAL, "geom.Tesselate", "GEOSTesselate failed");
-+	}
-+	if (!(outGeom = sfcgal_geometry_tesselate(inGeom))) {
-+		*res = NULL;
-+		return createException(MAL, "geom.Tesselate", "GEOSTesselate failed");
-+	}
++            if (!(outCoordSeq = GEOSCoordSeq_create(1, want3d ? 3 : 2))) {
++                *res = NULL;
++                throw(MAL, "sfcgal_to_geom", "GEOSCoordSeq_create failed");
++            }
 +
-+	sfcgal_geometry_as_text(outGeom, &buf, &len);
-+	*res = geos2wkb(GEOSGeomFromWKT(buf));
-+	return MAL_SUCCEED;
++            point_x = sfcgal_point_x(geom);
++            point_y = sfcgal_point_y(geom);
++
++	        GEOSCoordSeq_setOrdinate(outCoordSeq, 0, 0, point_x);
++        	GEOSCoordSeq_setOrdinate(outCoordSeq, 0, 1, point_y);
++            
++            if (sfcgal_geometry_is_3d(geom)) {
++                point_z = sfcgal_point_z(geom);
++        	    GEOSCoordSeq_setOrdinate(outCoordSeq, 0, 2, point_z);
++            } else if (want3d) {
++                point_z = 0.0;
++        	    GEOSCoordSeq_setOrdinate(outCoordSeq, 0, 2, point_z);
++            }
++            
++            if (!(*res = GEOSGeom_createPoint(outCoordSeq))) {
++                throw(MAL, "sfcgal_to_geom", "Failed to create GEOSGeometry from the coordinates");
++            }
++            break;
++        case SFCGAL_TYPE_LINESTRING:
++            if (sfcgal_geometry_is_empty(geom)) {
++                //TODO: How to build an empty GEOSGeom??
++                *res = NULL;
++                break;
++            }
++
++            npoints = sfcgal_linestring_num_points(geom);
++            //create the coordSeq for the new geometry
++            if (!(outCoordSeq = GEOSCoordSeq_create(npoints, want3d ? 3 : 2))) {
++                *res = NULL;
++                throw(MAL, "sfcgal_to_geom", "GEOSCoordSeq_create failed");
++            }
++
++            for (i = 0; i < npoints; i++)
++            {
++                const sfcgal_geometry_t* pt = sfcgal_linestring_point_n(geom, i);
++                point_x = sfcgal_point_x(pt);
++                point_y = sfcgal_point_y(pt);
++                GEOSCoordSeq_setX(outCoordSeq, i, point_x);
++                GEOSCoordSeq_setY(outCoordSeq, i, point_y);
++
++                if (sfcgal_geometry_is_3d(geom)) {
++                    point_z = sfcgal_point_z(pt);
++                    GEOSCoordSeq_setZ(outCoordSeq, i, point_z);
++                } else if (want3d) {
++                    point_z = 0.0;
++                    GEOSCoordSeq_setZ(outCoordSeq, i, point_z);
++                }
++            }
++
++            if (!(outGeometry = GEOSGeom_createLineString(outCoordSeq))) {
++                *res = NULL;
++                throw(MAL, "sfcgal_to_geom", "GEOSGeom_createLineString failed");
++            }
++            *res = outGeometry;
++            break;
++        case SFCGAL_TYPE_TRIANGLE:
++
++            if (sfcgal_geometry_is_empty(geom)) {
++                //TODO: How to build an empty GEOSGeom??
++                *res = NULL;
++                break;
++            }
++
++            npoints = sfcgal_linestring_num_points(geom);
++            //create the coordSeq for the new geometry
++            if (!(outCoordSeq = GEOSCoordSeq_create(npoints, want3d ? 3 : 2))) {
++                *res = NULL;
++                throw(MAL, "sfcgal_to_geom", "GEOSCoordSeq_create failed");
++            }
++
++            for (i = 0; i < 4; i++)
++            {
++                const sfcgal_geometry_t* pt = sfcgal_triangle_vertex(geom, (i%3));
++                point_x = sfcgal_point_x(pt);
++                point_y = sfcgal_point_y(pt);
++                GEOSCoordSeq_setX(outCoordSeq, i, point_x);
++                GEOSCoordSeq_setY(outCoordSeq, i, point_y);
++
++                if ( sfcgal_geometry_is_3d(geom)) {
++                    point_z = sfcgal_point_z(pt);
++                    GEOSCoordSeq_setZ(outCoordSeq, i, point_z);
++                } else if (want3d) {
++                    point_z = 0.0;
++                    GEOSCoordSeq_setZ(outCoordSeq, i, point_z);
++                }
++
++            }
++            if (!(outGeometry = GEOSGeom_createLineString(outCoordSeq))) {
++                *res = NULL;
++                throw(MAL, "sfcgal_to_geom", "GEOSGeom_createLineString failed");
++            }
++            *res = outGeometry;
++            break;
++        case SFCGAL_TYPE_POLYGON:
++            if (sfcgal_geometry_is_empty(geom)) {
++                //TODO: How to build an empty GEOSGeom??
++                *res = NULL;
++                break;
++            }
++
++            nrings = sfcgal_polygon_num_interior_rings(geom) + 1;
++            internalRings = (GEOSGeom*) GDKmalloc(sizeof(GEOSGeom) * nrings);
++            if ( (ret = ring_from_sfcgal(&externalRing, sfcgal_polygon_exterior_ring(geom), want3d)) != MAL_SUCCEED) {
++                //TODO: free stuff
++                return ret;
++            }
++
++            for (i = 1; i < nrings; i++)
++                if ( (ret = ring_from_sfcgal(&(internalRings[i-1]), sfcgal_polygon_interior_ring_n(geom, i-1), want3d)) != MAL_SUCCEED ) {
++                    //TODO: free stuff
++                    return ret;
++                }
++
++            *res = GEOSGeom_createPolygon(externalRing, internalRings, nrings-1);
++            break;
++        case SFCGAL_TYPE_MULTIPOINT:
++        case SFCGAL_TYPE_MULTILINESTRING:
++        case SFCGAL_TYPE_MULTIPOLYGON:
++        case SFCGAL_TYPE_GEOMETRYCOLLECTION:
++            ngeoms = sfcgal_geometry_collection_num_geometries(geom);
++            if (ngeoms)
++            {
++                geoms = (GEOSGeom*) GDKmalloc(sizeof(GEOSGeom) * ngeoms);
++                for (i = 0; i < ngeoms; i++)
++                {
++                    const sfcgal_geometry_t* g = sfcgal_geometry_collection_geometry_n(geom, i);
++                    if ( (ret = sfcgal_to_geom(&geoms[i], g, 0, srid)) != MAL_SUCCEED) {
++                        //TODO: free what was allocated
++                        *res = NULL;
++                        return ret;
++                    }
++                }
++            }
++
++            if ( (ret = sfcgal_type_to_geom_type(&type, sfcgal_geometry_type_id(geom))) != MAL_SUCCEED) {
++                //TODO: free what was allocated
++                *res = NULL;
++                return ret;
++            }
++            *res = GEOSGeom_createCollection(type-1, geoms, ngeoms);
++            break;
++        case SFCGAL_TYPE_POLYHEDRALSURFACE:
++            ngeoms = sfcgal_polyhedral_surface_num_polygons(geom);
++            if (ngeoms)
++            {
++                geoms = (GEOSGeom*) GDKmalloc(sizeof(GEOSGeom) * ngeoms);
++                for (i = 0; i < ngeoms; i++)
++                {
++                    const sfcgal_geometry_t* g = sfcgal_polyhedral_surface_polygon_n( geom, i );
++                    if ( (ret = sfcgal_to_geom(&geoms[i], g, 0, srid)) != MAL_SUCCEED) {
++                        //TODO: free what was allocated
++                        *res = NULL;
++                        return ret;
++                    }
++                }
++            }
++            if ( (ret = sfcgal_type_to_geom_type(&type, sfcgal_geometry_type_id(geom))) != MAL_SUCCEED) {
++                //TODO: free what was allocated
++                *res = NULL;
++                return ret;
++            }
++            *res = GEOSGeom_createCollection(type-1, geoms, ngeoms);
++            break;
++            /* Solid is map as a closed PolyhedralSurface (for now) */
++        case SFCGAL_TYPE_SOLID:
++            nshells = sfcgal_solid_num_shells(geom);
++            for (ngeoms = 0, i = 0; i < nshells; i++)
++                ngeoms += sfcgal_polyhedral_surface_num_polygons(sfcgal_solid_shell_n(geom, i));
++            if (ngeoms)
++            {
++                geoms = (GEOSGeom*) GDKmalloc( sizeof(GEOSGeom) * ngeoms);
++                for (i = 0, k =0 ; i < nshells; i++)
++                {
++                    const sfcgal_geometry_t* shell = sfcgal_solid_shell_n(geom, i);
++                    ngeoms = sfcgal_polyhedral_surface_num_polygons(shell);
++
++                    for (j = 0; j < ngeoms; j++)
++                    {
++                        const sfcgal_geometry_t* g = sfcgal_polyhedral_surface_polygon_n(shell, j);
++                        if ( (ret = sfcgal_to_geom(&geoms[k], g, 0, srid)) != MAL_SUCCEED) {
++                            //TODO: free what was allocated
++                            *res = NULL;
++                            return ret;
++                        }
++                        k++;
++                    }
++                }
++            }
++            if ( (ret = sfcgal_type_to_geom_type(&type, sfcgal_geometry_type_id(geom))) != MAL_SUCCEED) {
++                //TODO: free what was allocated
++                *res = NULL;
++                return ret;
++            }
++            *res = GEOSGeom_createCollection(type-1, geoms, ngeoms);
++            //TODO: if (ngeoms) FLAGS_SET_SOLID( rgeom->flags, 1);
++            break;
++        case SFCGAL_TYPE_TRIANGULATEDSURFACE:
++            ngeoms = sfcgal_triangulated_surface_num_triangles(geom);
++            if (ngeoms)
++            {
++                geoms = (GEOSGeom*) GDKmalloc(sizeof(GEOSGeom) * ngeoms);
++                for (i = 0; i < ngeoms; i++)
++                {
++                    const sfcgal_geometry_t* g = sfcgal_triangulated_surface_triangle_n(geom, i);
++                    if ( (ret = sfcgal_to_geom(&geoms[i], g, 0, srid)) != MAL_SUCCEED) {
++                        //TODO: free what was allocated
++                        *res = NULL;
++                        return ret;
++                    }
++                }
++            }
++            if ( (ret = sfcgal_type_to_geom_type(&type, sfcgal_geometry_type_id(geom))) != MAL_SUCCEED) {
++                //TODO: free what was allocated
++                *res = NULL;
++                return ret;
++            }
++            *res = GEOSGeom_createCollection(type-1, geoms, ngeoms);
++            break;
++            //Unsupported types.
++        case SFCGAL_TYPE_MULTISOLID:
++            ret = createException(MAL, "sfcgal_to_geom", "Unsupported sfcgal geometry type");
++            *res = NULL;
++            break;
++        default:
++            ret = createException(MAL, "sfcgal_to_geom", "Unknown sfcgal geometry type");
++            *res = NULL;
++    }
++
++	//GEOSSetSRID(*res, srid);
++    return ret;
 +}
 +
 +static sfcgal_geometry_t *
-+geom_to_SFCGAL(str *ret, GEOSGeom geom, int type)
++sfcgal_from_geom(str *ret, const GEOSGeometry *geom, int type)
 +{
 +    int is_3d;
 +    double point_x = 0.0, point_y = 0.0, point_z = 0.0;
@@ -713,7 +1122,38 @@ diff -r d3612c7f9d7b geom/monetdb5/sfcgal.c
 +                return line;
 +            }
 +            break;
++        case wkbPolygon_mdb:
++            {
++                sfcgal_geometry_t* line = sfcgal_linestring_create();
++	            const GEOSCoordSequence *gcs_old;
++                uint32_t numPoints, j;
 +
++                /* get the coordinates of the points comprising the geometry */
++                gcs_old = GEOSGeom_getCoordSeq(geom);
++
++                /* get the number of points in the geometry */
++                GEOSCoordSeq_getSize(gcs_old, &numPoints);
++
++                for (j = 0; j < numPoints; j++)
++                {
++	                GEOSCoordSeq_getX(gcs_old, j, &point_x);
++	                GEOSCoordSeq_getY(gcs_old, j, &point_y);
++                    if (is_3d)
++                    {
++	                    GEOSCoordSeq_getZ(gcs_old, j, &point_z);
++                        sfcgal_linestring_add_point(line,
++                                sfcgal_point_create_from_xyz(point_x, point_y, point_z));
++                    }
++                    else
++                    {
++                        sfcgal_linestring_add_point(line,
++                                sfcgal_point_create_from_xy(point_x, point_y));
++                    }
++                }
++
++                return line;
++            }
++            break;
 +        case wkbTriangle_mdb:
 +            {
 +                GEOSGeometry* pointG;
@@ -758,8 +1198,12 @@ diff -r d3612c7f9d7b geom/monetdb5/sfcgal.c
 +}
 +
 +
++
++
++
++
 +static str
-+geos2sfcgal(sfcgal_geometry_t **res, GEOSGeom geosGeometry)
++geom_to_sfcgal(sfcgal_geometry_t **res, GEOSGeom geosGeometry)
 +{
 +    int i, numGeometries = GEOSGetNumGeometries(geosGeometry);
 +    int type = GEOSGeomTypeId(geosGeometry)+1;
@@ -774,7 +1218,7 @@ diff -r d3612c7f9d7b geom/monetdb5/sfcgal.c
 +                    *res = sfcgal_point_create();
 +                    break;
 +                }
-+                *res = geom_to_SFCGAL(&ret, geosGeometry, wkbPoint_mdb);
++                *res = sfcgal_from_geom(&ret, geosGeometry, wkbPoint_mdb);
 +            }
 +            break;
 +
@@ -784,7 +1228,7 @@ diff -r d3612c7f9d7b geom/monetdb5/sfcgal.c
 +                    *res = sfcgal_linestring_create();
 +                    break;
 +                }
-+                *res = geom_to_SFCGAL(&ret, geosGeometry, wkbLineString_mdb);
++                *res = sfcgal_from_geom(&ret, geosGeometry, wkbLineString_mdb);
 +            }
 +            break;
 +
@@ -794,13 +1238,14 @@ diff -r d3612c7f9d7b geom/monetdb5/sfcgal.c
 +                    res = sfcgal_triangle_create();
 +                    break;
 +                }
-+                *res = geom_to_SFCGAL(&ret, geosGeometry, wkbTriangle_mdb);
++                *res = sfcgal_from_geom(&ret, geosGeometry, wkbTriangle_mdb);
 +            }
 +            break;
 +
 +        case wkbPolygon_mdb:
 +            {
 +                int numInteriorRings = GEOSGetNumInteriorRings(geosGeometry);
++	            const GEOSGeometry *extRing = NULL;
 +                sfcgal_geometry_t* exterior_ring;
 +
 +                if (GEOSisEmpty(geosGeometry) == 1) {
@@ -808,12 +1253,13 @@ diff -r d3612c7f9d7b geom/monetdb5/sfcgal.c
 +                    break;
 +                }
 +
-+                exterior_ring = geom_to_SFCGAL(&ret, *(GEOSGeom*)GEOSGetExteriorRing(geosGeometry), wkbLineString_mdb);
++                extRing = GEOSGetExteriorRing(geosGeometry);
++                exterior_ring = sfcgal_from_geom(&ret, extRing, wkbPolygon_mdb);
 +                ret_geom = sfcgal_polygon_create_from_exterior_ring(exterior_ring);
 +
 +                for (i = 0; i < numInteriorRings; i++)
 +                {
-+                    sfcgal_geometry_t* ring = geom_to_SFCGAL(&ret, *(GEOSGeom*)GEOSGetInteriorRingN(geosGeometry, i), wkbLineString_mdb);
++                    sfcgal_geometry_t* ring = sfcgal_from_geom(&ret, *(GEOSGeom*)GEOSGetInteriorRingN(geosGeometry, i), wkbLineString_mdb);
 +                    sfcgal_polygon_add_interior_ring(ret_geom, ring);
 +                }
 +                *res = ret_geom;
@@ -837,7 +1283,7 @@ diff -r d3612c7f9d7b geom/monetdb5/sfcgal.c
 +                for (i = 0; i < numGeometries; i++)
 +                {
 +                    sfcgal_geometry_t *g;
-+                    ret = geos2sfcgal(&g, *(GEOSGeom*)GEOSGetGeometryN(geosGeometry, i));
++                    ret = geom_to_sfcgal(&g, *(GEOSGeom*)GEOSGetGeometryN(geosGeometry, i));
 +                    sfcgal_geometry_collection_add_geometry(ret_geom, g);
 +                }
 +                *res = ret_geom;
@@ -850,7 +1296,7 @@ diff -r d3612c7f9d7b geom/monetdb5/sfcgal.c
 +                for (i = 0; i < numGeometries; i++)
 +                {
 +                    sfcgal_geometry_t* g;
-+                    ret = geos2sfcgal(&g, *(GEOSGeom*)GEOSGetGeometryN(geosGeometry, i));
++                    ret = geom_to_sfcgal(&g, *(GEOSGeom*)GEOSGetGeometryN(geosGeometry, i));
 +                    sfcgal_polyhedral_surface_add_polygon(ret_geom, g);
 +                }
 +                /*
@@ -873,7 +1319,7 @@ diff -r d3612c7f9d7b geom/monetdb5/sfcgal.c
 +                for (i = 0; i < numGeometries; i++)
 +                {
 +                    sfcgal_geometry_t* g;
-+                    ret = geos2sfcgal(&g, *(GEOSGeom*)(GEOSGetGeometryN(geosGeometry, i)));
++                    ret = geom_to_sfcgal(&g, *(GEOSGeom*)(GEOSGetGeometryN(geosGeometry, i)));
 +                    sfcgal_triangulated_surface_add_triangle(ret_geom, g);
 +                }
 +
@@ -888,9 +1334,121 @@ diff -r d3612c7f9d7b geom/monetdb5/sfcgal.c
 +
 +    return ret;
 +}
-diff -r d3612c7f9d7b geom/monetdb5/sfcgal.h
---- a/geom/monetdb5/sfcgal.h	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/monetdb5/sfcgal.h	Tue Apr 19 17:28:25 2016 +0200
++
+ char *
+ geom_sfcgal_version(char **ret)
+ {
+@@ -20,3 +642,107 @@
+ 
+ 	return MAL_SUCCEED;
+ }
++
++/* SFCGDAL functionality */
++str
++geom_sfcgal_extrude(wkb **res, wkb **geom, double *ex, double *ey, double *ez)
++{
++	sfcgal_geometry_t *outGeom, *inGeom;
++	GEOSGeom inGeos = wkb2geos(*geom), outGeos;
++    int srid;
++
++    if (wkbGetSRID(&srid, geom) != MAL_SUCCEED) {
++		*res = NULL;
++        //TODO: free ret
++		return createException(MAL, "geom.Tesselate", "GEOSTesselate failed");
++    }
++
++	if (geom_to_sfcgal(&inGeom, inGeos) != MAL_SUCCEED) {
++		*res = NULL;
++        //TODO: free ret
++		return createException(MAL, "geom.Extrude", "GEOSExtrude failed");
++	}
++	if (!(outGeom = sfcgal_geometry_extrude (inGeom, *ex, *ey, *ez))) {
++		*res = NULL;
++        //TODO: free ret
++		return createException(MAL, "geom.Extrude", "GEOSExtrude failed");
++	}
++
++    if ( sfcgal_to_geom(&outGeos, outGeom, 0, srid) != MAL_SUCCEED) {
++		*res = NULL;
++        //TODO: free ret
++		return createException(MAL, "geom.Extrude", "GEOSExtrude failed");
++    }
++
++	*res = geos2wkb(outGeos);
++	return MAL_SUCCEED;
++}
++
++str
++geom_sfcgal_straightSkeleton(wkb **res, wkb **geom)
++{
++	sfcgal_geometry_t *outGeom, *inGeom;
++	GEOSGeom inGeos = wkb2geos(*geom), outGeos;
++    int srid;
++
++    if (wkbGetSRID(&srid, geom) != MAL_SUCCEED) {
++		*res = NULL;
++        //TODO: free ret
++		return createException(MAL, "geom.Tesselate", "GEOSTesselate failed");
++    }
++
++	if (geom_to_sfcgal(&inGeom, inGeos) != MAL_SUCCEED) {
++		*res = NULL;
++        //TODO: free ret
++		return createException(MAL, "geom.StraightSkeleton", "GEOSStraightSkeleton failed");
++	}
++	if (!(outGeom = sfcgal_geometry_straight_skeleton(inGeom))) {
++		*res = NULL;
++        //TODO: free ret
++		return createException(MAL, "geom.StraightSkeleton", "GEOSStraightSkeleton failed");
++	}
++
++    if ( sfcgal_to_geom(&outGeos, outGeom, 0, srid) != MAL_SUCCEED) {
++		*res = NULL;
++        //TODO: free ret
++		return createException(MAL, "geom.Extrude", "GEOSExtrude failed");
++    }
++
++	*res = geos2wkb(outGeos);
++	return MAL_SUCCEED;
++}
++
++str
++geom_sfcgal_tesselate(wkb **res, wkb **geom)
++{
++	sfcgal_geometry_t *outGeom, *inGeom;
++	GEOSGeom inGeos = wkb2geos(*geom), outGeos;
++    int srid;
++
++    if (wkbGetSRID(&srid, geom) != MAL_SUCCEED) {
++		*res = NULL;
++        //TODO: free ret
++		return createException(MAL, "geom.Tesselate", "GEOSTesselate failed");
++    }
++
++	if (geom_to_sfcgal(&inGeom, inGeos) != MAL_SUCCEED) {
++		*res = NULL;
++        //TODO: free ret
++		return createException(MAL, "geom.Tesselate", "GEOSTesselate failed");
++	}
++	if (!(outGeom = sfcgal_geometry_tesselate(inGeom))) {
++		*res = NULL;
++        //TODO: free ret
++		return createException(MAL, "geom.Tesselate", "GEOSTesselate failed");
++	}
++
++    if ( sfcgal_to_geom(&outGeos, outGeom, 0, srid) != MAL_SUCCEED) {
++		*res = NULL;
++        //TODO: free ret
++		return createException(MAL, "geom.Extrude", "GEOSExtrude failed");
++    }
++
++	*res = geos2wkb(outGeos);
++	return MAL_SUCCEED;
++}
++
+diff -r 5b5dd6c2d7d0 geom/monetdb5/sfcgal.h
+--- a/geom/monetdb5/sfcgal.h	Mon Apr 25 12:28:57 2016 +0200
++++ b/geom/monetdb5/sfcgal.h	Wed Apr 27 12:53:34 2016 +0200
 @@ -39,3 +39,7 @@
  #endif
  
@@ -899,10 +1457,16 @@ diff -r d3612c7f9d7b geom/monetdb5/sfcgal.h
 +geom_export str geom_sfcgal_straightSkeleton(wkb **res, wkb **geom);
 +geom_export str geom_sfcgal_tesselate(wkb **res, wkb **geom);
 +
-diff -r d3612c7f9d7b geom/monetdb5/sfcgal.mal
---- a/geom/monetdb5/sfcgal.mal	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/monetdb5/sfcgal.mal	Tue Apr 19 17:28:25 2016 +0200
-@@ -9,3 +9,12 @@
+diff -r 5b5dd6c2d7d0 geom/monetdb5/sfcgal.mal
+--- a/geom/monetdb5/sfcgal.mal	Mon Apr 25 12:28:57 2016 +0200
++++ b/geom/monetdb5/sfcgal.mal	Wed Apr 27 12:53:34 2016 +0200
+@@ -4,8 +4,17 @@
+ #
+ # Copyright 1997 - July 2008 CWI, August 2008 - 2016 MonetDB B.V.
+ 
+-module sfcgal;
++module geom;
+ 
  command version() :str address geom_sfcgal_version
  comment "Returns the version number of the SFCGAL library";
  
@@ -913,11 +1477,11 @@ diff -r d3612c7f9d7b geom/monetdb5/sfcgal.mal
 +comment "Compute a straight skeleton from a geometry"
 +
 +command tesselate(geo:wkb) : wkb address geom_sfcgal_tesselate
-+commnet "Perform surface Tesselation of a polygon or polyhedralsurface and returns as a TIN or collection of TINS"
++comment "Perform surface Tesselation of a polygon or polyhedralsurface and returns as a TIN or collection of TINS"
 +
-diff -r d3612c7f9d7b geom/sql/40_geom.sql
---- a/geom/sql/40_geom.sql	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/sql/40_geom.sql	Tue Apr 19 17:28:25 2016 +0200
+diff -r 5b5dd6c2d7d0 geom/sql/40_geom.sql
+--- a/geom/sql/40_geom.sql	Mon Apr 25 12:28:57 2016 +0200
++++ b/geom/sql/40_geom.sql	Wed Apr 27 12:53:34 2016 +0200
 @@ -4372,14 +4372,14 @@
  --CREATE FUNCTION ST_MakeValid RETURNS EXTERNAL NAME
  --CREATE FUNCTION ST_MemUnion RETURNS EXTERNAL NAME
@@ -941,14 +1505,107 @@ diff -r d3612c7f9d7b geom/sql/40_geom.sql
  CREATE FUNCTION Contains(a Geometry, x double, y double) RETURNS BOOLEAN external name geom."Contains";
 +CREATE FUNCTION ST_AsX3D(a Geometry, maxDecDigits int, options int) returns string external name geom."asX3D";
 +CREATE FUNCTION ST_AsGeoJson(a Geometry, maxDecDigits int, options int) returns string external name geom."asGeoJson";
-diff -r d3612c7f9d7b geom/sql/41_sfcgal.sql
---- a/geom/sql/41_sfcgal.sql	Tue Apr 12 01:30:53 2016 +0200
-+++ b/geom/sql/41_sfcgal.sql	Tue Apr 19 17:28:25 2016 +0200
+diff -r 5b5dd6c2d7d0 geom/sql/41_sfcgal.sql
+--- a/geom/sql/41_sfcgal.sql	Mon Apr 25 12:28:57 2016 +0200
++++ b/geom/sql/41_sfcgal.sql	Wed Apr 27 12:53:34 2016 +0200
 @@ -5,3 +5,7 @@
  -- Copyright 1997 - July 2008 CWI, August 2008 - 2016 MonetDB B.V.
  
  CREATE FUNCTION SFCGAL_VERSION() RETURNS string EXTERNAL NAME sfcgal."version";
-+CREATE FUNCTION geometry ST_Extrude(geometry geom, double x, double y, double z) RETURNS geometry EXTERNAL NAME geom."extrude";
-+CREATE FUNCTION geometry ST_StraightSkeleton(geometry geom) RETURNS geometry EXTERNAL NAME geom."straightSkeleton";
-+CREATE FUNCTION geometry ST_Tesselate(geometry geom) RETURNS geometry EXTERNAL NAME geom."tesselate";
-+--CREATE FUNCTION geometry ST_Triangulate2DZ(geometry geom) RETURNS geometry EXTERNAL NAME geom."Triangulate2DZ";;
++CREATE FUNCTION ST_Extrude(geom geometry, x double, y double, z double) RETURNS geometry EXTERNAL NAME geom."extrude";
++CREATE FUNCTION ST_StraightSkeleton(geom geometry) RETURNS geometry EXTERNAL NAME geom."straightSkeleton";
++CREATE FUNCTION ST_Tesselate(geom geometry) RETURNS geometry EXTERNAL NAME geom."tesselate";
++--CREATE FUNCTION ST_Triangulate2DZ(geometry geom) RETURNS geometry EXTERNAL NAME geom."Triangulate2DZ";;
+diff -r 5b5dd6c2d7d0 monetdb5/optimizer/opt_reorder.c
+--- a/monetdb5/optimizer/opt_reorder.c	Mon Apr 25 12:28:57 2016 +0200
++++ b/monetdb5/optimizer/opt_reorder.c	Wed Apr 27 12:53:34 2016 +0200
+@@ -206,7 +206,7 @@
+ static int
+ OPTpostponeAppends(Client cntxt, MalBlkPtr mb, MalStkPtr stk, InstrPtr p)
+ {
+-	int i,j,k=0, actions =0, last;
++	int i,j,k=0, actions =0, last = 0;
+ 	InstrPtr *old, *appends;
+ 	int limit;
+ 	(void) cntxt;
+diff -r 5b5dd6c2d7d0 monetdb5/optimizer/opt_support.c
+--- a/monetdb5/optimizer/opt_support.c	Mon Apr 25 12:28:57 2016 +0200
++++ b/monetdb5/optimizer/opt_support.c	Wed Apr 27 12:53:34 2016 +0200
+@@ -491,7 +491,7 @@
+ isUpdateInstruction(InstrPtr p){
+ 	if ( getModuleId(p) == sqlRef &&
+ 	   ( getFunctionId(p) == inplaceRef ||
+-		getFunctionId(p) == appendRef ||
++		//getFunctionId(p) == appendRef ||
+ 		getFunctionId(p) == updateRef ||
+ 		getFunctionId(p) == replaceRef ))
+ 			return TRUE;
+diff -r 5b5dd6c2d7d0 sql/server/rel_optimizer.c
+--- a/sql/server/rel_optimizer.c	Mon Apr 25 12:28:57 2016 +0200
++++ b/sql/server/rel_optimizer.c	Wed Apr 27 12:53:34 2016 +0200
+@@ -6871,7 +6871,7 @@
+ 		atom *cmin = atom_general(sql->sa, t, min);
+ 		atom *cmax = atom_general(sql->sa, t, max);
+ 
+-		if (emax->data.val.btval < cmin->data.val.btval || emin->data.val.btval > cmax->data.val.btval)
++		if (cmin && cmax && (emax->data.val.btval < cmin->data.val.btval || emin->data.val.btval > cmax->data.val.btval))
+ 			return 0;
+ 	}
+ 	if (t->type->localtype == TYPE_sht) {
+@@ -6885,7 +6885,7 @@
+ 		atom *cmin = atom_general(sql->sa, t, min);
+ 		atom *cmax = atom_general(sql->sa, t, max);
+ 
+-		if (emax->data.val.ival < cmin->data.val.ival || emin->data.val.ival > cmax->data.val.ival)
++		if (cmin && cmax && (emax->data.val.ival < cmin->data.val.ival || emin->data.val.ival > cmax->data.val.ival))
+ 			return 0;
+ 	}
+ 	if (t->type->localtype == TYPE_lng || t->type->localtype == TYPE_timestamp) {
+diff -r 5b5dd6c2d7d0 sql/server/sql_scan.c
+--- a/sql/server/sql_scan.c	Mon Apr 25 12:28:57 2016 +0200
++++ b/sql/server/sql_scan.c	Wed Apr 27 12:53:34 2016 +0200
+@@ -440,6 +440,7 @@
+ 	keywords_insert("MULTILINESTRING", GEOMETRYSUBTYPE);
+ 	keywords_insert("MULTIPOLYGON", GEOMETRYSUBTYPE);
+ 	keywords_insert("GEOMETRYCOLLECTION", GEOMETRYSUBTYPE);
++	keywords_insert("POLYEHDRALSURFACE", GEOMETRYSUBTYPE);
+ 
+ 	keywords_insert("POINTZ", GEOMETRYSUBTYPE);
+ 	keywords_insert("LINESTRINGZ", GEOMETRYSUBTYPE);
+@@ -448,6 +449,7 @@
+ 	keywords_insert("MULTILINESTRINGZ", GEOMETRYSUBTYPE);
+ 	keywords_insert("MULTIPOLYGONZ", GEOMETRYSUBTYPE);
+ 	keywords_insert("GEOMETRYCOLLECTIONZ", GEOMETRYSUBTYPE);
++	keywords_insert("POLYEHDRALSURFACEZ", GEOMETRYSUBTYPE);
+ 
+ 	keywords_insert("POINTM", GEOMETRYSUBTYPE);
+ 	keywords_insert("LINESTRINGM", GEOMETRYSUBTYPE);
+@@ -456,6 +458,7 @@
+ 	keywords_insert("MULTILINESTRINGM", GEOMETRYSUBTYPE);
+ 	keywords_insert("MULTIPOLYGONM", GEOMETRYSUBTYPE);
+ 	keywords_insert("GEOMETRYCOLLECTIONM", GEOMETRYSUBTYPE);
++	keywords_insert("POLYEHDRALSURFACEM", GEOMETRYSUBTYPE);
+ 
+ 	keywords_insert("POINTZM", GEOMETRYSUBTYPE);
+ 	keywords_insert("LINESTRINGZM", GEOMETRYSUBTYPE);
+@@ -464,6 +467,7 @@
+ 	keywords_insert("MULTILINESTRINGZM", GEOMETRYSUBTYPE);
+ 	keywords_insert("MULTIPOLYGONZM", GEOMETRYSUBTYPE);
+ 	keywords_insert("GEOMETRYCOLLECTIONZM", GEOMETRYSUBTYPE);
++	keywords_insert("POLYEHDRALSURFACEZM", GEOMETRYSUBTYPE);
+ }
+ 
+ #define find_keyword_bs(lc, s) find_keyword(lc->rs->buf+lc->rs->pos+s)
+diff -r 5b5dd6c2d7d0 sql/storage/bat/bat_logger.c
+--- a/sql/storage/bat/bat_logger.c	Mon Apr 25 12:28:57 2016 +0200
++++ b/sql/storage/bat/bat_logger.c	Wed Apr 27 12:53:34 2016 +0200
+@@ -236,7 +236,8 @@
+ 				strcmp(toLower(t), "multisurface") == 0 ||
+ 				strcmp(toLower(t), "multipolygon") == 0 ||
+ 				strcmp(toLower(t), "geometry") == 0 ||
+-				strcmp(toLower(t), "geometrycollection") == 0){
++				strcmp(toLower(t), "geometrycollection") == 0 ||
++				strcmp(toLower(t), "polyehdralsurface") == 0){
+ 				geomUpgrade++;
+ 				break;
+ 			}

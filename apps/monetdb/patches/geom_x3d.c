@@ -265,9 +265,11 @@ x3d_3_poly_buf(GEOSGeom poly, char *output, int precision, int opts)
 {
     int i, nrings = GEOSGetNumInteriorRings(poly);
     char *ptr=output;
+    const GEOSGeometry* exteriorRing;
+    exteriorRing = GEOSGetExteriorRing(poly);
 
-    ptr += geom_toX3D3(*(GEOSGeom*)GEOSGetInteriorRingN(poly, 0), ptr, precision, opts, 1);
-    for (i=1; i<nrings; i++)
+    ptr += geom_toX3D3((GEOSGeom) exteriorRing, ptr, precision, opts, 1);
+    for (i=0; i<nrings; i++)
     {
         ptr += sprintf(ptr, " ");
         ptr += geom_toX3D3(*(GEOSGeom*)GEOSGetInteriorRingN(poly, i), ptr, precision, opts,1);
@@ -709,7 +711,7 @@ geom_toX3D3(GEOSGeom geom, char *output, int precision, int opts, int is_closed)
         {
             if ( !is_closed || i < (npoints - 1) )
             {
-                GEOSGeom point = (GEOSGeom) GEOSGetGeometryN(geom, i);
+                GEOSGeom point = (GEOSGeom) GEOSGeomGetPointN(geom, i);
                 double pt_x, pt_y;
                 GEOSGeomGetX(point, &pt_x);
                 GEOSGeomGetY(point, &pt_y);
@@ -742,7 +744,7 @@ geom_toX3D3(GEOSGeom geom, char *output, int precision, int opts, int is_closed)
         {
             if ( !is_closed || i < (npoints - 1) )
             {
-                GEOSGeom point =(GEOSGeom ) GEOSGetGeometryN(geom, i);
+                GEOSGeom point = (GEOSGeom) GEOSGeomGetPointN(geom, i);
                 double pt_x, pt_y, pt_z;
                 GEOSGeomGetX(point, &pt_x);
                 GEOSGeomGetY(point, &pt_y);
