@@ -103,18 +103,16 @@ namespace string,
 lokaalID string,
 relatieveHoogteligging integer,
 LV_publicatiedatum timestamp,
-inOnderzoek integer,
+inOnderzoek boolean,
 tijdstipRegistratie timestamp,
 bgt_status string,
 plus_status string,
 bronhouder string,
-identificatieBAGPND bigint,
+identificatieBAGPND double,
 tekst string,
 hoek string,
 identificatieBAGVBOLaagsteHuisnummer string,
-eindRegistratie string,
-identificatieBAGVBOHoogsteHuisnummer string,
-terminationDate string
+identificatieBAGVBOHoogsteHuisnummer string
 );
 
 create table bgt_funceelgebied (
