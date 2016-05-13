@@ -67,4 +67,4 @@ else
 fi
 
 shift 2
-$prefix/$style/MonetDB/bin/mclient -fraw $port -d $dbname $lang $@
+$prefix/$style/MonetDB/bin/mclient -H -fraw $port -d $dbname $lang $@
