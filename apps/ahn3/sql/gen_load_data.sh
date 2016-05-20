@@ -30,66 +30,82 @@ data_path=$ahn3_data_dir
 echo "AHN3 LAS/LAZ files are located at: $data_path" >&2
 echo ""
 
-for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
+out_path=$ahn3_out_dir
+echo "AHN3 binary files are located at: $out_path" >&2
+echo ""
+
+#for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
+for f in `cat ../las2col/files_name_upper`; do
     echo "create table $f (x decimal(9,3), y decimal(9,3), z decimal(9,3), a tinyint, i smallint, n smallint, r smallint, c tinyint, p smallint, e smallint, d smallint, M int);";
 done > "create_tables.sql"
 echo "Defining tables done..."
 
 echo "create merge table ahn3 (x decimal(9,3), y decimal(9,3), z decimal(9,3), a tinyint, i smallint, n smallint, r smallint, c tinyint, p smallint, e smallint, d smallint, M int);" > "create_merge_table.sql"
-for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
+#for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
+for f in `cat ../las2col/files_name_upper`; do
 	echo "alter table ahn3 add table $f;";
 done >> "create_merge_table.sql"
 echo "Defining the merge table done..."
 
 echo "drop table ahn3;" > "drop_tables.sql"
-for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
+#for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
+for f in `cat ../las2col/files_name_upper`; do
 	echo "drop table $f;";
 done >> "drop_tables.sql"
 echo "Defining drop tables done..."
 
-for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
+#for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
+for f in `cat ../las2col/files_name_upper`; do
 	echo "select '$f', count(*) from $f;";
 done > "count_tables.sql"
 echo "Defining count tables done..."
 
-for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
+#for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
+for f in `cat ../las2col/files_name_upper`; do
 	echo "select x from $f where x between -1000 and -300;";
 done > "build_imprints_x.sql"
 echo "Defining buildimprints for column x done.."
 
-for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
+#for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
+for f in `cat ../las2col/files_name_upper`; do
 	echo "select y from $f where y between -1000 and -300;";
 done > "build_imprints_y.sql"
 echo "Defining buildimprints for column y done..."
 
-for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
+#for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
+for f in `cat ../las2col/files_name_upper`; do
 	echo "select z from $f where z between -1000 and -300;";
 done > "build_imprints_z.sql"
 echo "Defining buildimprints for column z done..."
 
-for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
+#for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
+for f in `cat ../las2col/files_name_upper`; do
 	echo "select c from $f where c between -1000 and -300;";
 done > "build_imprints_c.sql"
 echo "Defining buildimprints for column c done..."
 
-for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
+#for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
+for f in `cat ../las2col/files_name_upper`; do
 	echo "alter table $f set read only;";
 done > "set_readonly.sql"
 echo "Defining set read only done..."
 
-for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
+#for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
+for f in `cat ../las2col/files_name_upper`; do
 	echo "analyze sys.$f (x,y,z,c) minmax;";
 done > "analyze_tables.sql"
 echo "call vacuum('sys', 'statistics');" >> "analyze_tables.sql"
 echo "Defining analyze done..."
 
-for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
+#for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
+for f in `cat ../las2col/files_name_upper`; do
 	echo "call lidarattach('$data_path/$f.LAZ');";
 done > "attach_data.sql"
 echo "Defining data attachment done..."
 
-for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
-	echo "copy binary into $f from('$data_path/../outs/$f\_out_col_X.dat', '$data_path/../outs/$f\_out_col_Y.dat', '$data_path/../outs/$f\_out_col_Z.dat', '$data_path/../outs/$f\_out_col_a.dat', '$data_path/../outs/$f\_out_col_i.dat', '$data_path/../outs/$f\_out_col_n.dat', '$data_path/../outs/$f\_out_col_r.dat', '$data_path/../outs/$f\_out_col_c.dat', '$data_path/../outs/$f\_out_col_p.dat', '$data_path/../outs/$f\_out_col_e.dat', '$data_path/../outs/$f\_out_col_d.dat', '$data_path/../outs/$f\_out_col_M.dat');";
+#for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
+for f in `cat ../las2col/files_name_upper`; do
+	echo "copy binary into $f from('$out_path/$f\_out_col_X.dat', '$out_path/$f\_out_col_Y.dat', '$out_path/$f\_out_col_Z.dat', '$out_path/$f\_out_col_a.dat', '$out_path/$f\_out_col_i.dat', '$out_path/$f\_out_col_n.dat', '$out_path/$f\_out_col_r.dat', '$out_path/$f\_out_col_c.dat', '$out_path/$f\_out_col_p.dat', '$out_path/$f\_out_col_e.dat', '$out_path/$f\_out_col_d.dat', '$out_path/$f\_out_col_M.dat');";
 done > "load_data.sql"
 echo "Defining data load done..."
 
