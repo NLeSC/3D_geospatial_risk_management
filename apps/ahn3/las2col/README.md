@@ -9,7 +9,7 @@ git clone https://github.com/NLeSC/pointcloud-benchmark
 cd pointcloud-benchmark/lasnlesc
 ```
 
-3. To install follow the instructions in the [INSTALL document](https://github.com/NLeSC/pointcloud-benchmark/blob/master/lasnlesc/INSTALL).
+3. To install follow the instructions in the [INSTALL document](https://github.com/NLeSC/pointcloud-benchmark/blob/master/lasnlesc/INSTALL.md).
 
 4. Update [ahn3.cfg](https://github.com/NLeSC/3D_geospatial_risk_management/blob/master/configs/ahn3.cfg) with the path where lasnlesc is located, as an example:
 ```
