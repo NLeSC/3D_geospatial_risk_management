@@ -61,9 +61,9 @@ dbpath="$monetdb_dbfarm/$monetdb_dbname"
 dblogs=$dbpath
 
 if [ $style == "debug" ]; then
-    gdb  -ex "python sys.path.append(\"/usr/share/gcc-4.8/python\");" -ex "set pagination 0" -ex "r" --args $prefix/$style/$location/bin/mserver5 --set mapi_port=$port --dbinit="include geom; include sql;" --dbpath=$dbpath --set sql_logdir=$dblogs --set gdk_nr_threads=$threads $readOnly
+    gdb  -ex "python sys.path.append(\"/usr/share/gcc-4.8/python\");" -ex "set pagination 0" -ex "r" --args $prefix/$style/$location/bin/mserver5 --set mapi_port=$port --dbinit="include sql;" --dbpath=$dbpath --set sql_logdir=$dblogs --set gdk_nr_threads=$threads $readOnly
 else
-	$prefix/$style/$location/bin/mserver5 --set mapi_port=$port --dbinit="include geom; include sql;" --dbpath=$dbpath --set sql_logdir=$dblogs --set gdk_nr_threads=$threads $readOnly
+	$prefix/$style/$location/bin/mserver5 --set mapi_port=$port --dbinit="include sql;" --dbpath=$dbpath --set sql_logdir=$dblogs --set gdk_nr_threads=$threads $readOnly
 fi
 
 if_error "Check if MonetDB is installed with $style installation. Run ./monet $style!!!"

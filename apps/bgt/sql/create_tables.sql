@@ -103,18 +103,16 @@ namespace string,
 lokaalID string,
 relatieveHoogteligging integer,
 LV_publicatiedatum timestamp,
-inOnderzoek integer,
+inOnderzoek boolean,
 tijdstipRegistratie timestamp,
 bgt_status string,
 plus_status string,
 bronhouder string,
-identificatieBAGPND bigint,
+identificatieBAGPND double,
 tekst string,
 hoek string,
 identificatieBAGVBOLaagsteHuisnummer string,
-eindRegistratie string,
-identificatieBAGVBOHoogsteHuisnummer string,
-terminationDate string
+identificatieBAGVBOHoogsteHuisnummer string
 );
 
 create table bgt_funceelgebied (
@@ -255,27 +253,28 @@ terminationDate string
 
 --unclassified object
 create table bgt_ongeclassificeerdobject (
+	wkt geometry,
 	gml_id string,
 	creationDa date,
 	namespace string,
 	lokaalID string,
-	relatieveH integer,
+	relatieveHoogteligging integer,
 	LV_publica timestamp,
 	inOnderzoe integer,
 	tijdstipRe timestamp,
 	bgt_status string,
-	bronhouder string,
-	kmlgeometry geometry
+	bronhouder string
 );
 
 --Public space tag
 create table bgt_openbareruimtelabel (
+	wkt geometry,
 	gml_id string,
 	creationDa date,
 	namespace string,
 	lokaalID string,
 	LV_publica timestamp,
-	relatieveH integer,
+	relatieveHoogteligging integer,
 	inOnderzoe integer,
 	tijdstipRe timestamp,
 	bronhouder string,
@@ -283,73 +282,72 @@ create table bgt_openbareruimtelabel (
 	plus_statu string,
 	identifica bigint,
 	tekst string,
-	openbareRu string,
-	kmlgeometry geometry
+	openbareRu string
 );
 
 --Other construction
 create table bgt_overigbouwwerk (
+	wkt geometry,
 	gml_id string,
 	creationDa date,
 	namespace string,
 	lokaalID string,
 	LV_publica timestamp,
-	relatieveH integer,
+	relatieveHoogteligging integer,
 	inOnderzoe integer,
 	tijdstipRe timestamp,
 	bgt_status string,
 	plus_statu string,
 	bronhouder string,
 	bgt_type string,
-	plus_type string,
-	kmlgeometry geometry
+	plus_type string
 );
 
 --Other seperation
 create table bgt_overigescheiding (
+	wkt geometry,
 	gml_id string,
 	creationDa date,
 	namespace string,
 	lokaalID string,
-	relatieveH integer,
+	relatieveHoogteligging integer,
 	LV_publica timestamp,
 	inOnderzoe integer,
 	tijdstipRe timestamp,
 	bgt_status string,
 	plus_statu string,
 	bronhouder string,
-	plus_type string,
-	kmlgeometry geometry
+	plus_type string
 );
 
 --pole pool
 create table bgt_paal (
+	wkt geometry,
 	gml_id string,
 	creationDa date,
 	namespace string,
 	lokaalID string,
-	relatieveH integer,
+	relatieveHoogteligging integer,
 	LV_publica timestamp,
 	inOnderzoe integer,
 	tijdstipRe timestamp,
 	bgt_status string,
 	plus_statu string,
 	bronhouder string,
-	func string,
+	"function"string,
 	plus_type string,
-	hectometer string,
-	kmlgeometry geometry
+	hectometer string
 );
 
 create table bgt_plaatsbepalingspunt (
+	wkt geometry,
 	gml_id string,
 	namespace string,
 	lokaalID string,
 	nauwkeurig integer,
 	datumInwin date,
 	inwinnende string,
-	inwinnings string,
-	kmlgeometry geometry
+	inwinnings string
 );
 
 create table bgt_plantcover (
@@ -373,45 +371,46 @@ eindRegistratie string
 );
 
 create table bgt_put (
+	wkt geometry,
 	gml_id string,
 	creationDa date,
 	LV_publica timestamp,
 	tijdstipRe timestamp,
 	inOnderzoe integer,
-	relatieveH integer,
+	relatieveHoogteligging integer,
 	namespace string,
 	lokaalID string,
 	plus_statu string,
 	bgt_status string,
 	bronhouder string,
-	func string,
-	plus_type string,
-	kmlgeometry geometry
+	"function"string,
+	plus_type string
 );
 
 create table bgt_railway (
+	wkt geometry,
 	gml_id string,
 	creationDa date,
 	namespace string,
 	lokaalID string,
 	LV_publica timestamp,
-	relatieveH integer,
+	relatieveHoogteligging integer,
 	inOnderzoe integer,
 	tijdstipRe timestamp,
 	bgt_status string,
 	plus_statu string,
 	bronhouder string,
-	func string,
-	plus_funct string,
-	kmlgeometry geometry
+	"function"string,
+	plus_funct string
 );
 
 create table bgt_scheiding (
+	wkt geometry,
 	gml_id string,
 	creationDa date,
 	namespace string,
 	lokaalID string,
-	relatieveH integer,
+	relatieveHoogteligging integer,
 	LV_publica timestamp,
 	inOnderzoe integer,
 	tijdstipRe timestamp,
@@ -419,11 +418,11 @@ create table bgt_scheiding (
 	plus_statu string,
 	bronhouder string,
 	bgt_type string,
-	plus_type string,
-	kmlgeometry geometry
+	plus_type string
 );
 
 create table bgt_sensor (
+	wkt geometry,
 	gml_id string,
 	creationDa date,
 	namespace string,
@@ -431,88 +430,88 @@ create table bgt_sensor (
 	LV_publica timestamp,
 	tijdstipRe timestamp,
 	inOnderzoe integer,
-	relatieveH integer,
+	relatieveHoogteligging integer,
 	plus_statu string,
 	bgt_status string,
 	bronhouder string,
-	func string,
-	plus_type string,
-	kmlgeometry geometry
+	"function"string,
+	plus_type string
 );
 
 create table bgt_solitaryvegetationobject (
+	wkt geometry,
 	gml_id string,
 	creationDa date,
 	namespace string,
 	lokaalID string,
 	LV_publica timestamp,
-	relatieveH integer,
+	relatieveHoogteligging integer,
 	inOnderzoe integer,
 	tijdstipRe timestamp,
 	bgt_status string,
 	plus_statu string,
 	bronhouder string,
 	class string,
-	plus_type string,
-	kmlgeometry geometry
+	plus_type string
 );
 
 create table bgt_straatmeubilair (
+	wkt geometry,
 	gml_id string,
 	creationDa date,
 	LV_publica timestamp,
 	tijdstipRe timestamp,
 	inOnderzoe integer,
-	relatieveH integer,
+	relatieveHoogteligging integer,
 	namespace string,
 	lokaalID string,
 	plus_statu string,
 	bgt_status string,
 	bronhouder string,
-	func string,
-	plus_type string,
-	kmlgeometry geometry
+	"function"string,
+	plus_type string
 );
 
 create table bgt_trafficarea (
+	wkt geometry,
 	gml_id string,
 	creationDa date,
 	LV_publica timestamp,
 	tijdstipRe timestamp,
 	inOnderzoe integer,
-	relatieveH integer,
+	relatieveHoogteligging integer,
 	bronhouder string,
 	namespace string,
 	lokaalID string,
 	bgt_status string,
 	plus_statu string,
-	func string,
+	"function"string,
 	surfaceMat string,
 	wegdeelOpT integer,
 	plus_fysie string,
-	plus_funct string,
-	kmlgeometry geometry
+	plus_funct string
 );
 
 create table bgt_tunnelpart (
+	wkt geometry,
 	gml_id string,
 	creationDa date,
 	namespace string,
 	lokaalID string,
-	relatieveH integer,
+	relatieveHoogteligging integer,
 	LV_publica timestamp,
 	inOnderzoe integer,
 	tijdstipRe timestamp,
 	bgt_status string,
-	bronhouder string,
-	kmlgeometry geometry
+	bronhouder string
 );
 
 create table bgt_waterdeel (
+	wkt geometry,
 	gml_id string,
 	creationDa date,
 	tijdstipRe timestamp,
-	relatieveH integer,
+	relatieveHoogteligging integer,
 	inOnderzoe integer,
 	LV_publica timestamp,
 	bronhouder string,
@@ -521,40 +520,39 @@ create table bgt_waterdeel (
 	bgt_status string,
 	plus_statu string,
 	class string,
-	plus_type string,
-	kmlgeometry geometry
+	plus_type string
 );
 
 create table bgt_waterinrichtingselement (
+	wkt geometry,
 	gml_id string,
 	creationDa date,
 	LV_publica timestamp,
 	tijdstipRe timestamp,
 	inOnderzoe integer,
-	relatieveH integer,
+	relatieveHoogteligging integer,
 	namespace string,
 	lokaalID string,
 	plus_statu string,
 	bgt_status string,
 	bronhouder string,
-	func string,
-	plus_type string,
-	kmlgeometry geometry
+	"function"string,
+	plus_type string
 );
 
 create table bgt_weginrichtingselement (
+	wkt geometry,
 	gml_id string,
 	creationDa date,
 	LV_publica timestamp,
 	tijdstipRe timestamp,
 	inOnderzoe integer,
-	relatieveH integer,
+	relatieveHoogteligging integer,
 	namespace string,
 	lokaalID string,
 	plus_statu string,
 	bgt_status string,
 	bronhouder string,
-	func string,
-	plus_type string,
-	kmlgeometry geometry
+	"function"string,
+	plus_type string
 );

@@ -33,7 +33,7 @@ echo ""
 ls $data_path/*.csv > "data_files.txt"
 
 while read -r a && read -r file <&3; do 
-	echo "$a$file') USING DELIMITERS '|','\n' NULL AS '' LOCKED;"
+	echo "$a$file') USING DELIMITERS ',','\n','\"' NULL AS '' LOCKED;"
 done < "load_data.tmp" 3< "data_files.txt" > load_data.sql
 
 rm "data_files.txt"
