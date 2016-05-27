@@ -22,8 +22,8 @@ pointcloud AS (
 	and c = 6
 ),
 footprints AS (
-	--SELECT ST_Force3D(ST_GeometryN(wkt,1)) as geom,
-	SELECT ST_GeometryN(wkt,1) as geom,
+	SELECT ST_Force3D(ST_GeometryN(wkt,1)) as geom,
+	--SELECT ST_GeometryN(wkt,1) as geom,
 	a.gml_id as id,
 	0 as bouwjaar
 	FROM bgt_buildingpart a, bounds b
@@ -31,7 +31,7 @@ footprints AS (
 	AND ST_Area(a.wkt) > 30
 	AND ST_Intersects(a.wkt, b.geom)
 	AND ST_Intersects(ST_Centroid(a.wkt), b.geom)
-	--AND ST_IsValid(a.wkt)
+	AND ST_IsValid(a.wkt)
 ),
 --papoints AS ( --get points from intersecting patches
 --	SELECT 
