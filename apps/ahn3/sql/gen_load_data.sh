@@ -62,28 +62,59 @@ echo "Defining count tables done..."
 
 #for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
 for f in `cat ../las2col/files_name_upper`; do
-	echo "select x from $f where x between -1000 and -300;";
+	echo "create imprints index $f\_x_imprints on $f(x);";
 done > "build_imprints_x.sql"
 echo "Defining buildimprints for column x done.."
 
 #for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
 for f in `cat ../las2col/files_name_upper`; do
-	echo "select y from $f where y between -1000 and -300;";
+	echo "create imprints index $f\_y_imprints on $f(y);";
 done > "build_imprints_y.sql"
 echo "Defining buildimprints for column y done..."
 
 #for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
 for f in `cat ../las2col/files_name_upper`; do
-	echo "select z from $f where z between -1000 and -300;";
+	echo "create imprints index $f\_z_imprints on $f(z);";
 done > "build_imprints_z.sql"
 echo "Defining buildimprints for column z done..."
 
 #for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
 for f in `cat ../las2col/files_name_upper`; do
-	echo "select c from $f where c between -1000 and -300;";
+	echo "create imprints index $f\_c_imprints on $f(c);";
 done > "build_imprints_c.sql"
 echo "Defining buildimprints for column c done..."
 
+#for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
+for f in `cat ../las2col/files_name_upper`; do
+	echo "create imprints index $f\_r_imprints on $f(r);";
+done > "build_imprints_r.sql"
+echo "Defining buildimprints for column r done..."
+
+#for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
+for f in `cat ../las2col/files_name_upper`; do
+	echo "create imprints index $f\_n_imprints on $f(n);";
+done > "build_imprints_n.sql"
+echo "Defining buildimprints for column n done..."
+
+#for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
+for f in `cat ../las2col/files_name_upper`; do
+	echo "create imprints index $f\_i_imprints on $f(i);";
+done > "build_imprints_i.sql"
+echo "Defining buildimprints for column i done..."
+
+#for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
+for f in `cat ../las2col/files_name_upper`; do
+	echo "drop index $f\_x_imprints;";
+	echo "drop index $f\_y_imprints;";
+	echo "drop index $f\_z_imprints;";
+	echo "drop index $f\_c_imprints;";
+	echo "drop index $f\_r_imprints;";
+	echo "drop index $f\_n_imprints;";
+	echo "drop index $f\_i_imprints;";
+done > "drop_imprints.sql"
+echo "Defining drop imprints done..."
+
+echo "Defining buildimprints for column c done..."
 #for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
 for f in `cat ../las2col/files_name_upper`; do
 	echo "alter table $f set read only;";
@@ -92,7 +123,7 @@ echo "Defining set read only done..."
 
 #for f in `ls $data_path | grep -E LAZ | sed 's/\.LAZ//g'`; do
 for f in `cat ../las2col/files_name_upper`; do
-	echo "analyze sys.$f (x,y,z,c) minmax;";
+	echo "analyze sys.$f (x,y,z,c,r,n,i) minmax;";
 done > "analyze_tables.sql"
 echo "call vacuum('sys', 'statistics');" >> "analyze_tables.sql"
 echo "Defining analyze done..."
@@ -109,7 +140,7 @@ for f in `cat ../las2col/files_name_upper`; do
 done > "load_data.sql"
 echo "Defining data load done..."
 
-sed -i 's/\\_out/_out/g' load_data.sql
+sed -i 's/\\_/_/g' *.sql
 
 echo ""
 echo "The DDLs were generated with success please follow the following steps:"
