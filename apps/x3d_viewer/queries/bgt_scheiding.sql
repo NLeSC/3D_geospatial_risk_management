@@ -9,7 +9,7 @@ set _north = 463991;
 
 WITH
 bounds AS (
-	SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) geom
+	SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) as geom
 ),
 pointcloud_building AS (
 	SELECT x, y, z
