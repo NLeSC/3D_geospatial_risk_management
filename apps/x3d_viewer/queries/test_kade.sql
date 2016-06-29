@@ -5,15 +5,15 @@ create table bounds AS (
 
 drop table pointcloud_ground;
 create table pointcloud_ground AS (
-	SELECT PC_FilterEquals(pa,'classification',2) pa --ground points 
-	FROM ahn3_pointcloud.vw_ahn3, bounds 
+	SELECT PC_FilterEquals(pa,'classification',2) pa --ground points
+	FROM ahn3_pointcloud.vw_ahn3, bounds
 	WHERE ST_DWithin(geom, Geometry(pa),10)
 ) with data;
 
 drop table pointcloud_all;
 create table pointcloud_all AS (
-	SELECT pa pa --all points 
-	FROM ahn3_pointcloud.vw_ahn3, bounds 
+	SELECT pa pa --all points
+	FROM ahn3_pointcloud.vw_ahn3, bounds
 	WHERE ST_DWithin(geom, Geometry(pa),10)
 ) with data;
 
@@ -23,14 +23,14 @@ create table footprints AS (
 	a.ogc_fid id
 	FROM bgt_import.polygons a, bounds b
 	WHERE 1 = 1
-	AND (type = 'kademuur' OR class = 'border') 
+	AND (type = 'kademuur' OR class = 'border')
 	AND ST_Intersects(a.geom, b.geom)
 	--AND ST_Intersects(ST_Centroid(a.geom), b.geom)
 ) with data;
 
 drop table papoints;
 create table papoints AS ( --get points from intersecting patches
-	SELECT 
+	SELECT
 		a.id,
 		PC_Explode(b.pa) pt,
 		geom footprint
@@ -56,7 +56,7 @@ create table footprintpatch AS ( --get only points that fall inside building, pa
 
 drop table stats;
 create table stats AS (
-	SELECT  a.id, footprint, 
+	SELECT  a.id, footprint,
 		PC_PatchAvg(pa, 'z') max,
 		min
 	FROM footprintpatch a, papatch b

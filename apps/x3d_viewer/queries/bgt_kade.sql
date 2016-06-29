@@ -1,15 +1,15 @@
-WITH 
+WITH
 bounds AS (
 	SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) geom
 ),
 pointcloud_ground AS (
-	SELECT PC_FilterEquals(pa,'classification',2) pa --ground points 
-	FROM ahn3_pointcloud.vw_ahn3, bounds 
+	SELECT PC_FilterEquals(pa,'classification',2) pa --ground points
+	FROM ahn3_pointcloud.vw_ahn3, bounds
 	WHERE ST_DWithin(geom, Geometry(pa),10)
 ),
 pointcloud_all AS (
-	SELECT pa pa --all points 
-	FROM ahn3_pointcloud.vw_ahn3, bounds 
+	SELECT pa pa --all points
+	FROM ahn3_pointcloud.vw_ahn3, bounds
 	WHERE ST_DWithin(geom, Geometry(pa),10)
 ),
 footprints AS (
@@ -17,12 +17,12 @@ footprints AS (
 	a.ogc_fid id
 	FROM bgt_import.polygons a, bounds b
 	WHERE 1 = 1
-	AND (type = 'kademuur' OR class = 'border') 
+	AND (type = 'kademuur' OR class = 'border')
 	AND ST_Intersects(a.geom, b.geom)
 	--AND ST_Intersects(ST_Centroid(a.geom), b.geom)
 ),
 papoints AS ( --get points from intersecting patches
-	SELECT 
+	SELECT
 		a.id,
 		PC_Explode(b.pa) pt,
 		geom footprint
@@ -42,7 +42,7 @@ footprintpatch AS ( --get only points that fall inside building, patch them
 	GROUP BY id, footprint
 ),
 stats AS (
-	SELECT  a.id, footprint, 
+	SELECT  a.id, footprint,
 		PC_PatchAvg(pa, 'z') max,
 		min
 	FROM footprintpatch a, papatch b

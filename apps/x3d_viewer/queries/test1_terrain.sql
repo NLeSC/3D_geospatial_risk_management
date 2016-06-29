@@ -22,9 +22,9 @@ create table bounds AS (SELECT ST_Segmentize(ST_MakeEnvelope(_west, _south, _eas
 
 drop table pointcloud_ground;
 create table pointcloud_ground AS (
-	SELECT x, y, z 
+	SELECT x, y, z
 	FROM C_30FZ1, bounds
-	WHERE 
+	WHERE
     c = 2 and
     x between 93816.0 and 93916.0 and
     y between 463891.0 and 463991.0 and
@@ -39,7 +39,7 @@ drop table terrain_;
 create table terrain_ AS (
     SELECT NEXT VALUE FOR "counter" as id, ogc_fid as fid, 'unkown' as typ, class, a.geom as a_geom, b.geom as b_geom
     FROM bgt_polygons a, bounds b
-    WHERE 
+    WHERE
     type <> 'water' and
     class <> 'water' and
     type <> 'kademuur' and
@@ -64,8 +64,8 @@ drop table polygons;
 create table polygons AS (
 	SELECT t.id, fid, 'unknown' as typ, class, d.geom
 	FROM terrain_b t, terrain_dump d
-    where 
-    t.id = d.id and 
+    where
+    t.id = d.id and
     ST_GeometryType(d.geom) = 'ST_Polygon'
 ) with data;
 
@@ -100,7 +100,7 @@ create table polygonsz AS (
 
 drop table basepoints;
 create table basepoints AS (
-	SELECT id,geom FROM polygonsz WHERE ST_IsValid(geom) 
+	SELECT id,geom FROM polygonsz WHERE ST_IsValid(geom)
     ) with data;
 
 drop table triangles;
@@ -117,7 +117,7 @@ create table assign_triags AS (
 	INNER JOIN polygons b
 	ON ST_Contains(b.geom, a.geom)
 	,bounds c
-	WHERE 
+	WHERE
     --ST_Intersects(ST_Centroid(b.geom), c.geom)
     [ST_Centroid(b.geom)] Intersects [c.geom]
 	AND a.id = b.id
