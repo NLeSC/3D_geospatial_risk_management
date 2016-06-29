@@ -28,7 +28,7 @@ footprints AS (
 	0 as bouwjaar
 	FROM bgt_buildingpart a, bounds b
 	WHERE 1 = 1
-	AND ST_Area(a.wkt) > 30
+	AND ST_Area(a.wkt) > 10
 	AND ST_Intersects(a.wkt, b.geom)
 	AND ST_Intersects(ST_Centroid(a.wkt), b.geom)
 	AND ST_IsValid(a.wkt)
