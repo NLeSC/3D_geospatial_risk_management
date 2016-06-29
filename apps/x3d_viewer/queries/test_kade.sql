@@ -15,10 +15,10 @@ create table bounds AS (
 
 drop table pointcloud_ground;
 create table pointcloud_ground AS (
-    --PC_FilterEquals(pa,'classification',2) pa --ground points 
+    --PC_FilterEquals(pa,'classification',2) pa --ground points
 	SELECT x, y, z
-	FROM ahn3, bounds 
-	WHERE 
+	FROM ahn3, bounds
+	WHERE
     x between 93816 and 93916 and
     y between 463891 and 463991 and
     --ST_DWithin(geom, ST_SetSRID(ST_MakePoint(x, y, z), 28992), 10)
@@ -28,9 +28,9 @@ create table pointcloud_ground AS (
 
 drop table pointcloud_all;
 create table pointcloud_all AS (
-	SELECT x, y, z 
-	FROM ahn3, bounds 
-	WHERE 
+	SELECT x, y, z
+	FROM ahn3, bounds
+	WHERE
     x between 93816 and 93916 and
     y between 463891 and 463991 and
     --ST_DWithin(geom, ST_SetSRID(ST_MakePoint(x, y, z), 28992), 10)
@@ -44,14 +44,14 @@ create table footprints AS (
 	a.ogc_fid as id
 	FROM bgt_polygons a, bounds b
 	WHERE 1 = 1
-	--AND (type = 'kademuur' OR class = 'border') 
+	--AND (type = 'kademuur' OR class = 'border')
 	AND ST_Intersects(ST_SetSRID(a.geom, 28992), b.geom)
 	AND ST_Intersects(ST_Centroid(a.geom), b.geom)
 ) with data;
 
 drop table papoints;
 create table papoints AS ( --get points from intersecting patches
-	SELECT 
+	SELECT
 		a.id,
 		x, y, z,
 		geom as footprint

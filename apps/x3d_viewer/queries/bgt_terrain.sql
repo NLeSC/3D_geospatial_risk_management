@@ -4,7 +4,7 @@ bounds AS (
 	SELECT ST_Segmentize(ST_MakeEnvelope(_west, _south, _east, _north, 28992),_segmentlength) geom
 ),
 pointcloud_ground AS (
-	SELECT PC_FilterEquals(pa,'classification',2) pa 
+	SELECT PC_FilterEquals(pa,'classification',2) pa
 	FROM ahn3_pointcloud.vw_ahn3, bounds
 	WHERE ST_Intersects(geom, Geometry(pa))
 ),
@@ -26,7 +26,7 @@ terrain AS (
 )
 ,polygonsz AS (
 	SELECT id, fid, type, class, patch_to_geom(PC_Union(b.pa), geom) geom
-	FROM polygons a 
+	FROM polygons a
 	LEFT JOIN pointcloud_ground b
 	ON ST_Intersects(geom,Geometry(b.pa))
 	GROUP BY id, fid, type, class, geom
@@ -36,7 +36,7 @@ terrain AS (
 	WHERE ST_IsValid(geom)
 )
 ,triangles AS (
-	SELECT 
+	SELECT
 		id,
 		ST_MakePolygon(
 			ST_ExteriorRing(
