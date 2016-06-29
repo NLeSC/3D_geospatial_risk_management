@@ -2,10 +2,10 @@ declare _west integer;
 declare _south integer;
 declare _east integer;
 declare _north integer;
-set _west = 93816;
-set _south = 93916;
-set _east  = 463891;
-set _north = 463991;
+set _west = 93816.0;
+set _south = 93916.0;
+set _east  = 463891.0;
+set _north = 463991.0;
 
 drop table bounds;
 create table bounds AS (
