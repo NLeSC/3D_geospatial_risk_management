@@ -7,14 +7,14 @@ set _east = 93916.0;
 set _south = 463891.0;
 set _north = 463991.0;
 
-WITH 
+WITH
 bounds AS (
-    SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) as geom 
-), 
+    SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) as geom
+),
 pointcloud AS (
-	SELECT x, y, z 
-	FROM ahn3, bounds 
-	WHERE 
+	SELECT x, y, z
+	FROM ahn3, bounds
+	WHERE
     x between 93816.0 and 93916.0 and
     y between 463891.0 and 463991.0 and
 	--ST_DWithin(geom, ST_SetSRID(ST_MakePoint(x, y, z), 4326), 10)
@@ -28,13 +28,13 @@ footprints AS (
 	0 as bouwjaar
 	FROM bgt_buildingpart a, bounds b
 	WHERE 1 = 1
-	AND ST_Area(a.wkt) > 30
+	AND ST_Area(a.wkt) > 10
 	AND ST_Intersects(a.wkt, b.geom)
 	AND ST_Intersects(ST_Centroid(a.wkt), b.geom)
 	AND ST_IsValid(a.wkt)
 ),
 --papoints AS ( --get points from intersecting patches
---	SELECT 
+--	SELECT
 --		a.id,
 --		PC_Explode(b.pa) pt,
 --		geom footprint
@@ -42,7 +42,7 @@ footprints AS (
 --	LEFT JOIN pointcloud b ON (ST_Intersects(a.geom, geometry(b.pa)))
 --),
 stats_fast AS (
-	SELECT 
+	SELECT
 		footprints.id,
 		bouwjaar,
 		geom as footprint,
@@ -53,7 +53,7 @@ stats_fast AS (
 	GROUP BY footprints.id, footprint, bouwjaar
 ),
 polygons AS (
-	SELECT 
+	SELECT
 		id, bouwjaar,
 		(
 			ST_Extrude(

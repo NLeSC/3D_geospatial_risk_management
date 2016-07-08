@@ -1,72 +1,95 @@
+declare _west integer;
+declare _south integer;
+declare _east integer;
+declare _north integer;
+set _west = 93816;
+set _east = 93916;
+set _south = 463891;
+set _north = 463991;
+
+
 drop table bounds;
 create table bounds AS (
-	SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) geom
+	SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) as geom
 ) with data;
 
 drop table pointcloud_ground;
 create table pointcloud_ground AS (
-	SELECT PC_FilterEquals(pa,'classification',2) pa --ground points 
-	FROM ahn3_pointcloud.vw_ahn3, bounds 
-	WHERE ST_DWithin(geom, Geometry(pa),10)
+    --PC_FilterEquals(pa,'classification',2) pa --ground points 
+	SELECT x, y, z
+	FROM ahn3, bounds 
+	WHERE 
+    x between 93816 and 93916 and
+    y between 463891 and 463991 and
+    --ST_DWithin(geom, ST_SetSRID(ST_MakePoint(x, y, z), 28992), 10)
+    Contains(geom, x, y)
+    and c =2
 ) with data;
 
 drop table pointcloud_all;
 create table pointcloud_all AS (
-	SELECT pa pa --all points 
-	FROM ahn3_pointcloud.vw_ahn3, bounds 
-	WHERE ST_DWithin(geom, Geometry(pa),10)
+	SELECT x, y, z 
+	FROM ahn3, bounds 
+	WHERE 
+    x between 93816 and 93916 and
+    y between 463891 and 463991 and
+    --ST_DWithin(geom, ST_SetSRID(ST_MakePoint(x, y, z), 28992), 10)
+    Contains(geom, x, y)
 ) with data;
 
 drop table footprints;
 create table footprints AS (
-	SELECT ST_Force3D(ST_Intersection(a.geom, b.geom)) geom,
-	a.ogc_fid id
-	FROM bgt_import.polygons a, bounds b
+	SELECT ST_Force3D(ST_Intersection(ST_SetSRID(a.geom, 28992), b.geom)) as geom,
+	--SELECT ST_Intersection(ST_SetSRID(a.geom, 28992), b.geom) as geom,
+	a.ogc_fid as id
+	FROM bgt_polygons a, bounds b
 	WHERE 1 = 1
-	AND (type = 'kademuur' OR class = 'border') 
-	AND ST_Intersects(a.geom, b.geom)
-	--AND ST_Intersects(ST_Centroid(a.geom), b.geom)
+	--AND (type = 'kademuur' OR class = 'border') 
+	AND ST_Intersects(ST_SetSRID(a.geom, 28992), b.geom)
+	AND ST_Intersects(ST_Centroid(a.geom), b.geom)
 ) with data;
 
 drop table papoints;
 create table papoints AS ( --get points from intersecting patches
 	SELECT 
 		a.id,
-		PC_Explode(b.pa) pt,
-		geom footprint
-	FROM footprints a
-	LEFT JOIN pointcloud_ground b ON (ST_Intersects(a.geom, geometry(b.pa)))
+		x, y, z,
+		geom as footprint
+	FROM footprints a, pointcloud_ground b
+	--LEFT JOIN pointcloud_ground b ON (ST_Intersects(a.geom, Geometry(b.pa)))
+	where ST_Intersects(a.geom, ST_SetSRID(ST_MakePoint(b.x, b.y, b.z), 28992))
 ) with data;
 
 drop table papatch;
 create table papatch AS (
 	SELECT
-		a.id, PC_PatchMin(PC_Union(pa), 'z') min
-	FROM footprints a
-	LEFT JOIN pointcloud_all b ON (ST_Intersects(a.geom, geometry(b.pa)))
+		a.id, min(z) as min
+	FROM footprints a, pointcloud_all b
+	--LEFT JOIN pointcloud_all b ON (ST_Intersects(a.geom, Geometry(b.pa)))
+	WHERE ST_Intersects(a.geom,  ST_SetSRID(ST_MakePoint(b.x, b.y, b.z), 28992))
 	GROUP BY a.id
 ) with data;
 
 drop table footprintpatch;
 create table footprintpatch AS ( --get only points that fall inside building, patch them
-	SELECT id, PC_Patch(pt) pa, footprint
-	FROM papoints WHERE ST_Intersects(footprint, Geometry(pt))
-	GROUP BY id, footprint
+	SELECT id, x, y, z, footprint
+	FROM papoints WHERE ST_Intersects(footprint,  ST_SetSRID(ST_MakePoint(x, y, z), 28992))
+	--GROUP BY id, footprint
 ) with data;
 
 drop table stats;
 create table stats AS (
-	SELECT  a.id, footprint, 
-		PC_PatchAvg(pa, 'z') max,
-		min
+	SELECT  a.id, footprint, max(z) as max, min
 	FROM footprintpatch a, papatch b
 	WHERE (a.id = b.id)
+	GROUP BY a.id, footprint, min
 ) with data;
 
-drop table polygons;
-create table polygons AS (
-	SELECT id, ST_Extrude(ST_Tesselate(ST_Translate(footprint,0,0, min)), 0,0,max-min) geom FROM stats
+--Crash
+drop table polygons_kade;
+create table polygons_kade AS (
+	SELECT id, ST_Extrude(ST_Tesselate(ST_Translate(footprint,0,0, min)), 0,0,max-min) as geom
+    FROM stats
 ) with data;
 
-SELECT id,'kade' as type, 'grey' color, ST_AsX3D(p.geom) geom
-FROM polygons p;
+SELECT id, 'kade' as typ, 'grey' as color, ST_AsX3D(p.geom, 4.0, 0) as geom FROM polygons_kade p;

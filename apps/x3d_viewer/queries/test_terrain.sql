@@ -2,10 +2,10 @@ declare _west integer;
 declare _south integer;
 declare _east integer;
 declare _north integer;
-set _west = 93816;
-set _south = 93916;
-set _east  = 463891;
-set _north = 463991;
+set _west = 93816.0;
+set _south = 93916.0;
+set _east  = 463891.0;
+set _north = 463991.0;
 
 drop table bounds;
 create table bounds AS (
@@ -14,7 +14,7 @@ create table bounds AS (
 
 drop table pointcloud_ground;
 create table pointcloud_ground AS (
-	SELECT PC_FilterEquals(pa,'classification',2) pa 
+	SELECT PC_FilterEquals(pa,'classification',2) pa
 	FROM ahn3_pointcloud.vw_ahn3, bounds
 	WHERE ST_Intersects(geom, Geometry(pa))
 ) with data;
@@ -42,7 +42,7 @@ create table polygons AS (
 drop table polygonsz;
 create table polygonsz AS (
 	SELECT id, fid, type, class, patch_to_geom(PC_Union(b.pa), geom) geom
-	FROM polygons a 
+	FROM polygons a
 	LEFT JOIN pointcloud_ground b
 	ON ST_Intersects(geom,Geometry(b.pa))
 	GROUP BY id, fid, type, class, geom
@@ -56,7 +56,7 @@ create table basepoints AS (
 
 drop table triangles;
 create table triangles AS (
-	SELECT 
+	SELECT
 		id,
 		ST_MakePolygon(
 			ST_ExteriorRing(

@@ -91,7 +91,7 @@ if_error "The configure failed"
 cd $prefix/$style/MonetDB/build 
 
 echo "Running make..." >&2
-make -j 1>$mOut 2>$mErr && echo "Running make install.." >&2 && make install -j 1>$mOut 2>$mErr
+make -j 1>>$mOut 2>>$mErr && echo "Running make install.." >&2 && make install -j 1>>$mOut 2>>$mErr
 if_error "The installation for $style failed!!! For more info check $mErr"
 
 echo "MonetDB was successfully installed with $style compilation!!!"
