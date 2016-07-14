@@ -14,10 +14,13 @@ DROP SEQUENCE "counter";
 CREATE SEQUENCE "counter" AS INTEGER;
 
 WITH 
-bounds AS (
+drop table bounds;
+create table bounds AS (
 	SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) as geom
-),
-pointcloud_unclassified AS(
+) WITH Data;
+
+drop table pointcloud_unclassified;
+create table pointcloud_unclassified AS(
 	SELECT
         ST_SetSRID(ST_MakePoint(x, y, z), 28992) as geom
 	FROM
@@ -30,5 +33,6 @@ pointcloud_unclassified AS(
     c = 1 AND
     i < 150 AND
     r < n-1
-)
+) WITH DATA;
+
 SELECT NEXT VALUE for "counter" as id, 'tree' as type, '0 ' || rand() * 0.1 ||' 0' as color, ST_AsX3D(ST_Collect(geom), 4.0, 0) as geom FROM pointcloud_unclassified a;
