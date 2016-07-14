@@ -10,11 +10,13 @@ set _south = 463891.0;
 set _north = 463991.0;
 set _segmentlength = 10;
 
-WITH 
-bounds AS (
+drop table bounds;
+create table bounds AS (
 	SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) as geom
-),
-pointcloud_unclassified AS(
+) WITH DATA;
+
+drop table pointcloud_unclassified;
+create table pointcloud_unclassified AS(
 	SELECT 
 		ST_SetSRID(ST_MakePoint(x, y, z), 28992) as geom, z
 	FROM C_30FZ1, bounds 
@@ -27,21 +29,25 @@ pointcloud_unclassified AS(
         c = 1 and
         r = 1 and
         i > 150
-),
+) WITH DATA;
 
-points AS (
+drop table points;
+create table points AS (
 	SELECT a.gml_id as id, a.wkt as geom 
 	FROM bgt_paal a, bounds b 
 	WHERE 
     (plus_type = 'lichtmast' OR plus_type Is Null)
 	AND ST_Intersects(a.wkt, b.geom)
-),
-pointsz As (
+) WITH DATA;
+
+drop table pointsz;
+create table pointsz AS (
 	SELECT a.id, ST_Translate(ST_Force3D(a.geom), 0, 0, avg(z)+5) as geom
 	FROM points a
 	LEFT JOIN 
     pointcloud_unclassified b ON
     ST_DWithin(b.geom, a.geom,1)
 	GROUP BY a.id, a.geom
-)
+) WITH DATA;
+
 SELECT id, 'light' as type, ST_X(geom) as x, ST_Y(geom) as y, ST_Z(geom) as z FROM pointsz;
