@@ -1,0 +1,1758 @@
+make  install-recursive
+make[1]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build'
+Making install in buildtools
+make[2]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/buildtools'
+make  install-recursive
+make[3]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/buildtools'
+Making install in conf
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/buildtools/conf'
+make  install-am
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/buildtools/conf'
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/buildtools/conf'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/bin
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/etc/tmpfiles.d
+make[6]: Nothing to be done for 'install-data-am'.
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/bin'
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/bin/Maddlog
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/etc/tmpfiles.d/monetdbd.conf
+/usr/bin/install -c -m0755 /home/tomt/src/MonetDB/buildtools/conf/Maddlog /home/tomt/bin/MonetDB/optimized/MonetDB/bin/Maddlog
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/buildtools/conf/monetdbd.conf /home/tomt/bin/MonetDB/optimized/MonetDB/etc/tmpfiles.d/monetdbd.conf
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/buildtools/conf'
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/buildtools/conf'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/buildtools/conf'
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/buildtools'
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/buildtools'
+make[5]: Nothing to be done for 'install-exec-am'.
+make[5]: Nothing to be done for 'install-data-am'.
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/buildtools'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/buildtools'
+make[3]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/buildtools'
+make[2]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/buildtools'
+Making install in common
+make[2]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/common'
+make  install-recursive
+make[3]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/common'
+Making install in stream
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/common/stream'
+make  install-am
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/common/stream'
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/common/stream'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/pkgconfig
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/lib'
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/pkgconfig/monetdb-stream.pc
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/stream_socket.h
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/stream.h
+ /bin/bash ../../libtool   --mode=install /usr/bin/install -c   libstream.la '/home/tomt/bin/MonetDB/optimized/MonetDB/lib'
+/usr/bin/install -c -m 644 monetdb-stream.pc /home/tomt/bin/MonetDB/optimized/MonetDB/lib/pkgconfig/monetdb-stream.pc
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/common/stream/stream_socket.h /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/stream_socket.h
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/common/stream/stream.h /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/stream.h
+libtool: install: /usr/bin/install -c .libs/libstream.so.8.0.0 /home/tomt/bin/MonetDB/optimized/MonetDB/lib/libstream.so.8.0.0
+libtool: install: (cd /home/tomt/bin/MonetDB/optimized/MonetDB/lib && { ln -s -f libstream.so.8.0.0 libstream.so.8 || { rm -f libstream.so.8 && ln -s libstream.so.8.0.0 libstream.so.8; }; })
+libtool: install: (cd /home/tomt/bin/MonetDB/optimized/MonetDB/lib && { ln -s -f libstream.so.8.0.0 libstream.so || { rm -f libstream.so && ln -s libstream.so.8.0.0 libstream.so; }; })
+libtool: install: /usr/bin/install -c .libs/libstream.lai /home/tomt/bin/MonetDB/optimized/MonetDB/lib/libstream.la
+libtool: finish: PATH="/home/tomt/src/libLAS-1.8.0/bin:/home/tomt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/sbin" ldconfig -n /home/tomt/bin/MonetDB/optimized/MonetDB/lib
+----------------------------------------------------------------------
+Libraries have been installed in:
+   /home/tomt/bin/MonetDB/optimized/MonetDB/lib
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the '-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the 'LD_LIBRARY_PATH' environment variable
+     during execution
+   - add LIBDIR to the 'LD_RUN_PATH' environment variable
+     during linking
+   - use the '-Wl,-rpath -Wl,LIBDIR' linker flag
+   - have your system administrator add LIBDIR to '/etc/ld.so.conf'
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/common/stream'
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/common/stream'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/common/stream'
+Making install in options
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/common/options'
+make  install-am
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/common/options'
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/common/options'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb
+make[6]: Nothing to be done for 'install-data-am'.
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/monet_options.h
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/common/options/monet_options.h /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/monet_options.h
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/common/options'
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/common/options'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/common/options'
+Making install in utils
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/common/utils'
+make  install-am
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/common/utils'
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/common/utils'
+make[6]: Nothing to be done for 'install-exec-am'.
+make[6]: Nothing to be done for 'install-data-am'.
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/common/utils'
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/common/utils'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/common/utils'
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/common'
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/common'
+make[5]: Nothing to be done for 'install-exec-am'.
+make[5]: Nothing to be done for 'install-data-am'.
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/common'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/common'
+make[3]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/common'
+make[2]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/common'
+Making install in clients
+make[2]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients'
+make  install-recursive
+make[3]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients'
+Making install in mapilib
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/mapilib'
+make  install-am
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/mapilib'
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/mapilib'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/pkgconfig
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/pkgconfig/monetdb-mapi.pc
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/mapi.h
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/lib'
+/usr/bin/install -c -m 644 monetdb-mapi.pc /home/tomt/bin/MonetDB/optimized/MonetDB/lib/pkgconfig/monetdb-mapi.pc
+ /bin/bash ../../libtool   --mode=install /usr/bin/install -c   libmapi.la '/home/tomt/bin/MonetDB/optimized/MonetDB/lib'
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/clients/mapilib/mapi.h /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/mapi.h
+libtool: install: (cd /home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/mapilib; /bin/bash "/home/tomt/bin/MonetDB/optimized/MonetDB/build/libtool"  --tag CC --mode=relink gcc -DLIBMAPI -O3 -fomit-frame-pointer -pipe -Werror -Wall -Wextra -W -Werror-implicit-function-declaration -Wpointer-arith -Wdeclaration-after-statement -Wundef -Wformat=2 -Wno-format-nonliteral -Winit-self -Winvalid-pch -Wmissing-declarations -Wmissing-format-attribute -Wmissing-prototypes -Wold-style-definition -Wpacked -Wunknown-pragmas -Wvariadic-macros -fstack-protector-all -Wstack-protector -Wpacked-bitfield-compat -Wsync-nand -Wjump-misses-init -Wmissing-include-dirs -Wlogical-op -Wunreachable-code -D_FORTIFY_SOURCE=2 -D_REENTRANT -version-info 8:0:0 -o libmapi.la -rpath /home/tomt/bin/MonetDB/optimized/MonetDB/lib libmapi_la-mapi.lo ../../common/stream/libstream.la ../../common/options/libmoptions.la ../../common/utils/libmcrypt.la -lssl -lcrypto )
+libtool: relink: gcc -shared  -fPIC -DPIC  .libs/libmapi_la-mapi.o  -Wl,--whole-archive ../../common/options/.libs/libmoptions.a ../../common/utils/.libs/libmcrypt.a -Wl,--no-whole-archive  -Wl,-rpath -Wl,/home/tomt/bin/MonetDB/optimized/MonetDB/lib -L/home/tomt/bin/MonetDB/optimized/MonetDB/lib -lstream -lssl -lcrypto  -O3 -fstack-protector-all   -pthread -Wl,-soname -Wl,libmapi.so.8 -o .libs/libmapi.so.8.0.0
+libtool: install: /usr/bin/install -c .libs/libmapi.so.8.0.0T /home/tomt/bin/MonetDB/optimized/MonetDB/lib/libmapi.so.8.0.0
+libtool: install: (cd /home/tomt/bin/MonetDB/optimized/MonetDB/lib && { ln -s -f libmapi.so.8.0.0 libmapi.so.8 || { rm -f libmapi.so.8 && ln -s libmapi.so.8.0.0 libmapi.so.8; }; })
+libtool: install: (cd /home/tomt/bin/MonetDB/optimized/MonetDB/lib && { ln -s -f libmapi.so.8.0.0 libmapi.so || { rm -f libmapi.so && ln -s libmapi.so.8.0.0 libmapi.so; }; })
+libtool: install: /usr/bin/install -c .libs/libmapi.lai /home/tomt/bin/MonetDB/optimized/MonetDB/lib/libmapi.la
+libtool: finish: PATH="/home/tomt/src/libLAS-1.8.0/bin:/home/tomt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/sbin" ldconfig -n /home/tomt/bin/MonetDB/optimized/MonetDB/lib
+----------------------------------------------------------------------
+Libraries have been installed in:
+   /home/tomt/bin/MonetDB/optimized/MonetDB/lib
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the '-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the 'LD_LIBRARY_PATH' environment variable
+     during execution
+   - add LIBDIR to the 'LD_RUN_PATH' environment variable
+     during linking
+   - use the '-Wl,-rpath -Wl,LIBDIR' linker flag
+   - have your system administrator add LIBDIR to '/etc/ld.so.conf'
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/mapilib'
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/mapilib'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/mapilib'
+Making install in mapiclient
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/mapiclient'
+make  install-am
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/mapiclient'
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/mapiclient'
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/bin'
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/share/man/man1'
+  /bin/bash ../../libtool   --mode=install /usr/bin/install -c mclient msqldump stethoscope tachograph tomograph '/home/tomt/bin/MonetDB/optimized/MonetDB/bin'
+ /usr/bin/install -c -m 644 /home/tomt/src/MonetDB/clients/mapiclient/mclient.1 /home/tomt/src/MonetDB/clients/mapiclient/msqldump.1 '/home/tomt/bin/MonetDB/optimized/MonetDB/share/man/man1'
+libtool: install: /usr/bin/install -c .libs/mclient /home/tomt/bin/MonetDB/optimized/MonetDB/bin/mclient
+libtool: install: /usr/bin/install -c .libs/msqldump /home/tomt/bin/MonetDB/optimized/MonetDB/bin/msqldump
+libtool: install: /usr/bin/install -c .libs/stethoscope /home/tomt/bin/MonetDB/optimized/MonetDB/bin/stethoscope
+libtool: install: /usr/bin/install -c .libs/tachograph /home/tomt/bin/MonetDB/optimized/MonetDB/bin/tachograph
+libtool: install: /usr/bin/install -c .libs/tomograph /home/tomt/bin/MonetDB/optimized/MonetDB/bin/tomograph
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/mapiclient'
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/mapiclient'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/mapiclient'
+Making install in odbc
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/odbc'
+make  install-recursive
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/odbc'
+Making install in setup
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/odbc/setup'
+make  install-am
+make[7]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/odbc/setup'
+make[8]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/odbc/setup'
+make[8]: Nothing to be done for 'install-exec-am'.
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/lib'
+ /bin/bash ../../../libtool   --mode=install /usr/bin/install -c   libMonetODBCs.la '/home/tomt/bin/MonetDB/optimized/MonetDB/lib'
+libtool: install: /usr/bin/install -c .libs/libMonetODBCs.so /home/tomt/bin/MonetDB/optimized/MonetDB/lib/libMonetODBCs.so
+libtool: install: /usr/bin/install -c .libs/libMonetODBCs.lai /home/tomt/bin/MonetDB/optimized/MonetDB/lib/libMonetODBCs.la
+libtool: finish: PATH="/home/tomt/src/libLAS-1.8.0/bin:/home/tomt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/sbin" ldconfig -n /home/tomt/bin/MonetDB/optimized/MonetDB/lib
+----------------------------------------------------------------------
+Libraries have been installed in:
+   /home/tomt/bin/MonetDB/optimized/MonetDB/lib
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the '-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the 'LD_LIBRARY_PATH' environment variable
+     during execution
+   - add LIBDIR to the 'LD_RUN_PATH' environment variable
+     during linking
+   - use the '-Wl,-rpath -Wl,LIBDIR' linker flag
+   - have your system administrator add LIBDIR to '/etc/ld.so.conf'
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+make[8]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/odbc/setup'
+make[7]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/odbc/setup'
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/odbc/setup'
+Making install in driver
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/odbc/driver'
+make  install-am
+make[7]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/odbc/driver'
+make[8]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/odbc/driver'
+make[8]: Nothing to be done for 'install-exec-am'.
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/lib'
+ /bin/bash ../../../libtool   --mode=install /usr/bin/install -c   libMonetODBC.la '/home/tomt/bin/MonetDB/optimized/MonetDB/lib'
+libtool: install: (cd /home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/odbc/driver; /bin/bash "/home/tomt/bin/MonetDB/optimized/MonetDB/build/libtool"  --tag CC --mode=relink gcc -DLIBMONETODBC -O3 -fomit-frame-pointer -pipe -Werror -Wall -Wextra -W -Werror-implicit-function-declaration -Wpointer-arith -Wdeclaration-after-statement -Wundef -Wformat=2 -Wno-format-nonliteral -Winit-self -Winvalid-pch -Wmissing-declarations -Wmissing-format-attribute -Wmissing-prototypes -Wold-style-definition -Wpacked -Wunknown-pragmas -Wvariadic-macros -fstack-protector-all -Wstack-protector -Wpacked-bitfield-compat -Wsync-nand -Wjump-misses-init -Wmissing-include-dirs -Wlogical-op -Wunreachable-code -D_FORTIFY_SOURCE=2 -module -avoid-version -export-symbols ODBC.def -o libMonetODBC.la -rpath /home/tomt/bin/MonetDB/optimized/MonetDB/lib libMonetODBC_la-ODBCConvert.lo libMonetODBC_la-ODBCDbc.lo libMonetODBC_la-ODBCDesc.lo libMonetODBC_la-ODBCEnv.lo libMonetODBC_la-ODBCError.lo libMonetODBC_la-ODBCStmt.lo libMonetODBC_la-ODBCUtil.lo libMonetODBC_la-SQLAllocConnect.lo libMonetODBC_la-SQLAllocEnv.lo libMonetODBC_la-SQLAllocHandle.lo libMonetODBC_la-SQLAllocStmt.lo libMonetODBC_la-SQLBindCol.lo libMonetODBC_la-SQLBindParameter.lo libMonetODBC_la-SQLBrowseConnect.lo libMonetODBC_la-SQLBulkOperations.lo libMonetODBC_la-SQLCancel.lo libMonetODBC_la-SQLCloseCursor.lo libMonetODBC_la-SQLColAttribute.lo libMonetODBC_la-SQLColAttributes.lo libMonetODBC_la-SQLColumnPrivileges.lo libMonetODBC_la-SQLColumns.lo libMonetODBC_la-SQLConnect.lo libMonetODBC_la-SQLCopyDesc.lo libMonetODBC_la-SQLDataSources.lo libMonetODBC_la-SQLDescribeCol.lo libMonetODBC_la-SQLDescribeParam.lo libMonetODBC_la-SQLDisconnect.lo libMonetODBC_la-SQLDriverConnect.lo libMonetODBC_la-SQLDrivers.lo libMonetODBC_la-SQLEndTran.lo libMonetODBC_la-SQLError.lo libMonetODBC_la-SQLExecDirect.lo libMonetODBC_la-SQLExecute.lo libMonetODBC_la-SQLExtendedFetch.lo libMonetODBC_la-SQLFetch.lo libMonetODBC_la-SQLFetchScroll.lo libMonetODBC_la-SQLForeignKeys.lo libMonetODBC_la-SQLFreeConnect.lo libMonetODBC_la-SQLFreeEnv.lo libMonetODBC_la-SQLFreeHandle.lo libMonetODBC_la-SQLFreeStmt.lo libMonetODBC_la-SQLGetConnectAttr.lo libMonetODBC_la-SQLGetConnectOption.lo libMonetODBC_la-SQLGetCursorName.lo libMonetODBC_la-SQLGetData.lo libMonetODBC_la-SQLGetDescField.lo libMonetODBC_la-SQLGetDescRec.lo libMonetODBC_la-SQLGetDiagField.lo libMonetODBC_la-SQLGetDiagRec.lo libMonetODBC_la-SQLGetEnvAttr.lo libMonetODBC_la-SQLGetFunctions.lo libMonetODBC_la-SQLGetInfo.lo libMonetODBC_la-SQLGetStmtAttr.lo libMonetODBC_la-SQLGetStmtOption.lo libMonetODBC_la-SQLGetTypeInfo.lo libMonetODBC_la-SQLMoreResults.lo libMonetODBC_la-SQLNativeSql.lo libMonetODBC_la-SQLNumParams.lo libMonetODBC_la-SQLNumResultCols.lo libMonetODBC_la-SQLParamData.lo libMonetODBC_la-SQLParamOptions.lo libMonetODBC_la-SQLPrepare.lo libMonetODBC_la-SQLPrimaryKeys.lo libMonetODBC_la-SQLProcedureColumns.lo libMonetODBC_la-SQLProcedures.lo libMonetODBC_la-SQLPutData.lo libMonetODBC_la-SQLRowCount.lo libMonetODBC_la-SQLSetConnectAttr.lo libMonetODBC_la-SQLSetConnectOption.lo libMonetODBC_la-SQLSetCursorName.lo libMonetODBC_la-SQLSetDescField.lo libMonetODBC_la-SQLSetDescRec.lo libMonetODBC_la-SQLSetEnvAttr.lo libMonetODBC_la-SQLSetParam.lo libMonetODBC_la-SQLSetPos.lo libMonetODBC_la-SQLSetScrollOptions.lo libMonetODBC_la-SQLSetStmtAttr.lo libMonetODBC_la-SQLSetStmtOption.lo libMonetODBC_la-SQLSpecialColumns.lo libMonetODBC_la-SQLStatistics.lo libMonetODBC_la-SQLTablePrivileges.lo libMonetODBC_la-SQLTables.lo libMonetODBC_la-SQLTransact.lo ../../mapilib/libmapi.la -lodbcinst )
+libtool: relink: echo "{ global:" > .libs/libMonetODBC.ver
+libtool: relink:  cat ODBC.def | sed -e "s/\(.*\)/\1;/" >> .libs/libMonetODBC.ver
+libtool: relink:  echo "local: *; };" >> .libs/libMonetODBC.ver
+libtool: relink:  gcc -shared  -fPIC -DPIC  .libs/libMonetODBC_la-ODBCConvert.o .libs/libMonetODBC_la-ODBCDbc.o .libs/libMonetODBC_la-ODBCDesc.o .libs/libMonetODBC_la-ODBCEnv.o .libs/libMonetODBC_la-ODBCError.o .libs/libMonetODBC_la-ODBCStmt.o .libs/libMonetODBC_la-ODBCUtil.o .libs/libMonetODBC_la-SQLAllocConnect.o .libs/libMonetODBC_la-SQLAllocEnv.o .libs/libMonetODBC_la-SQLAllocHandle.o .libs/libMonetODBC_la-SQLAllocStmt.o .libs/libMonetODBC_la-SQLBindCol.o .libs/libMonetODBC_la-SQLBindParameter.o .libs/libMonetODBC_la-SQLBrowseConnect.o .libs/libMonetODBC_la-SQLBulkOperations.o .libs/libMonetODBC_la-SQLCancel.o .libs/libMonetODBC_la-SQLCloseCursor.o .libs/libMonetODBC_la-SQLColAttribute.o .libs/libMonetODBC_la-SQLColAttributes.o .libs/libMonetODBC_la-SQLColumnPrivileges.o .libs/libMonetODBC_la-SQLColumns.o .libs/libMonetODBC_la-SQLConnect.o .libs/libMonetODBC_la-SQLCopyDesc.o .libs/libMonetODBC_la-SQLDataSources.o .libs/libMonetODBC_la-SQLDescribeCol.o .libs/libMonetODBC_la-SQLDescribeParam.o .libs/libMonetODBC_la-SQLDisconnect.o .libs/libMonetODBC_la-SQLDriverConnect.o .libs/libMonetODBC_la-SQLDrivers.o .libs/libMonetODBC_la-SQLEndTran.o .libs/libMonetODBC_la-SQLError.o .libs/libMonetODBC_la-SQLExecDirect.o .libs/libMonetODBC_la-SQLExecute.o .libs/libMonetODBC_la-SQLExtendedFetch.o .libs/libMonetODBC_la-SQLFetch.o .libs/libMonetODBC_la-SQLFetchScroll.o .libs/libMonetODBC_la-SQLForeignKeys.o .libs/libMonetODBC_la-SQLFreeConnect.o .libs/libMonetODBC_la-SQLFreeEnv.o .libs/libMonetODBC_la-SQLFreeHandle.o .libs/libMonetODBC_la-SQLFreeStmt.o .libs/libMonetODBC_la-SQLGetConnectAttr.o .libs/libMonetODBC_la-SQLGetConnectOption.o .libs/libMonetODBC_la-SQLGetCursorName.o .libs/libMonetODBC_la-SQLGetData.o .libs/libMonetODBC_la-SQLGetDescField.o .libs/libMonetODBC_la-SQLGetDescRec.o .libs/libMonetODBC_la-SQLGetDiagField.o .libs/libMonetODBC_la-SQLGetDiagRec.o .libs/libMonetODBC_la-SQLGetEnvAttr.o .libs/libMonetODBC_la-SQLGetFunctions.o .libs/libMonetODBC_la-SQLGetInfo.o .libs/libMonetODBC_la-SQLGetStmtAttr.o .libs/libMonetODBC_la-SQLGetStmtOption.o .libs/libMonetODBC_la-SQLGetTypeInfo.o .libs/libMonetODBC_la-SQLMoreResults.o .libs/libMonetODBC_la-SQLNativeSql.o .libs/libMonetODBC_la-SQLNumParams.o .libs/libMonetODBC_la-SQLNumResultCols.o .libs/libMonetODBC_la-SQLParamData.o .libs/libMonetODBC_la-SQLParamOptions.o .libs/libMonetODBC_la-SQLPrepare.o .libs/libMonetODBC_la-SQLPrimaryKeys.o .libs/libMonetODBC_la-SQLProcedureColumns.o .libs/libMonetODBC_la-SQLProcedures.o .libs/libMonetODBC_la-SQLPutData.o .libs/libMonetODBC_la-SQLRowCount.o .libs/libMonetODBC_la-SQLSetConnectAttr.o .libs/libMonetODBC_la-SQLSetConnectOption.o .libs/libMonetODBC_la-SQLSetCursorName.o .libs/libMonetODBC_la-SQLSetDescField.o .libs/libMonetODBC_la-SQLSetDescRec.o .libs/libMonetODBC_la-SQLSetEnvAttr.o .libs/libMonetODBC_la-SQLSetParam.o .libs/libMonetODBC_la-SQLSetPos.o .libs/libMonetODBC_la-SQLSetScrollOptions.o .libs/libMonetODBC_la-SQLSetStmtAttr.o .libs/libMonetODBC_la-SQLSetStmtOption.o .libs/libMonetODBC_la-SQLSpecialColumns.o .libs/libMonetODBC_la-SQLStatistics.o .libs/libMonetODBC_la-SQLTablePrivileges.o .libs/libMonetODBC_la-SQLTables.o .libs/libMonetODBC_la-SQLTransact.o   -Wl,-rpath -Wl,/home/tomt/bin/MonetDB/optimized/MonetDB/lib -L/home/tomt/bin/MonetDB/optimized/MonetDB/lib -lmapi -lodbcinst  -O3 -fstack-protector-all   -pthread -Wl,-soname -Wl,libMonetODBC.so -Wl,-version-script -Wl,.libs/libMonetODBC.ver -o .libs/libMonetODBC.so
+libtool: install: /usr/bin/install -c .libs/libMonetODBC.soT /home/tomt/bin/MonetDB/optimized/MonetDB/lib/libMonetODBC.so
+libtool: install: /usr/bin/install -c .libs/libMonetODBC.lai /home/tomt/bin/MonetDB/optimized/MonetDB/lib/libMonetODBC.la
+libtool: finish: PATH="/home/tomt/src/libLAS-1.8.0/bin:/home/tomt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/sbin" ldconfig -n /home/tomt/bin/MonetDB/optimized/MonetDB/lib
+----------------------------------------------------------------------
+Libraries have been installed in:
+   /home/tomt/bin/MonetDB/optimized/MonetDB/lib
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the '-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the 'LD_LIBRARY_PATH' environment variable
+     during execution
+   - add LIBDIR to the 'LD_RUN_PATH' environment variable
+     during linking
+   - use the '-Wl,-rpath -Wl,LIBDIR' linker flag
+   - have your system administrator add LIBDIR to '/etc/ld.so.conf'
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+make[8]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/odbc/driver'
+make[7]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/odbc/driver'
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/odbc/driver'
+Making install in samples
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/odbc/samples'
+make  install-am
+make[7]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/odbc/samples'
+make[8]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/odbc/samples'
+make[8]: Nothing to be done for 'install-data-am'.
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/bin'
+  /bin/bash ../../../libtool   --mode=install /usr/bin/install -c arraytest odbcsample1 testgetinfo '/home/tomt/bin/MonetDB/optimized/MonetDB/bin'
+libtool: install: /usr/bin/install -c arraytest /home/tomt/bin/MonetDB/optimized/MonetDB/bin/arraytest
+libtool: install: /usr/bin/install -c odbcsample1 /home/tomt/bin/MonetDB/optimized/MonetDB/bin/odbcsample1
+libtool: install: /usr/bin/install -c testgetinfo /home/tomt/bin/MonetDB/optimized/MonetDB/bin/testgetinfo
+make[8]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/odbc/samples'
+make[7]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/odbc/samples'
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/odbc/samples'
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/odbc'
+make[7]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/odbc'
+make[7]: Nothing to be done for 'install-exec-am'.
+make[7]: Nothing to be done for 'install-data-am'.
+make[7]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/odbc'
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/odbc'
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/odbc'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/odbc'
+Making install in perl
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl'
+make  install-recursive
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl'
+Making install in MonetDB-CLI-MapiPP
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI-MapiPP'
+make  install-recursive
+make[7]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI-MapiPP'
+Making install in MonetDB
+make[8]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI-MapiPP/MonetDB'
+make  install-recursive
+make[9]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI-MapiPP/MonetDB'
+Making install in CLI
+make[10]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI-MapiPP/MonetDB/CLI'
+make  install-am
+make[11]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI-MapiPP/MonetDB/CLI'
+make[12]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI-MapiPP/MonetDB/CLI'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/x86_64-linux-gnu/perl5/5.22/MonetDB/CLI
+make[12]: Nothing to be done for 'install-data-am'.
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/x86_64-linux-gnu/perl5/5.22/MonetDB/CLI/MapiPP.pm
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/clients/perl/MonetDB-CLI-MapiPP/MonetDB/CLI/MapiPP.pm /home/tomt/bin/MonetDB/optimized/MonetDB/lib/x86_64-linux-gnu/perl5/5.22/MonetDB/CLI/MapiPP.pm
+make[12]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI-MapiPP/MonetDB/CLI'
+make[11]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI-MapiPP/MonetDB/CLI'
+make[10]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI-MapiPP/MonetDB/CLI'
+make[10]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI-MapiPP/MonetDB'
+make[11]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI-MapiPP/MonetDB'
+make[11]: Nothing to be done for 'install-exec-am'.
+make[11]: Nothing to be done for 'install-data-am'.
+make[11]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI-MapiPP/MonetDB'
+make[10]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI-MapiPP/MonetDB'
+make[9]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI-MapiPP/MonetDB'
+make[8]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI-MapiPP/MonetDB'
+make[8]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI-MapiPP'
+make[9]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI-MapiPP'
+make[9]: Nothing to be done for 'install-exec-am'.
+make[9]: Nothing to be done for 'install-data-am'.
+make[9]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI-MapiPP'
+make[8]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI-MapiPP'
+make[7]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI-MapiPP'
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI-MapiPP'
+Making install in MonetDB-CLI
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI'
+make  install-recursive
+make[7]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI'
+Making install in MonetDB
+make[8]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI/MonetDB'
+make  install-am
+make[9]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI/MonetDB'
+make[10]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI/MonetDB'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/x86_64-linux-gnu/perl5/5.22/MonetDB
+make[10]: Nothing to be done for 'install-data-am'.
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/x86_64-linux-gnu/perl5/5.22/MonetDB/CLI.pm
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/clients/perl/MonetDB-CLI/MonetDB/CLI.pm /home/tomt/bin/MonetDB/optimized/MonetDB/lib/x86_64-linux-gnu/perl5/5.22/MonetDB/CLI.pm
+make[10]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI/MonetDB'
+make[9]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI/MonetDB'
+make[8]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI/MonetDB'
+make[8]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI'
+make[9]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI'
+make[9]: Nothing to be done for 'install-exec-am'.
+make[9]: Nothing to be done for 'install-data-am'.
+make[9]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI'
+make[8]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI'
+make[7]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI'
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/MonetDB-CLI'
+Making install in DBD
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/DBD'
+make  install-recursive
+make[7]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/DBD'
+Making install in monetdb
+make[8]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/DBD/monetdb'
+make  install-am
+make[9]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/DBD/monetdb'
+make[10]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/DBD/monetdb'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/x86_64-linux-gnu/perl5/5.22/DBD/monetdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/x86_64-linux-gnu/perl5/5.22/DBD/monetdb
+make[10]: Nothing to be done for 'install-data-am'.
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/x86_64-linux-gnu/perl5/5.22/DBD/monetdb/GetInfo.pm
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/x86_64-linux-gnu/perl5/5.22/DBD/monetdb/TypeInfo.pm
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/clients/perl/DBD/monetdb/GetInfo.pm /home/tomt/bin/MonetDB/optimized/MonetDB/lib/x86_64-linux-gnu/perl5/5.22/DBD/monetdb/GetInfo.pm
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/clients/perl/DBD/monetdb/TypeInfo.pm /home/tomt/bin/MonetDB/optimized/MonetDB/lib/x86_64-linux-gnu/perl5/5.22/DBD/monetdb/TypeInfo.pm
+make[10]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/DBD/monetdb'
+make[9]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/DBD/monetdb'
+make[8]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/DBD/monetdb'
+make[8]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/DBD'
+make[9]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/DBD'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/x86_64-linux-gnu/perl5/5.22/DBD
+make[9]: Nothing to be done for 'install-data-am'.
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/x86_64-linux-gnu/perl5/5.22/DBD/monetdb.pm
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/clients/perl/DBD/monetdb.pm /home/tomt/bin/MonetDB/optimized/MonetDB/lib/x86_64-linux-gnu/perl5/5.22/DBD/monetdb.pm
+make[9]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/DBD'
+make[8]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/DBD'
+make[7]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/DBD'
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/DBD'
+Making install in Tests
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/Tests'
+make  install-am
+make[7]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/Tests'
+make[8]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/Tests'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/bin
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/bin
+make[8]: Nothing to be done for 'install-data-am'.
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/bin'
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/bin/sqlsample.pl
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/bin/malsample.pl
+/usr/bin/install -c -m0755 malsample.pl /home/tomt/bin/MonetDB/optimized/MonetDB/bin/malsample.pl
+/usr/bin/install -c -m0755 sqlsample.pl /home/tomt/bin/MonetDB/optimized/MonetDB/bin/sqlsample.pl
+make[8]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/Tests'
+make[7]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/Tests'
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl/Tests'
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl'
+make[7]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/x86_64-linux-gnu/perl5/5.22
+make[7]: Nothing to be done for 'install-data-am'.
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/x86_64-linux-gnu/perl5/5.22/Mapi.pm
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/clients/perl/Mapi.pm /home/tomt/bin/MonetDB/optimized/MonetDB/lib/x86_64-linux-gnu/perl5/5.22/Mapi.pm
+make[7]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl'
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl'
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/perl'
+Making install in php
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/php'
+make  install-recursive
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/php'
+Making install in lib
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/php/lib'
+make  install-am
+make[7]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/php/lib'
+make[8]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/php/lib'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/share/php/monetdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/share/php/monetdb
+make[8]: Nothing to be done for 'install-data-am'.
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/share/php/monetdb/php_mapi.inc
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/share/php/monetdb/php_monetdb.php
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/clients/php/lib/php_mapi.inc /home/tomt/bin/MonetDB/optimized/MonetDB/share/php/monetdb/php_mapi.inc
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/clients/php/lib/php_monetdb.php /home/tomt/bin/MonetDB/optimized/MonetDB/share/php/monetdb/php_monetdb.php
+make[8]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/php/lib'
+make[7]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/php/lib'
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/php/lib'
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/php'
+make[7]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/php'
+make[7]: Nothing to be done for 'install-exec-am'.
+make[7]: Nothing to be done for 'install-data-am'.
+make[7]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/php'
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/php'
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/php'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/php'
+Making install in examples
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/examples'
+make  install-recursive
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/examples'
+Making install in C
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/examples/C'
+make  install-am
+make[7]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/examples/C'
+make[8]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/examples/C'
+make[8]: Nothing to be done for 'install-data-am'.
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/bin'
+  /bin/bash ../../../libtool   --mode=install /usr/bin/install -c sample0 sample1 sample2 sample3 sample4 smack00 smack01 '/home/tomt/bin/MonetDB/optimized/MonetDB/bin'
+libtool: install: /usr/bin/install -c .libs/sample0 /home/tomt/bin/MonetDB/optimized/MonetDB/bin/sample0
+libtool: install: /usr/bin/install -c .libs/sample1 /home/tomt/bin/MonetDB/optimized/MonetDB/bin/sample1
+libtool: install: /usr/bin/install -c .libs/sample2 /home/tomt/bin/MonetDB/optimized/MonetDB/bin/sample2
+libtool: install: /usr/bin/install -c .libs/sample3 /home/tomt/bin/MonetDB/optimized/MonetDB/bin/sample3
+libtool: install: /usr/bin/install -c .libs/sample4 /home/tomt/bin/MonetDB/optimized/MonetDB/bin/sample4
+libtool: install: /usr/bin/install -c .libs/smack00 /home/tomt/bin/MonetDB/optimized/MonetDB/bin/smack00
+libtool: install: /usr/bin/install -c .libs/smack01 /home/tomt/bin/MonetDB/optimized/MonetDB/bin/smack01
+make[8]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/examples/C'
+make[7]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/examples/C'
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/examples/C'
+Making install in php
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/examples/php'
+make  install-am
+make[7]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/examples/php'
+make[8]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/examples/php'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/bin
+make[8]: Nothing to be done for 'install-data-am'.
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/bin'
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/bin/sqlsample.php
+/usr/bin/install -c -m0755 /home/tomt/src/MonetDB/clients/examples/php/sqlsample.php /home/tomt/bin/MonetDB/optimized/MonetDB/bin/sqlsample.php
+make[8]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/examples/php'
+make[7]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/examples/php'
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/examples/php'
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/examples'
+make[7]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/examples'
+make[7]: Nothing to be done for 'install-exec-am'.
+make[7]: Nothing to be done for 'install-data-am'.
+make[7]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/examples'
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/examples'
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/examples'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients/examples'
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients'
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients'
+make[5]: Nothing to be done for 'install-exec-am'.
+make[5]: Nothing to be done for 'install-data-am'.
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients'
+make[3]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients'
+make[2]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/clients'
+Making install in gdk
+make[2]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/gdk'
+make  install-am
+make[3]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/gdk'
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/gdk'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/pkgconfig
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/pkgconfig/monetdb-gdk.pc
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/gdk.h
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/gdk_atomic.h
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/gdk_atoms.h
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/gdk_bbp.h
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/gdk_calc.h
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/gdk_hash.h
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/gdk/gdk_atoms.h /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/gdk_atoms.h
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/gdk_utils.h
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/gdk/gdk_atomic.h /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/gdk_atomic.h
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/gdk_delta.h
+/usr/bin/install -c -m 644 monetdb-gdk.pc /home/tomt/bin/MonetDB/optimized/MonetDB/lib/pkgconfig/monetdb-gdk.pc
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/gdk/gdk_bbp.h /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/gdk_bbp.h
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/gdk/gdk_calc.h /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/gdk_calc.h
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/gdk_posix.h
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/lib'
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/gdk/gdk.h /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/gdk.h
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/gdk_system.h
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/gdk/gdk_hash.h /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/gdk_hash.h
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/gdk/gdk_utils.h /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/gdk_utils.h
+ /bin/bash ../libtool   --mode=install /usr/bin/install -c   libbat.la '/home/tomt/bin/MonetDB/optimized/MonetDB/lib'
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/gdk/gdk_posix.h /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/gdk_posix.h
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/gdk/gdk_delta.h /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/gdk_delta.h
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/gdk/gdk_system.h /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/gdk_system.h
+libtool: install: (cd /home/tomt/bin/MonetDB/optimized/MonetDB/build/gdk; /bin/bash "/home/tomt/bin/MonetDB/optimized/MonetDB/build/libtool"  --tag CC --mode=relink gcc -DLIBGDK -O3 -fomit-frame-pointer -pipe -Werror -Wall -Wextra -W -Werror-implicit-function-declaration -Wpointer-arith -Wdeclaration-after-statement -Wundef -Wformat=2 -Wno-format-nonliteral -Winit-self -Winvalid-pch -Wmissing-declarations -Wmissing-format-attribute -Wmissing-prototypes -Wold-style-definition -Wpacked -Wunknown-pragmas -Wvariadic-macros -fstack-protector-all -Wstack-protector -Wpacked-bitfield-compat -Wsync-nand -Wjump-misses-init -Wmissing-include-dirs -Wlogical-op -Wunreachable-code -D_FORTIFY_SOURCE=2 -D_REENTRANT -version-info 13:1:0 -o libbat.la -rpath /home/tomt/bin/MonetDB/optimized/MonetDB/lib libbat_la-gdk_batop.lo libbat_la-gdk_select.lo libbat_la-gdk_search.lo libbat_la-gdk_hash.lo libbat_la-gdk_tm.lo libbat_la-gdk_orderidx.lo libbat_la-gdk_align.lo libbat_la-gdk_bbp.lo libbat_la-gdk_heap.lo libbat_la-gdk_utils.lo libbat_la-gdk_atoms.lo libbat_la-gdk_qsort.lo libbat_la-gdk_ssort.lo libbat_la-gdk_storage.lo libbat_la-gdk_bat.lo libbat_la-gdk_delta.lo libbat_la-gdk_cross.lo libbat_la-gdk_system.lo libbat_la-gdk_value.lo libbat_la-gdk_posix.lo libbat_la-gdk_logger.lo libbat_la-gdk_sample.lo libbat_la-gdk_calc.lo libbat_la-gdk_aggr.lo libbat_la-gdk_group.lo libbat_la-gdk_imprints.lo libbat_la-gdk_join.lo libbat_la-gdk_project.lo libbat_la-gdk_unique.lo libbat_la-gdk_interprocess.lo libbat_la-gdk_firstn.lo ../common/options/libmoptions.la ../common/stream/libstream.la ../common/utils/libmutils.la -lm -lz -pthread -ldl )
+libtool: relink: gcc -shared  -fPIC -DPIC  .libs/libbat_la-gdk_batop.o .libs/libbat_la-gdk_select.o .libs/libbat_la-gdk_search.o .libs/libbat_la-gdk_hash.o .libs/libbat_la-gdk_tm.o .libs/libbat_la-gdk_orderidx.o .libs/libbat_la-gdk_align.o .libs/libbat_la-gdk_bbp.o .libs/libbat_la-gdk_heap.o .libs/libbat_la-gdk_utils.o .libs/libbat_la-gdk_atoms.o .libs/libbat_la-gdk_qsort.o .libs/libbat_la-gdk_ssort.o .libs/libbat_la-gdk_storage.o .libs/libbat_la-gdk_bat.o .libs/libbat_la-gdk_delta.o .libs/libbat_la-gdk_cross.o .libs/libbat_la-gdk_system.o .libs/libbat_la-gdk_value.o .libs/libbat_la-gdk_posix.o .libs/libbat_la-gdk_logger.o .libs/libbat_la-gdk_sample.o .libs/libbat_la-gdk_calc.o .libs/libbat_la-gdk_aggr.o .libs/libbat_la-gdk_group.o .libs/libbat_la-gdk_imprints.o .libs/libbat_la-gdk_join.o .libs/libbat_la-gdk_project.o .libs/libbat_la-gdk_unique.o .libs/libbat_la-gdk_interprocess.o .libs/libbat_la-gdk_firstn.o  -Wl,--whole-archive ../common/options/.libs/libmoptions.a ../common/utils/.libs/libmutils.a -Wl,--no-whole-archive  -Wl,-rpath -Wl,/home/tomt/bin/MonetDB/optimized/MonetDB/lib -L/home/tomt/bin/MonetDB/optimized/MonetDB/lib -lstream -lm -lz -ldl  -O3 -fstack-protector-all -pthread   -pthread -Wl,-soname -Wl,libbat.so.13 -o .libs/libbat.so.13.0.1
+libtool: install: /usr/bin/install -c .libs/libbat.so.13.0.1T /home/tomt/bin/MonetDB/optimized/MonetDB/lib/libbat.so.13.0.1
+libtool: install: (cd /home/tomt/bin/MonetDB/optimized/MonetDB/lib && { ln -s -f libbat.so.13.0.1 libbat.so.13 || { rm -f libbat.so.13 && ln -s libbat.so.13.0.1 libbat.so.13; }; })
+libtool: install: (cd /home/tomt/bin/MonetDB/optimized/MonetDB/lib && { ln -s -f libbat.so.13.0.1 libbat.so || { rm -f libbat.so && ln -s libbat.so.13.0.1 libbat.so; }; })
+libtool: install: /usr/bin/install -c .libs/libbat.lai /home/tomt/bin/MonetDB/optimized/MonetDB/lib/libbat.la
+libtool: finish: PATH="/home/tomt/src/libLAS-1.8.0/bin:/home/tomt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/sbin" ldconfig -n /home/tomt/bin/MonetDB/optimized/MonetDB/lib
+----------------------------------------------------------------------
+Libraries have been installed in:
+   /home/tomt/bin/MonetDB/optimized/MonetDB/lib
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the '-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the 'LD_LIBRARY_PATH' environment variable
+     during execution
+   - add LIBDIR to the 'LD_RUN_PATH' environment variable
+     during linking
+   - use the '-Wl,-rpath -Wl,LIBDIR' linker flag
+   - have your system administrator add LIBDIR to '/etc/ld.so.conf'
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/gdk'
+make[3]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/gdk'
+make[2]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/gdk'
+Making install in monetdb5
+make[2]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5'
+make  install-recursive
+make[3]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5'
+Making install in mal
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/mal'
+make  install-am
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/mal'
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/mal'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/mal.h
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/mal_errors.h
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb
+make[6]: Nothing to be done for 'install-data-am'.
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/mal_exception.h
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/mal_namespace.h
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/mal_instruction.h
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/mal_stack.h
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/mal/mal.h /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/mal.h
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/mal_type.h
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/mal/mal_errors.h /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/mal_errors.h
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/mal/mal_exception.h /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/mal_exception.h
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/mal/mal_stack.h /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/mal_stack.h
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/mal/mal_namespace.h /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/mal_namespace.h
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/mal/mal_instruction.h /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/mal_instruction.h
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/mal/mal_type.h /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/mal_type.h
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/mal'
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/mal'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/mal'
+Making install in modules
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/modules'
+make  install-recursive
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/modules'
+Making install in atoms
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/modules/atoms'
+make  install-am
+make[7]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/modules/atoms'
+make[8]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/modules/atoms'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/batxml.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/blob.mal
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/00_json_hge.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/color.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/identifier.mal
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/json.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/mtime.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/atoms/blob.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/blob.mal
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+make[8]: Nothing to be done for 'install-data-am'.
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/inet.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/atoms/identifier.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/identifier.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/mcurl.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/atoms/color.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/color.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/atoms/00_json_hge.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/00_json_hge.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/str.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/atoms/batxml.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/batxml.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/atoms/mcurl.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/mcurl.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/atoms/json.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/json.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/xml.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/uuid.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/atoms/inet.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/inet.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/atoms/str.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/str.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/atoms/uuid.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/uuid.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/streams.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/url.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/atoms/xml.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/xml.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/atoms/mtime.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/mtime.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/atoms/streams.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/streams.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/atoms/url.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/url.mal
+make[8]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/modules/atoms'
+make[7]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/modules/atoms'
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/modules/atoms'
+Making install in kernel
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/modules/kernel'
+make  install-am
+make[7]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/modules/kernel'
+make[8]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/modules/kernel'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/00_aggr_hge.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/aggr.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/alarm.mal
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/algebra.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/bat5.mal
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+make[8]: Nothing to be done for 'install-data-am'.
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/batcolor.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/group.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/batmmath.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/kernel/aggr.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/aggr.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/batstr.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/kernel/00_aggr_hge.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/00_aggr_hge.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/status.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/kernel/alarm.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/alarm.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/kernel/batcolor.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/batcolor.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/kernel/group.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/group.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/kernel/batmmath.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/batmmath.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/kernel/status.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/status.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/logger.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/kernel/algebra.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/algebra.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/mmath.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/kernel/bat5.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/bat5.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/kernel/batstr.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/batstr.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/microbenchmark.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/kernel/logger.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/logger.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/kernel/mmath.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/mmath.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/kernel/microbenchmark.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/microbenchmark.mal
+make[8]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/modules/kernel'
+make[7]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/modules/kernel'
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/modules/kernel'
+Making install in mal
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/modules/mal'
+make  install-am
+make[7]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/modules/mal'
+make[8]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/modules/mal'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/00_batExtensions_hge.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/00_batcalc_hge.mal
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/00_calc_hge.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/00_iterator_hge.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/00_language_hge.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/00_mal_mapi_hge.mal
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/00_mkey_hge.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/batExtensions.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/00_language_hge.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/00_language_hge.mal
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/01_batcalc.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/bbp.mal
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/00_mal_mapi_hge.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/00_mal_mapi_hge.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/clients.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/groupby.mal
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/00_batcalc_hge.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/00_batcalc_hge.mal
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/factories.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/inspect.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/00_mkey_hge.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/00_mkey_hge.mal
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/batExtensions.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/batExtensions.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/batmtime.mal
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/00_calc_hge.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/00_calc_hge.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/01_calc.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/bbp.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/bbp.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/language.mal
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/00_batExtensions_hge.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/00_batExtensions_hge.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/00_iterator_hge.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/00_iterator_hge.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/01_batcalc.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/01_batcalc.mal
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/iterator.mal
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/json_util.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/clients.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/clients.mal
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/manifold.mal
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/iterator.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/iterator.mal
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/language.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/language.mal
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/groupby.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/groupby.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/pcre.mal
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/manifold.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/manifold.mal
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/mat.mal
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+make[8]: Nothing to be done for 'install-data-am'.
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/mal_mapi.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/mal_init.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/manual.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/txtsim.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/inspect.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/inspect.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/factories.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/factories.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/mat.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/mat.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/recycle.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sysmon.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/mal_io.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/mkey.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/transaction.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/zorder.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/mdb.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/batmtime.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/batmtime.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/recycle.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/recycle.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/remote.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/sysmon.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sysmon.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/mal_io.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/mal_io.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/01_calc.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/01_calc.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/orderidx.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/json_util.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/json_util.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sample.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/querylog.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/mal_mapi.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/mal_mapi.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/transaction.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/transaction.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/mal_init.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/mal_init.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/profiler.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/manual.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/manual.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/pcre.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/pcre.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sabaoth.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/zorder.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/zorder.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/tokenizer.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/txtsim.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/txtsim.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/mkey.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/mkey.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/profiler.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/profiler.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/sabaoth.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sabaoth.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/mdb.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/mdb.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/querylog.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/querylog.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/remote.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/remote.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/orderidx.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/orderidx.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/sample.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sample.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/modules/mal/tokenizer.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/tokenizer.mal
+make[8]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/modules/mal'
+make[7]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/modules/mal'
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/modules/mal'
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/modules'
+make[7]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/modules'
+make[7]: Nothing to be done for 'install-exec-am'.
+make[7]: Nothing to be done for 'install-data-am'.
+make[7]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/modules'
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/modules'
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/modules'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/modules'
+Making install in optimizer
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/optimizer'
+make  install-am
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/optimizer'
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/optimizer'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+make[6]: Nothing to be done for 'install-data-am'.
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/optimizer.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/optimizer/optimizer.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/optimizer.mal
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/optimizer'
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/optimizer'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/optimizer'
+Making install in scheduler
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/scheduler'
+make  install-am
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/scheduler'
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/scheduler'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+make[6]: Nothing to be done for 'install-data-am'.
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/run_adder.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/run_isolate.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/srvpool.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/run_memo.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/scheduler/run_adder.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/run_adder.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/scheduler/run_isolate.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/run_isolate.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/scheduler/srvpool.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/srvpool.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/scheduler/run_memo.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/run_memo.mal
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/scheduler'
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/scheduler'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/scheduler'
+Making install in tools
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/tools'
+make  install-am
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/tools'
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/tools'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/pkgconfig
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/pkgconfig/monetdb5.pc
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/lib'
+ /bin/bash ../../libtool   --mode=install /usr/bin/install -c   libmonetdb5.la '/home/tomt/bin/MonetDB/optimized/MonetDB/lib'
+/usr/bin/install -c -m 644 monetdb5.pc /home/tomt/bin/MonetDB/optimized/MonetDB/lib/pkgconfig/monetdb5.pc
+libtool: install: (cd /home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/tools; /bin/bash "/home/tomt/bin/MonetDB/optimized/MonetDB/build/libtool"  --tag CC --mode=relink gcc -DLIBMONETDB5 -O3 -fomit-frame-pointer -pipe -Werror -Wall -Wextra -W -Werror-implicit-function-declaration -Wpointer-arith -Wdeclaration-after-statement -Wundef -Wformat=2 -Wno-format-nonliteral -Winit-self -Winvalid-pch -Wmissing-declarations -Wmissing-format-attribute -Wmissing-prototypes -Wold-style-definition -Wpacked -Wunknown-pragmas -Wvariadic-macros -fstack-protector-all -Wstack-protector -Wpacked-bitfield-compat -Wsync-nand -Wjump-misses-init -Wmissing-include-dirs -Wlogical-op -Wunreachable-code -D_FORTIFY_SOURCE=2 -D_REENTRANT -version-info 21:1:0 -o libmonetdb5.la -rpath /home/tomt/bin/MonetDB/optimized/MonetDB/lib ../mal/libmal.la ../modules/atoms/libatoms.la ../modules/kernel/libkernel.la ../modules/mal/libmal.la ../optimizer/liboptimizer.la ../scheduler/libscheduler.la ../../gdk/libbat.la ../../clients/mapilib/libmapi.la ../../common/stream/libstream.la ../../common/utils/libmcrypt.la ../../common/utils/libmuuid.la ../../common/utils/libmsabaoth.la -luuid -lcurl -lm -pthread -ldl -lssl -lcrypto -lpcre -lz -lxml2 )
+libtool: relink: gcc -shared  -fPIC -DPIC  -Wl,--whole-archive ../mal/.libs/libmal.a ../modules/atoms/.libs/libatoms.a ../modules/kernel/.libs/libkernel.a ../modules/mal/.libs/libmal.a ../optimizer/.libs/liboptimizer.a ../scheduler/.libs/libscheduler.a ../../common/utils/.libs/libmcrypt.a ../../common/utils/.libs/libmuuid.a ../../common/utils/.libs/libmsabaoth.a -Wl,--no-whole-archive  -Wl,-rpath -Wl,/home/tomt/bin/MonetDB/optimized/MonetDB/lib -L/home/tomt/bin/MonetDB/optimized/MonetDB/lib -lbat -lmapi -lstream -luuid -L/usr/lib/x86_64-linux-gnu -lcurl -lm -ldl -lssl -lcrypto -lpcre -lz -lxml2  -O3 -fstack-protector-all -pthread   -pthread -Wl,-soname -Wl,libmonetdb5.so.21 -o .libs/libmonetdb5.so.21.0.1
+libtool: install: /usr/bin/install -c .libs/libmonetdb5.so.21.0.1T /home/tomt/bin/MonetDB/optimized/MonetDB/lib/libmonetdb5.so.21.0.1
+libtool: install: (cd /home/tomt/bin/MonetDB/optimized/MonetDB/lib && { ln -s -f libmonetdb5.so.21.0.1 libmonetdb5.so.21 || { rm -f libmonetdb5.so.21 && ln -s libmonetdb5.so.21.0.1 libmonetdb5.so.21; }; })
+libtool: install: (cd /home/tomt/bin/MonetDB/optimized/MonetDB/lib && { ln -s -f libmonetdb5.so.21.0.1 libmonetdb5.so || { rm -f libmonetdb5.so && ln -s libmonetdb5.so.21.0.1 libmonetdb5.so; }; })
+libtool: install: /usr/bin/install -c .libs/libmonetdb5.lai /home/tomt/bin/MonetDB/optimized/MonetDB/lib/libmonetdb5.la
+libtool: finish: PATH="/home/tomt/src/libLAS-1.8.0/bin:/home/tomt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/sbin" ldconfig -n /home/tomt/bin/MonetDB/optimized/MonetDB/lib
+----------------------------------------------------------------------
+Libraries have been installed in:
+   /home/tomt/bin/MonetDB/optimized/MonetDB/lib
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the '-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the 'LD_LIBRARY_PATH' environment variable
+     during execution
+   - add LIBDIR to the 'LD_RUN_PATH' environment variable
+     during linking
+   - use the '-Wl,-rpath -Wl,LIBDIR' linker flag
+   - have your system administrator add LIBDIR to '/etc/ld.so.conf'
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/tools'
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/tools'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/tools'
+Making install in extras
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/extras'
+make  install-recursive
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/extras'
+Making install in mal_optimizer_template
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/extras/mal_optimizer_template'
+make  install-am
+make[7]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/extras/mal_optimizer_template'
+make[8]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/extras/mal_optimizer_template'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/91_opt_sql_append.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/opt_sql_append.mal
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5'
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/extras/mal_optimizer_template/91_opt_sql_append.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/91_opt_sql_append.mal
+ /bin/bash ../../../libtool   --mode=install /usr/bin/install -c   lib_opt_sql_append.la '/home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5'
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/extras/mal_optimizer_template/opt_sql_append.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/opt_sql_append.mal
+libtool: install: (cd /home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/extras/mal_optimizer_template; /bin/bash "/home/tomt/bin/MonetDB/optimized/MonetDB/build/libtool"  --tag CC --mode=relink gcc -DLIBOPT_SQL_APPEND -O3 -fomit-frame-pointer -pipe -Werror -Wall -Wextra -W -Werror-implicit-function-declaration -Wpointer-arith -Wdeclaration-after-statement -Wundef -Wformat=2 -Wno-format-nonliteral -Winit-self -Winvalid-pch -Wmissing-declarations -Wmissing-format-attribute -Wmissing-prototypes -Wold-style-definition -Wpacked -Wunknown-pragmas -Wvariadic-macros -fstack-protector-all -Wstack-protector -Wpacked-bitfield-compat -Wsync-nand -Wjump-misses-init -Wmissing-include-dirs -Wlogical-op -Wunreachable-code -D_FORTIFY_SOURCE=2 -D_REENTRANT -module -avoid-version -o lib_opt_sql_append.la -rpath /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5 lib_opt_sql_append_la-opt_sql_append.lo ../../tools/libmonetdb5.la ../../../gdk/libbat.la ../../../common/stream/libstream.la )
+libtool: relink: gcc -shared  -fPIC -DPIC  .libs/lib_opt_sql_append_la-opt_sql_append.o   -Wl,-rpath -Wl,/home/tomt/bin/MonetDB/optimized/MonetDB/lib -L/home/tomt/bin/MonetDB/optimized/MonetDB/lib -lmonetdb5 -lbat -lstream  -O3 -fstack-protector-all   -pthread -Wl,-soname -Wl,lib_opt_sql_append.so -o .libs/lib_opt_sql_append.so
+libtool: install: /usr/bin/install -c .libs/lib_opt_sql_append.soT /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/lib_opt_sql_append.so
+libtool: install: /usr/bin/install -c .libs/lib_opt_sql_append.lai /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/lib_opt_sql_append.la
+libtool: finish: PATH="/home/tomt/src/libLAS-1.8.0/bin:/home/tomt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/sbin" ldconfig -n /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+----------------------------------------------------------------------
+Libraries have been installed in:
+   /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the '-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the 'LD_LIBRARY_PATH' environment variable
+     during execution
+   - add LIBDIR to the 'LD_RUN_PATH' environment variable
+     during linking
+   - use the '-Wl,-rpath -Wl,LIBDIR' linker flag
+   - have your system administrator add LIBDIR to '/etc/ld.so.conf'
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+make[8]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/extras/mal_optimizer_template'
+make[7]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/extras/mal_optimizer_template'
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/extras/mal_optimizer_template'
+Making install in pyapi
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/extras/pyapi'
+make  install-am
+make[7]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/extras/pyapi'
+make[8]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/extras/pyapi'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/50_pyapi.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/pyapi.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/extras/pyapi/50_pyapi.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/50_pyapi.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/monetdb5/extras/pyapi/pyapi.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/pyapi.mal
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5'
+ /bin/bash ../../../libtool   --mode=install /usr/bin/install -c   lib_pyapi.la '/home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5'
+libtool: install: (cd /home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/extras/pyapi; /bin/bash "/home/tomt/bin/MonetDB/optimized/MonetDB/build/libtool"  --tag CC --mode=relink gcc -DLIBPYAPI -O3 -fomit-frame-pointer -pipe -Werror -Wall -Wextra -W -Werror-implicit-function-declaration -Wpointer-arith -Wdeclaration-after-statement -Wundef -Wformat=2 -Wno-format-nonliteral -Winit-self -Winvalid-pch -Wmissing-declarations -Wmissing-format-attribute -Wmissing-prototypes -Wold-style-definition -Wpacked -Wunknown-pragmas -Wvariadic-macros -fstack-protector-all -Wstack-protector -Wpacked-bitfield-compat -Wsync-nand -Wjump-misses-init -Wmissing-include-dirs -Wlogical-op -Wunreachable-code -D_FORTIFY_SOURCE=2 -D_REENTRANT -module -avoid-version -o lib_pyapi.la -rpath /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5 lib_pyapi_la-pyapi.lo lib_pyapi_la-unicode.lo lib_pyapi_la-pytypes.lo lib_pyapi_la-type_conversion.lo lib_pyapi_la-formatinput.lo lib_pyapi_la-connection.lo ../../tools/libmonetdb5.la ../../../gdk/libbat.la -L/usr/lib/python2.7/config-x86_64-linux-gnu -L/usr/lib -lpython2.7 -lpthread -ldl -lutil -lm -Xlinker -export-dynamic -Wl,-O1 -Wl,-Bsymbolic-functions )
+libtool: relink: gcc -shared  -fPIC -DPIC  .libs/lib_pyapi_la-pyapi.o .libs/lib_pyapi_la-unicode.o .libs/lib_pyapi_la-pytypes.o .libs/lib_pyapi_la-type_conversion.o .libs/lib_pyapi_la-formatinput.o .libs/lib_pyapi_la-connection.o   -Wl,-rpath -Wl,/home/tomt/bin/MonetDB/optimized/MonetDB/lib -L/home/tomt/bin/MonetDB/optimized/MonetDB/lib -lmonetdb5 -lbat -L/usr/lib/python2.7/config-x86_64-linux-gnu -L/usr/lib -lpython2.7 -lpthread -ldl -lutil -lm  -O3 -fstack-protector-all -Wl,-export-dynamic -Wl,-O1 -Wl,-Bsymbolic-functions   -pthread -Wl,-soname -Wl,lib_pyapi.so -o .libs/lib_pyapi.so
+libtool: install: /usr/bin/install -c .libs/lib_pyapi.soT /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/lib_pyapi.so
+libtool: install: /usr/bin/install -c .libs/lib_pyapi.lai /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/lib_pyapi.la
+libtool: finish: PATH="/home/tomt/src/libLAS-1.8.0/bin:/home/tomt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/sbin" ldconfig -n /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+----------------------------------------------------------------------
+Libraries have been installed in:
+   /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the '-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the 'LD_LIBRARY_PATH' environment variable
+     during execution
+   - add LIBDIR to the 'LD_RUN_PATH' environment variable
+     during linking
+   - use the '-Wl,-rpath -Wl,LIBDIR' linker flag
+   - have your system administrator add LIBDIR to '/etc/ld.so.conf'
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+make[8]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/extras/pyapi'
+make[7]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/extras/pyapi'
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/extras/pyapi'
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/extras'
+make[7]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/extras'
+make[7]: Nothing to be done for 'install-exec-am'.
+make[7]: Nothing to be done for 'install-data-am'.
+make[7]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/extras'
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/extras'
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/extras'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5/extras'
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5'
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5'
+make[5]: Nothing to be done for 'install-exec-am'.
+make[5]: Nothing to be done for 'install-data-am'.
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5'
+make[3]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5'
+make[2]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/monetdb5'
+Making install in sql
+make[2]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql'
+make  install-recursive
+make[3]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql'
+Making install in include
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/include'
+make  install-am
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/include'
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/include'
+make[6]: Nothing to be done for 'install-exec-am'.
+make[6]: Nothing to be done for 'install-data-am'.
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/include'
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/include'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/include'
+Making install in common
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/common'
+make  install-am
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/common'
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/common'
+make[6]: Nothing to be done for 'install-exec-am'.
+make[6]: Nothing to be done for 'install-data-am'.
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/common'
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/common'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/common'
+Making install in storage
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/storage'
+make  install-recursive
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/storage'
+Making install in bat
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/storage/bat'
+make  install-am
+make[7]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/storage/bat'
+make[8]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/storage/bat'
+make[8]: Nothing to be done for 'install-exec-am'.
+make[8]: Nothing to be done for 'install-data-am'.
+make[8]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/storage/bat'
+make[7]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/storage/bat'
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/storage/bat'
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/storage'
+make[7]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/storage'
+make[7]: Nothing to be done for 'install-exec-am'.
+make[7]: Nothing to be done for 'install-data-am'.
+make[7]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/storage'
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/storage'
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/storage'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/storage'
+Making install in server
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/server'
+make  install-am
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/server'
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/server'
+make[6]: Nothing to be done for 'install-exec-am'.
+make[6]: Nothing to be done for 'install-data-am'.
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/server'
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/server'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/server'
+Making install in backends
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends'
+make  install-recursive
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends'
+Making install in monet5
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5'
+make  install-recursive
+make[7]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5'
+Making install in vaults
+make[8]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/vaults'
+make  install-recursive
+make[9]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/vaults'
+Making install in lidar
+make[10]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/vaults/lidar'
+make  install-am
+make[11]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/vaults/lidar'
+make[12]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/vaults/lidar'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/75_lidar.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/75_lidar.sql
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/lidar.mal
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5'
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/vaults/lidar/75_lidar.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/75_lidar.sql
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/vaults/lidar/75_lidar.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/75_lidar.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/vaults/lidar/lidar.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/lidar.mal
+ /bin/bash ../../../../../libtool   --mode=install /usr/bin/install -c   lib_lidar.la '/home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5'
+libtool: install: (cd /home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/vaults/lidar; /bin/bash "/home/tomt/bin/MonetDB/optimized/MonetDB/build/libtool"  --tag CC --mode=relink gcc -DLIBLIDAR -O3 -fomit-frame-pointer -pipe -Werror -Wall -Wextra -W -Werror-implicit-function-declaration -Wpointer-arith -Wdeclaration-after-statement -Wundef -Wformat=2 -Wno-format-nonliteral -Winit-self -Winvalid-pch -Wmissing-declarations -Wmissing-format-attribute -Wmissing-prototypes -Wold-style-definition -Wpacked -Wunknown-pragmas -Wvariadic-macros -fstack-protector-all -Wstack-protector -Wpacked-bitfield-compat -Wsync-nand -Wjump-misses-init -Wmissing-include-dirs -Wlogical-op -Wunreachable-code -D_FORTIFY_SOURCE=2 -module -avoid-version -o lib_lidar.la -rpath /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5 lib_lidar_la-lidar.lo ../../../../../monetdb5/tools/libmonetdb5.la -L/usr/local/lib -llas -llas_c -L/usr/lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu/libboost_program_options.so /usr/lib/x86_64-linux-gnu/libboost_thread.so /usr/local/lib/libgdal.so /usr/lib/x86_64-linux-gnu/libgeotiff.so /usr/lib/x86_64-linux-gnu/libtiff.so /usr/local/lib/liblaszip.so )
+libtool: relink: gcc -shared  -fPIC -DPIC  .libs/lib_lidar_la-lidar.o   -Wl,-rpath -Wl,/home/tomt/bin/MonetDB/optimized/MonetDB/lib -L/home/tomt/bin/MonetDB/optimized/MonetDB/lib -lmonetdb5 -L/usr/local/lib -llas -llas_c -L/usr/lib/x86_64-linux-gnu  -O3 -fstack-protector-all   -pthread -Wl,-soname -Wl,lib_lidar.so -o .libs/lib_lidar.so
+libtool: install: /usr/bin/install -c .libs/lib_lidar.soT /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/lib_lidar.so
+libtool: install: /usr/bin/install -c .libs/lib_lidar.lai /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/lib_lidar.la
+libtool: finish: PATH="/home/tomt/src/libLAS-1.8.0/bin:/home/tomt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/sbin" ldconfig -n /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+----------------------------------------------------------------------
+Libraries have been installed in:
+   /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the '-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the 'LD_LIBRARY_PATH' environment variable
+     during execution
+   - add LIBDIR to the 'LD_RUN_PATH' environment variable
+     during linking
+   - use the '-Wl,-rpath -Wl,LIBDIR' linker flag
+   - have your system administrator add LIBDIR to '/etc/ld.so.conf'
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+make[12]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/vaults/lidar'
+make[11]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/vaults/lidar'
+make[10]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/vaults/lidar'
+Making install in shp
+make[10]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/vaults/shp'
+make  install-am
+make[11]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/vaults/shp'
+make[12]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/vaults/shp'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/75_shp.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/75_shp.sql
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/shp.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/vaults/shp/75_shp.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/75_shp.mal
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5'
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/vaults/shp/shp.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/shp.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/vaults/shp/75_shp.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/75_shp.sql
+ /bin/bash ../../../../../libtool   --mode=install /usr/bin/install -c   lib_shp.la '/home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5'
+libtool: install: (cd /home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/vaults/shp; /bin/bash "/home/tomt/bin/MonetDB/optimized/MonetDB/build/libtool"  --tag CC --mode=relink gcc -DLIBSHP -O3 -fomit-frame-pointer -pipe -Werror -Wall -Wextra -W -Werror-implicit-function-declaration -Wpointer-arith -Wdeclaration-after-statement -Wundef -Wformat=2 -Wno-format-nonliteral -Winit-self -Winvalid-pch -Wmissing-declarations -Wmissing-format-attribute -Wmissing-prototypes -Wold-style-definition -Wpacked -Wunknown-pragmas -Wvariadic-macros -fstack-protector-all -Wstack-protector -Wpacked-bitfield-compat -Wsync-nand -Wjump-misses-init -Wmissing-include-dirs -Wlogical-op -Wunreachable-code -D_FORTIFY_SOURCE=2 -module -avoid-version -o lib_shp.la -rpath /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5 lib_shp_la-shp.lo ../../../../../monetdb5/tools/libmonetdb5.la -L/usr/local/lib -lgdal )
+libtool: relink: gcc -shared  -fPIC -DPIC  .libs/lib_shp_la-shp.o   -Wl,-rpath -Wl,/home/tomt/bin/MonetDB/optimized/MonetDB/lib -L/home/tomt/bin/MonetDB/optimized/MonetDB/lib -lmonetdb5 -L/usr/local/lib -lgdal  -O3 -fstack-protector-all   -pthread -Wl,-soname -Wl,lib_shp.so -o .libs/lib_shp.so
+libtool: install: /usr/bin/install -c .libs/lib_shp.soT /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/lib_shp.so
+libtool: install: /usr/bin/install -c .libs/lib_shp.lai /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/lib_shp.la
+libtool: finish: PATH="/home/tomt/src/libLAS-1.8.0/bin:/home/tomt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/sbin" ldconfig -n /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+----------------------------------------------------------------------
+Libraries have been installed in:
+   /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the '-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the 'LD_LIBRARY_PATH' environment variable
+     during execution
+   - add LIBDIR to the 'LD_RUN_PATH' environment variable
+     during linking
+   - use the '-Wl,-rpath -Wl,LIBDIR' linker flag
+   - have your system administrator add LIBDIR to '/etc/ld.so.conf'
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+make[12]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/vaults/shp'
+make[11]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/vaults/shp'
+make[10]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/vaults/shp'
+make[10]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/vaults'
+make[11]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/vaults'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/70_vault.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/vault.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/vault.sql
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5'
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/vaults/70_vault.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/70_vault.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/vaults/vault.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/vault.mal
+ /bin/bash ../../../../libtool   --mode=install /usr/bin/install -c   lib_vault.la '/home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5'
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/vaults/vault.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/vault.sql
+libtool: install: (cd /home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/vaults; /bin/bash "/home/tomt/bin/MonetDB/optimized/MonetDB/build/libtool"  --tag CC --mode=relink gcc -DLIBVAULT -O3 -fomit-frame-pointer -pipe -Werror -Wall -Wextra -W -Werror-implicit-function-declaration -Wpointer-arith -Wdeclaration-after-statement -Wundef -Wformat=2 -Wno-format-nonliteral -Winit-self -Winvalid-pch -Wmissing-declarations -Wmissing-format-attribute -Wmissing-prototypes -Wold-style-definition -Wpacked -Wunknown-pragmas -Wvariadic-macros -fstack-protector-all -Wstack-protector -Wpacked-bitfield-compat -Wsync-nand -Wjump-misses-init -Wmissing-include-dirs -Wlogical-op -Wunreachable-code -D_FORTIFY_SOURCE=2 -module -avoid-version -o lib_vault.la -rpath /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5 lib_vault_la-vault.lo ../../../../monetdb5/tools/libmonetdb5.la ../../../../gdk/libbat.la -lcurl )
+libtool: relink: gcc -shared  -fPIC -DPIC  .libs/lib_vault_la-vault.o   -Wl,-rpath -Wl,/home/tomt/bin/MonetDB/optimized/MonetDB/lib -L/home/tomt/bin/MonetDB/optimized/MonetDB/lib -lmonetdb5 -lbat -L/usr/lib/x86_64-linux-gnu -lcurl  -O3 -fstack-protector-all   -pthread -Wl,-soname -Wl,lib_vault.so -o .libs/lib_vault.so
+libtool: install: /usr/bin/install -c .libs/lib_vault.soT /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/lib_vault.so
+libtool: install: /usr/bin/install -c .libs/lib_vault.lai /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/lib_vault.la
+libtool: finish: PATH="/home/tomt/src/libLAS-1.8.0/bin:/home/tomt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/sbin" ldconfig -n /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+----------------------------------------------------------------------
+Libraries have been installed in:
+   /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the '-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the 'LD_LIBRARY_PATH' environment variable
+     during execution
+   - add LIBDIR to the 'LD_RUN_PATH' environment variable
+     during linking
+   - use the '-Wl,-rpath -Wl,LIBDIR' linker flag
+   - have your system administrator add LIBDIR to '/etc/ld.so.conf'
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+make[11]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/vaults'
+make[10]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/vaults'
+make[9]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/vaults'
+make[8]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/vaults'
+Making install in UDF
+make[8]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/UDF'
+make  install-am
+make[9]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/UDF'
+make[10]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/UDF'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/80_udf_hge.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/udf_hge.mal
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5'
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/80_udf_hge.sql
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/80_udf.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/udf.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/UDF/80_udf_hge.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/80_udf_hge.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/80_udf.sql
+ /bin/bash ../../../../libtool   --mode=install /usr/bin/install -c   lib_udf.la '/home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5'
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/UDF/udf_hge.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/udf_hge.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/UDF/80_udf_hge.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/80_udf_hge.sql
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/UDF/udf.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/udf.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/UDF/80_udf.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/80_udf.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/UDF/80_udf.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/80_udf.sql
+libtool: install: (cd /home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/UDF; /bin/bash "/home/tomt/bin/MonetDB/optimized/MonetDB/build/libtool"  --tag CC --mode=relink gcc -DLIBUDF -O3 -fomit-frame-pointer -pipe -Werror -Wall -Wextra -W -Werror-implicit-function-declaration -Wpointer-arith -Wdeclaration-after-statement -Wundef -Wformat=2 -Wno-format-nonliteral -Winit-self -Winvalid-pch -Wmissing-declarations -Wmissing-format-attribute -Wmissing-prototypes -Wold-style-definition -Wpacked -Wunknown-pragmas -Wvariadic-macros -fstack-protector-all -Wstack-protector -Wpacked-bitfield-compat -Wsync-nand -Wjump-misses-init -Wmissing-include-dirs -Wlogical-op -Wunreachable-code -D_FORTIFY_SOURCE=2 -module -avoid-version -o lib_udf.la -rpath /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5 lib_udf_la-udf.lo ../../../../monetdb5/tools/libmonetdb5.la ../../../../gdk/libbat.la )
+libtool: relink: gcc -shared  -fPIC -DPIC  .libs/lib_udf_la-udf.o   -Wl,-rpath -Wl,/home/tomt/bin/MonetDB/optimized/MonetDB/lib -L/home/tomt/bin/MonetDB/optimized/MonetDB/lib -lmonetdb5 -lbat  -O3 -fstack-protector-all   -pthread -Wl,-soname -Wl,lib_udf.so -o .libs/lib_udf.so
+libtool: install: /usr/bin/install -c .libs/lib_udf.soT /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/lib_udf.so
+libtool: install: /usr/bin/install -c .libs/lib_udf.lai /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/lib_udf.la
+libtool: finish: PATH="/home/tomt/src/libLAS-1.8.0/bin:/home/tomt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/sbin" ldconfig -n /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+----------------------------------------------------------------------
+Libraries have been installed in:
+   /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the '-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the 'LD_LIBRARY_PATH' environment variable
+     during execution
+   - add LIBDIR to the 'LD_RUN_PATH' environment variable
+     during linking
+   - use the '-Wl,-rpath -Wl,LIBDIR' linker flag
+   - have your system administrator add LIBDIR to '/etc/ld.so.conf'
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+make[10]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/UDF'
+make[9]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/UDF'
+make[8]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/UDF'
+Making install in LSST
+make[8]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/LSST'
+make  install-am
+make[9]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/LSST'
+make[10]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/LSST'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/lsst.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/80_lsst.mal
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5'
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/LSST/lsst.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/lsst.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/LSST/80_lsst.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/80_lsst.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/lsst.sql
+ /bin/bash ../../../../libtool   --mode=install /usr/bin/install -c   lib_lsst.la '/home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5'
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/LSST/lsst.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/lsst.sql
+libtool: install: (cd /home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/LSST; /bin/bash "/home/tomt/bin/MonetDB/optimized/MonetDB/build/libtool"  --tag CC --mode=relink gcc -DLIBLSST -O3 -fomit-frame-pointer -pipe -Werror -Wall -Wextra -W -Werror-implicit-function-declaration -Wpointer-arith -Wdeclaration-after-statement -Wundef -Wformat=2 -Wno-format-nonliteral -Winit-self -Winvalid-pch -Wmissing-declarations -Wmissing-format-attribute -Wmissing-prototypes -Wold-style-definition -Wpacked -Wunknown-pragmas -Wvariadic-macros -fstack-protector-all -Wstack-protector -Wpacked-bitfield-compat -Wsync-nand -Wjump-misses-init -Wmissing-include-dirs -Wlogical-op -Wunreachable-code -D_FORTIFY_SOURCE=2 -module -avoid-version -o lib_lsst.la -rpath /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5 lib_lsst_la-lsst.lo ../../../../monetdb5/tools/libmonetdb5.la ../../../../gdk/libbat.la )
+libtool: relink: gcc -shared  -fPIC -DPIC  .libs/lib_lsst_la-lsst.o   -Wl,-rpath -Wl,/home/tomt/bin/MonetDB/optimized/MonetDB/lib -L/home/tomt/bin/MonetDB/optimized/MonetDB/lib -lmonetdb5 -lbat  -O3 -fstack-protector-all   -pthread -Wl,-soname -Wl,lib_lsst.so -o .libs/lib_lsst.so
+libtool: install: /usr/bin/install -c .libs/lib_lsst.soT /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/lib_lsst.so
+libtool: install: /usr/bin/install -c .libs/lib_lsst.lai /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/lib_lsst.la
+libtool: finish: PATH="/home/tomt/src/libLAS-1.8.0/bin:/home/tomt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/sbin" ldconfig -n /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+----------------------------------------------------------------------
+Libraries have been installed in:
+   /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the '-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the 'LD_LIBRARY_PATH' environment variable
+     during execution
+   - add LIBDIR to the 'LD_RUN_PATH' environment variable
+     during linking
+   - use the '-Wl,-rpath -Wl,LIBDIR' linker flag
+   - have your system administrator add LIBDIR to '/etc/ld.so.conf'
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+make[10]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/LSST'
+make[9]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/LSST'
+make[8]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/LSST'
+Making install in generator
+make[8]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/generator'
+make  install-am
+make[9]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/generator'
+make[10]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/generator'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/90_generator_hge.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/90_generator_hge.sql
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/generator_hge.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/90_generator.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/90_generator.sql
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/generator.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/generator/90_generator_hge.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/90_generator_hge.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/generator/90_generator_hge.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/90_generator_hge.sql
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/generator/generator_hge.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/generator_hge.mal
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5'
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/generator/90_generator.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/90_generator.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/generator/generator.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/generator.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/generator/90_generator.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/90_generator.sql
+ /bin/bash ../../../../libtool   --mode=install /usr/bin/install -c   lib_generator.la '/home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5'
+libtool: install: (cd /home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/generator; /bin/bash "/home/tomt/bin/MonetDB/optimized/MonetDB/build/libtool"  --tag CC --mode=relink gcc -DLIBGENERATOR -O3 -fomit-frame-pointer -pipe -Werror -Wall -Wextra -W -Werror-implicit-function-declaration -Wpointer-arith -Wdeclaration-after-statement -Wundef -Wformat=2 -Wno-format-nonliteral -Winit-self -Winvalid-pch -Wmissing-declarations -Wmissing-format-attribute -Wmissing-prototypes -Wold-style-definition -Wpacked -Wunknown-pragmas -Wvariadic-macros -fstack-protector-all -Wstack-protector -Wpacked-bitfield-compat -Wsync-nand -Wjump-misses-init -Wmissing-include-dirs -Wlogical-op -Wunreachable-code -D_FORTIFY_SOURCE=2 -module -avoid-version -o lib_generator.la -rpath /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5 lib_generator_la-generator.lo ../../../../monetdb5/tools/libmonetdb5.la ../../../../gdk/libbat.la ../../../../common/utils/libmutils.la )
+libtool: relink: gcc -shared  -fPIC -DPIC  .libs/lib_generator_la-generator.o  -Wl,--whole-archive ../../../../common/utils/.libs/libmutils.a -Wl,--no-whole-archive  -Wl,-rpath -Wl,/home/tomt/bin/MonetDB/optimized/MonetDB/lib -L/home/tomt/bin/MonetDB/optimized/MonetDB/lib -lmonetdb5 -lbat  -O3 -fstack-protector-all   -pthread -Wl,-soname -Wl,lib_generator.so -o .libs/lib_generator.so
+libtool: install: /usr/bin/install -c .libs/lib_generator.soT /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/lib_generator.so
+libtool: install: /usr/bin/install -c .libs/lib_generator.lai /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/lib_generator.la
+libtool: finish: PATH="/home/tomt/src/libLAS-1.8.0/bin:/home/tomt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/sbin" ldconfig -n /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+----------------------------------------------------------------------
+Libraries have been installed in:
+   /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the '-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the 'LD_LIBRARY_PATH' environment variable
+     during execution
+   - add LIBDIR to the 'LD_RUN_PATH' environment variable
+     during linking
+   - use the '-Wl,-rpath -Wl,LIBDIR' linker flag
+   - have your system administrator add LIBDIR to '/etc/ld.so.conf'
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+make[10]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/generator'
+make[9]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/generator'
+make[8]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5/generator'
+make[8]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5'
+make[9]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/41_sql_hge.mal
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sql_aggr_hge.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sql_decimal_hge.mal
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sql_hge.mal
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/40_sql.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/41_sql_hge.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/41_sql_hge.mal
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sql_aggr_bte.mal
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sql.mal
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sql_aggr_dbl.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/sql_aggr_hge.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sql_aggr_hge.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/sql_decimal_hge.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sql_decimal_hge.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sql_aggr_flt.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/sql_hge.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sql_hge.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sql_aggr_int.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sql_aggr_lng.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/40_sql.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/40_sql.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sql_aggr_sht.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sql_decimal.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/sql_aggr_bte.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sql_aggr_bte.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sql_inspect.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/sql.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sql.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sql_rank.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/sql_aggr_dbl.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sql_aggr_dbl.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/sql_inspect.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sql_inspect.mal
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5'
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/sql_rank.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sql_rank.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/sql_decimal.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sql_decimal.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/sql_aggr_flt.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sql_aggr_flt.mal
+ /bin/bash ../../../libtool   --mode=install /usr/bin/install -c   lib_sql.la '/home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5'
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/sql_aggr_lng.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sql_aggr_lng.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/sql_aggr_int.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sql_aggr_int.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/backends/monet5/sql_aggr_sht.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sql_aggr_sht.mal
+libtool: install: (cd /home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5; /bin/bash "/home/tomt/bin/MonetDB/optimized/MonetDB/build/libtool"  --tag CC --mode=relink gcc -DLIBSQL -O3 -fomit-frame-pointer -pipe -Werror -Wall -Wextra -W -Werror-implicit-function-declaration -Wpointer-arith -Wdeclaration-after-statement -Wundef -Wformat=2 -Wno-format-nonliteral -Winit-self -Winvalid-pch -Wmissing-declarations -Wmissing-format-attribute -Wmissing-prototypes -Wold-style-definition -Wpacked -Wunknown-pragmas -Wvariadic-macros -fstack-protector-all -Wstack-protector -Wpacked-bitfield-compat -Wsync-nand -Wjump-misses-init -Wmissing-include-dirs -Wlogical-op -Wunreachable-code -D_FORTIFY_SOURCE=2 -module -avoid-version -o lib_sql.la -rpath /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5 lib_sql_la-sql.lo lib_sql_la-mal_backend.lo lib_sql_la-sql_user.lo lib_sql_la-sql_scenario.lo lib_sql_la-sql_execute.lo lib_sql_la-sql_assert.lo lib_sql_la-sql_upgrades.lo lib_sql_la-rel_bin.lo lib_sql_la-sql_statement.lo lib_sql_la-sql_statistics.lo lib_sql_la-sql_gencode.lo lib_sql_la-sql_optimizer.lo lib_sql_la-sql_result.lo lib_sql_la-sql_readline.lo lib_sql_la-sql_cast.lo lib_sql_la-sql_round.lo lib_sql_la-sql_bat2time.lo lib_sql_la-sql_fround.lo lib_sql_la-sql_orderidx.lo lib_sql_la-sql_rank.lo ../../server/libsqlserver.la ../../storage/libstore.la ../../storage/bat/libbatstore.la ../../common/libsqlcommon.la ../../../monetdb5/tools/libmonetdb5.la ../../../gdk/libbat.la ../../../common/stream/libstream.la ../../../common/utils/libmcrypt.la -pthread -lssl -lcrypto -lm )
+libtool: relink: gcc -shared  -fPIC -DPIC  .libs/lib_sql_la-sql.o .libs/lib_sql_la-mal_backend.o .libs/lib_sql_la-sql_user.o .libs/lib_sql_la-sql_scenario.o .libs/lib_sql_la-sql_execute.o .libs/lib_sql_la-sql_assert.o .libs/lib_sql_la-sql_upgrades.o .libs/lib_sql_la-rel_bin.o .libs/lib_sql_la-sql_statement.o .libs/lib_sql_la-sql_statistics.o .libs/lib_sql_la-sql_gencode.o .libs/lib_sql_la-sql_optimizer.o .libs/lib_sql_la-sql_result.o .libs/lib_sql_la-sql_readline.o .libs/lib_sql_la-sql_cast.o .libs/lib_sql_la-sql_round.o .libs/lib_sql_la-sql_bat2time.o .libs/lib_sql_la-sql_fround.o .libs/lib_sql_la-sql_orderidx.o .libs/lib_sql_la-sql_rank.o  -Wl,--whole-archive ../../server/.libs/libsqlserver.a ../../storage/.libs/libstore.a ../../storage/bat/.libs/libbatstore.a ../../common/.libs/libsqlcommon.a ../../../common/utils/.libs/libmcrypt.a -Wl,--no-whole-archive  -Wl,-rpath -Wl,/home/tomt/bin/MonetDB/optimized/MonetDB/lib -L/home/tomt/bin/MonetDB/optimized/MonetDB/lib -lmonetdb5 -lbat -lstream -lssl -lcrypto -lm  -O3 -fstack-protector-all -pthread   -pthread -Wl,-soname -Wl,lib_sql.so -o .libs/lib_sql.so
+libtool: install: /usr/bin/install -c .libs/lib_sql.soT /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/lib_sql.so
+libtool: install: /usr/bin/install -c .libs/lib_sql.lai /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/lib_sql.la
+libtool: finish: PATH="/home/tomt/src/libLAS-1.8.0/bin:/home/tomt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/sbin" ldconfig -n /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+----------------------------------------------------------------------
+Libraries have been installed in:
+   /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the '-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the 'LD_LIBRARY_PATH' environment variable
+     during execution
+   - add LIBDIR to the 'LD_RUN_PATH' environment variable
+     during linking
+   - use the '-Wl,-rpath -Wl,LIBDIR' linker flag
+   - have your system administrator add LIBDIR to '/etc/ld.so.conf'
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+make[9]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5'
+make[8]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5'
+make[7]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5'
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends/monet5'
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends'
+make[7]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends'
+make[7]: Nothing to be done for 'install-exec-am'.
+make[7]: Nothing to be done for 'install-data-am'.
+make[7]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends'
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends'
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/backends'
+Making install in scripts
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/scripts'
+make  install-am
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/scripts'
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/scripts'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/39_analytics_hge.sql
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/40_json_hge.sql
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/09_like.sql
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/11_times.sql
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/12_url.sql
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/15_querylog.sql
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/10_math.sql
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/13_date.sql
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/14_inet.sql
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/scripts/40_json_hge.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/40_json_hge.sql
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/16_tracelog.sql
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/scripts/39_analytics_hge.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/39_analytics_hge.sql
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/scripts/09_like.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/09_like.sql
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/18_index.sql
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/scripts/12_url.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/12_url.sql
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+make[6]: Nothing to be done for 'install-data-am'.
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/scripts/11_times.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/11_times.sql
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/21_dependency_functions.sql
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/22_clients.sql
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/scripts/15_querylog.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/15_querylog.sql
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/20_vacuum.sql
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/23_skyserver.sql
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/scripts/13_date.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/13_date.sql
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/scripts/14_inet.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/14_inet.sql
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/17_temporal.sql
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/27_rejects.sql
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/45_uuid.sql
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/40_json.sql
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/46_profiler.sql
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/scripts/18_index.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/18_index.sql
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/75_storagemodel.sql
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/51_sys_schema_extension.sql
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/scripts/27_rejects.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/27_rejects.sql
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/26_sysmon.sql
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/80_statistics.sql
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/scripts/17_temporal.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/17_temporal.sql
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/scripts/10_math.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/10_math.sql
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/scripts/21_dependency_functions.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/21_dependency_functions.sql
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/41_md5sum.sql
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/99_system.sql
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/scripts/16_tracelog.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/16_tracelog.sql
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/scripts/22_clients.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/22_clients.sql
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/25_debug.sql
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/scripts/46_profiler.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/46_profiler.sql
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/24_zorder.sql
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/scripts/20_vacuum.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/20_vacuum.sql
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/scripts/25_debug.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/25_debug.sql
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/39_analytics.sql
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/scripts/23_skyserver.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/23_skyserver.sql
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/scripts/51_sys_schema_extension.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/51_sys_schema_extension.sql
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/scripts/75_storagemodel.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/75_storagemodel.sql
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/scripts/40_json.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/40_json.sql
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/scripts/41_md5sum.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/41_md5sum.sql
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/scripts/24_zorder.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/24_zorder.sql
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/scripts/26_sysmon.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/26_sysmon.sql
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/scripts/39_analytics.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/39_analytics.sql
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/scripts/80_statistics.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/80_statistics.sql
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/scripts/45_uuid.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/45_uuid.sql
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/scripts/99_system.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/99_system.sql
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/scripts'
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/scripts'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql/scripts'
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql'
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/share/doc/MonetDB-SQL
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/share/doc/MonetDB-SQL
+make[5]: Nothing to be done for 'install-data-am'.
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/share/doc/MonetDB-SQL/dump-restore.html
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/share/doc/MonetDB-SQL/dump-restore.txt
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/dump-restore.html /home/tomt/bin/MonetDB/optimized/MonetDB/share/doc/MonetDB-SQL/dump-restore.html
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/sql/dump-restore.txt /home/tomt/bin/MonetDB/optimized/MonetDB/share/doc/MonetDB-SQL/dump-restore.txt
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql'
+make[3]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql'
+make[2]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/sql'
+Making install in geom
+make[2]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/geom'
+make  install-recursive
+make[3]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/geom'
+Making install in lib
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/geom/lib'
+make  install-am
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/geom/lib'
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/geom/lib'
+make[6]: Nothing to be done for 'install-exec-am'.
+make[6]: Nothing to be done for 'install-data-am'.
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/geom/lib'
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/geom/lib'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/geom/lib'
+Making install in monetdb5
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/geom/monetdb5'
+make  install-am
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/geom/monetdb5'
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/geom/monetdb5'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/31_sfcgal.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sfcgal.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/30_geom.mal
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/geom.mal
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5'
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/geom/monetdb5/31_sfcgal.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/31_sfcgal.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/geom/monetdb5/sfcgal.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/sfcgal.mal
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5'
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/geom/monetdb5/30_geom.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/autoload/30_geom.mal
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/geom/monetdb5/geom.mal /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/geom.mal
+ /bin/bash ../../libtool   --mode=install /usr/bin/install -c   lib_geom.la '/home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5'
+ /bin/bash ../../libtool   --mode=install /usr/bin/install -c   lib_sfcgal.la '/home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5'
+libtool: install: (cd /home/tomt/bin/MonetDB/optimized/MonetDB/build/geom/monetdb5; /bin/bash "/home/tomt/bin/MonetDB/optimized/MonetDB/build/libtool"  --tag CC --mode=relink gcc -DLIBSFCGAL -O3 -fomit-frame-pointer -pipe -fopenmp -D_REENTRANT -module -avoid-version -o lib_sfcgal.la -rpath /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5 lib_sfcgal_la-sfcgal.lo lib_sfcgal_la-sfcgalBulk.lo ../lib/libgeom.la ../../gdk/libbat.la ../../common/stream/libstream.la ../../monetdb5/tools/libmonetdb5.la -L/usr/local/lib -lSFCGAL )
+libtool: install: (cd /home/tomt/bin/MonetDB/optimized/MonetDB/build/geom/monetdb5; /bin/bash "/home/tomt/bin/MonetDB/optimized/MonetDB/build/libtool"  --tag CC --mode=relink gcc -DLIBGEOM -O3 -fomit-frame-pointer -pipe -fopenmp -D_REENTRANT -module -avoid-version -o lib_geom.la -rpath /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5 lib_geom_la-geom.lo lib_geom_la-geomBulk.lo lib_geom_la-geom_upgrade.lo lib_geom_la-geom_geojson.lo lib_geom_la-geom_x3d.lo ../lib/libgeom.la ../../gdk/libbat.la ../../common/stream/libstream.la ../../monetdb5/tools/libmonetdb5.la -L/usr/local/lib -lgeos_c -lproj )
+
+*** Warning: Linking the shared library lib_sfcgal.la against the loadable module
+*** libSFCGAL.so is not portable!
+libtool: relink: gcc -shared  -fPIC -DPIC  .libs/lib_sfcgal_la-sfcgal.o .libs/lib_sfcgal_la-sfcgalBulk.o  -Wl,--whole-archive ../lib/.libs/libgeom.a -Wl,--no-whole-archive  -Wl,-rpath -Wl,/home/tomt/bin/MonetDB/optimized/MonetDB/lib -L/home/tomt/bin/MonetDB/optimized/MonetDB/lib -lbat -lstream -lmonetdb5 -L/usr/local/lib -lSFCGAL  -O3 -fopenmp   -fopenmp -pthread -Wl,-soname -Wl,lib_sfcgal.so -o .libs/lib_sfcgal.so
+libtool: relink: gcc -shared  -fPIC -DPIC  .libs/lib_geom_la-geom.o .libs/lib_geom_la-geomBulk.o .libs/lib_geom_la-geom_upgrade.o .libs/lib_geom_la-geom_geojson.o .libs/lib_geom_la-geom_x3d.o  -Wl,--whole-archive ../lib/.libs/libgeom.a -Wl,--no-whole-archive  -Wl,-rpath -Wl,/home/tomt/bin/MonetDB/optimized/MonetDB/lib -L/home/tomt/bin/MonetDB/optimized/MonetDB/lib -lbat -lstream -lmonetdb5 -L/usr/local/lib -lgeos_c -L/usr/lib/x86_64-linux-gnu -lproj  -O3 -fopenmp   -fopenmp -pthread -Wl,-soname -Wl,lib_geom.so -o .libs/lib_geom.so
+libtool: install: /usr/bin/install -c .libs/lib_sfcgal.soT /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/lib_sfcgal.so
+libtool: install: /usr/bin/install -c .libs/lib_sfcgal.lai /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/lib_sfcgal.la
+libtool: install: /usr/bin/install -c .libs/lib_geom.soT /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/lib_geom.so
+libtool: install: /usr/bin/install -c .libs/lib_geom.lai /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/lib_geom.la
+libtool: finish: PATH="/home/tomt/src/libLAS-1.8.0/bin:/home/tomt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/sbin" ldconfig -n /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+----------------------------------------------------------------------
+Libraries have been installed in:
+   /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the '-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the 'LD_LIBRARY_PATH' environment variable
+     during execution
+   - add LIBDIR to the 'LD_RUN_PATH' environment variable
+     during linking
+   - use the '-Wl,-rpath -Wl,LIBDIR' linker flag
+   - have your system administrator add LIBDIR to '/etc/ld.so.conf'
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+libtool: finish: PATH="/home/tomt/src/libLAS-1.8.0/bin:/home/tomt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/sbin" ldconfig -n /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+----------------------------------------------------------------------
+Libraries have been installed in:
+   /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the '-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the 'LD_LIBRARY_PATH' environment variable
+     during execution
+   - add LIBDIR to the 'LD_RUN_PATH' environment variable
+     during linking
+   - use the '-Wl,-rpath -Wl,LIBDIR' linker flag
+   - have your system administrator add LIBDIR to '/etc/ld.so.conf'
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/geom/monetdb5'
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/geom/monetdb5'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/geom/monetdb5'
+Making install in sql
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/geom/sql'
+make  install-am
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/geom/sql'
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/geom/sql'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb
+make[6]: Nothing to be done for 'install-data-am'.
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/41_sfcgal.sql
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/40_geom.sql
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/geom/sql/41_sfcgal.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/41_sfcgal.sql
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/geom/sql/40_geom.sql /home/tomt/bin/MonetDB/optimized/MonetDB/lib/monetdb5/createdb/40_geom.sql
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/geom/sql'
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/geom/sql'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/geom/sql'
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/geom'
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/geom'
+make[5]: Nothing to be done for 'install-exec-am'.
+make[5]: Nothing to be done for 'install-data-am'.
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/geom'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/geom'
+make[3]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/geom'
+make[2]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/geom'
+Making install in tools
+make[2]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools'
+make  install-recursive
+make[3]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools'
+Making install in mserver
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools/mserver'
+make  install-am
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools/mserver'
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools/mserver'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/share/doc/MonetDB
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/share/doc/MonetDB-client-tools
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/share/doc/MonetDB-client-tools
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/bin'
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/share/doc/MonetDB/monetdblogo.png
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/share/doc/MonetDB-client-tools/tomographintro.docx
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/share/doc/MonetDB-client-tools/tomographintro.pdf
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/share/man/man1'
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/tools/mserver/tomographintro.pdf /home/tomt/bin/MonetDB/optimized/MonetDB/share/doc/MonetDB-client-tools/tomographintro.pdf
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/tools/mserver/monetdblogo.png /home/tomt/bin/MonetDB/optimized/MonetDB/share/doc/MonetDB/monetdblogo.png
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/tools/mserver/tomographintro.docx /home/tomt/bin/MonetDB/optimized/MonetDB/share/doc/MonetDB-client-tools/tomographintro.docx
+  /bin/bash ../../libtool   --mode=install /usr/bin/install -c mserver5 '/home/tomt/bin/MonetDB/optimized/MonetDB/bin'
+ /usr/bin/install -c -m 644 mserver5.1 '/home/tomt/bin/MonetDB/optimized/MonetDB/share/man/man1'
+libtool: install: /usr/bin/install -c .libs/mserver5 /home/tomt/bin/MonetDB/optimized/MonetDB/bin/mserver5
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools/mserver'
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools/mserver'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools/mserver'
+Making install in merovingian
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools/merovingian'
+make  install-recursive
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools/merovingian'
+Making install in utils
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools/merovingian/utils'
+make  install-am
+make[7]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools/merovingian/utils'
+make[8]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools/merovingian/utils'
+make[8]: Nothing to be done for 'install-exec-am'.
+make[8]: Nothing to be done for 'install-data-am'.
+make[8]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools/merovingian/utils'
+make[7]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools/merovingian/utils'
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools/merovingian/utils'
+Making install in client
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools/merovingian/client'
+make  install-am
+make[7]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools/merovingian/client'
+make[8]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools/merovingian/client'
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/bin'
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/share/man/man1'
+  /bin/bash ../../../libtool   --mode=install /usr/bin/install -c monetdb '/home/tomt/bin/MonetDB/optimized/MonetDB/bin'
+ /usr/bin/install -c -m 644 /home/tomt/src/MonetDB/tools/merovingian/client/monetdb.1 '/home/tomt/bin/MonetDB/optimized/MonetDB/share/man/man1'
+libtool: install: /usr/bin/install -c .libs/monetdb /home/tomt/bin/MonetDB/optimized/MonetDB/bin/monetdb
+make[8]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools/merovingian/client'
+make[7]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools/merovingian/client'
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools/merovingian/client'
+Making install in daemon
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools/merovingian/daemon'
+make  install-am
+make[7]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools/merovingian/daemon'
+make[8]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools/merovingian/daemon'
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/bin'
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/lib/systemd/system'
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/share/man/man1'
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/var/monetdb5/dbfarm'
+ /usr/bin/install -c -m 644 monetdbd.service '/home/tomt/bin/MonetDB/optimized/MonetDB/lib/systemd/system'
+  /bin/bash ../../../libtool   --mode=install /usr/bin/install -c monetdbd '/home/tomt/bin/MonetDB/optimized/MonetDB/bin'
+ /usr/bin/install -c -m 644 .merovingian_properties '/home/tomt/bin/MonetDB/optimized/MonetDB/var/monetdb5/dbfarm'
+ /usr/bin/install -c -m 644 monetdbd.1 '/home/tomt/bin/MonetDB/optimized/MonetDB/share/man/man1'
+libtool: install: /usr/bin/install -c .libs/monetdbd /home/tomt/bin/MonetDB/optimized/MonetDB/bin/monetdbd
+make[8]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools/merovingian/daemon'
+make[7]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools/merovingian/daemon'
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools/merovingian/daemon'
+make[6]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools/merovingian'
+make[7]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools/merovingian'
+make[7]: Nothing to be done for 'install-exec-am'.
+make[7]: Nothing to be done for 'install-data-am'.
+make[7]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools/merovingian'
+make[6]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools/merovingian'
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools/merovingian'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools/merovingian'
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools'
+make[5]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools'
+make[5]: Nothing to be done for 'install-exec-am'.
+make[5]: Nothing to be done for 'install-data-am'.
+make[5]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools'
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools'
+make[3]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools'
+make[2]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/tools'
+Making install in testing
+make[2]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/testing'
+make  install-am
+make[3]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/testing'
+rm -f Mapprove.py
+ln -s Mtest.py Mapprove.py
+make[4]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/testing'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/bin
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/bin
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/bin'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/bin
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/python2.7/site-packages/MonetDBtesting
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/bin
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/bin'
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/python2.7/site-packages/MonetDBtesting
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/python2.7/site-packages/MonetDBtesting
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/python2.7/site-packages/MonetDBtesting
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/bin/Mlog
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/python2.7/site-packages/MonetDBtesting
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/python2.7/site-packages/MonetDBtesting
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/bin/MkillUsers
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/python2.7/site-packages/MonetDBtesting
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/lib/python2.7/site-packages/MonetDBtesting
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/bin/Mapprove.py
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/bin/Mtest.py
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/python2.7/site-packages/MonetDBtesting/__init__.py
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/python2.7/site-packages/MonetDBtesting/monet_options.py
+/usr/bin/install -c -m0755 MkillUsers /home/tomt/bin/MonetDB/optimized/MonetDB/bin/MkillUsers
+/usr/bin/install -c -m0755 Mlog /home/tomt/bin/MonetDB/optimized/MonetDB/bin/Mlog
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/python2.7/site-packages/MonetDBtesting/process.py
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/python2.7/site-packages/MonetDBtesting/Mfilter.py
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/python2.7/site-packages/MonetDBtesting/trace.py
+ /bin/mkdir -p '/home/tomt/bin/MonetDB/optimized/MonetDB/bin'
+/usr/bin/install -c -m 644 monet_options.py /home/tomt/bin/MonetDB/optimized/MonetDB/lib/python2.7/site-packages/MonetDBtesting/monet_options.py
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/testing/process.py /home/tomt/bin/MonetDB/optimized/MonetDB/lib/python2.7/site-packages/MonetDBtesting/process.py
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/python2.7/site-packages/MonetDBtesting/listexports.py
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/python2.7/site-packages/MonetDBtesting/malcheck.py
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/testing/trace.py /home/tomt/bin/MonetDB/optimized/MonetDB/lib/python2.7/site-packages/MonetDBtesting/trace.py
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/testing/Mfilter.py /home/tomt/bin/MonetDB/optimized/MonetDB/lib/python2.7/site-packages/MonetDBtesting/Mfilter.py
+cd /home/tomt/bin/MonetDB/optimized/MonetDB/bin; ln -s Mtest.py Mapprove.py
+/usr/bin/install -c -m0755 Mtest.py /home/tomt/bin/MonetDB/optimized/MonetDB/bin/Mtest.py
+  /bin/bash ../libtool   --mode=install /usr/bin/install -c Mdiff '/home/tomt/bin/MonetDB/optimized/MonetDB/bin'
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/testing/__init__.py /home/tomt/bin/MonetDB/optimized/MonetDB/lib/python2.7/site-packages/MonetDBtesting/__init__.py
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/lib/python2.7/site-packages/MonetDBtesting/exportutils.py
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/testing/malcheck.py /home/tomt/bin/MonetDB/optimized/MonetDB/lib/python2.7/site-packages/MonetDBtesting/malcheck.py
+/usr/bin/install -c -m 644 listexports.py /home/tomt/bin/MonetDB/optimized/MonetDB/lib/python2.7/site-packages/MonetDBtesting/listexports.py
+  /bin/bash ../libtool   --mode=install /usr/bin/install -c Mtimeout '/home/tomt/bin/MonetDB/optimized/MonetDB/bin'
+/usr/bin/install -c -m 644 /home/tomt/src/MonetDB/testing/exportutils.py /home/tomt/bin/MonetDB/optimized/MonetDB/lib/python2.7/site-packages/MonetDBtesting/exportutils.py
+libtool: install: /usr/bin/install -c Mdiff /home/tomt/bin/MonetDB/optimized/MonetDB/bin/Mdiff
+libtool: install: /usr/bin/install -c Mtimeout /home/tomt/bin/MonetDB/optimized/MonetDB/bin/Mtimeout
+make[4]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/testing'
+make[3]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/testing'
+make[2]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build/testing'
+make[2]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build'
+make[3]: Entering directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build'
+make[3]: Nothing to be done for 'install-data-am'.
+mkdir -p /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb
+rm -f /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/monetdb_config.h
+/usr/bin/install -c -m 644 monetdb_config.h /home/tomt/bin/MonetDB/optimized/MonetDB/include/monetdb/monetdb_config.h
+make[3]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build'
+make[2]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build'
+make[1]: Leaving directory '/home/tomt/bin/MonetDB/optimized/MonetDB/build'
