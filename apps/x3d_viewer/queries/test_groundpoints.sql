@@ -13,11 +13,13 @@ set _segmentlength = 10;
 DROP SEQUENCE "counter";
 CREATE SEQUENCE "counter" AS INTEGER;
 
-WITH 
-bounds AS (
+drop table bounds;
+create table bounds AS (
 	SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) as geom
-),
-pointcloud_unclassified AS(
+) WITH DATA;
+
+drop table pointcloud_unclassified;
+create table pointcloud_unclassified AS(
 	SELECT ST_SetSRID(ST_MakePoint(x, y, z), 28992) as geom, c
 	FROM
         C_30FZ1, bounds 
@@ -27,8 +29,11 @@ pointcloud_unclassified AS(
     y between 463891.0 and 463991.0 and
 	Contains(geom, x, y) and
     c = 2
-),
-points_filtered AS (
+) WITH DATA;
+
+drop table points_filtered;
+create table points_filtered AS (
 	SELECT * FROM pointcloud_unclassified WHERE rand() > 0.2 
-)
+) WITH DATA;
+
 SELECT NEXT VALUE FOR "counter" as id, 'ground' as type, '0.2 0.2 0.2' as color, ST_AsX3D(ST_Collect(geom), 4.0, 0) as geom FROM points_filtered a;
