@@ -63,11 +63,12 @@ terrain_b AS (
 ),
 terrain AS (
 	SELECT parent as id, polygonWKB as geom
+	--FROM ST_Dump((select ab_geom from terrain_), (select id from terrain_)) d
 	FROM ST_Dump((select ab_geom, id from terrain_b)) d
 ),
 polygons AS (
 	SELECT t.id, NEXT VALUE for "polygon_id" as polygon_id, fid, 'unknown' as typ, class, d.geom
-	FROM terrain_b t, terrain_dump d
+	FROM terrain_b t, terrain d
     where
     t.id = d.id and
     ST_GeometryType(d.geom) = 'ST_Polygon'
