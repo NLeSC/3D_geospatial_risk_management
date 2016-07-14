@@ -10,11 +10,13 @@ set _south = 463891.0;
 set _north = 463991.0;
 set _segmentlength = 10;
 
-WITH 
-bounds AS (
+drop table bounds;
+create table bounds AS (
 	SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) as geom
-),
-pointcloud_ground AS (
+) WITH DATA;
+
+drop table pointcloud_ground;
+create table pointcloud_ground AS (
 	SELECT 
         ST_SetSRID(ST_MakePoint(x, y, z), 28992) as geom, z
 	FROM 
@@ -27,16 +29,20 @@ pointcloud_ground AS (
         c = 1 and
         r = 1 and
         i > 150
-),
---pointcloud_all AS (
+) WITH DATA;
+
+--drop table pointcloud_all;
+--create table pointcloud_all AS (
 --	SELECT
 --        x, y, z
 --	FROM 
 --        C_30FZ1, bounds 
 --	WHERE 
 --        ST_DWithin(geom, ST_SetSRID(ST_MakePoint(x, y, z), 28992),10)
---),
-footprints AS (
+--) WITH DATA;
+
+drop table footprints;
+create table footprints AS (
 	SELECT 
         ST_Force3D(ST_Intersection(a.wkt, b.geom)) as geom,
     	a.gml_id as id
@@ -44,8 +50,10 @@ footprints AS (
 	WHERE
 	    (plus_type = 'steiger') AND 
 	    ST_Intersects(a.wkt, b.geom)
-),
-papoints AS ( --get points from intersecting patches
+) WITH DATA;
+
+drop table papoints;
+create table papoints AS ( --get points from intersecting patches
 	SELECT 
 		a.id,
 		b.geom as pt,
@@ -55,15 +63,20 @@ papoints AS ( --get points from intersecting patches
 	LEFT JOIN
     pointcloud_ground b ON
     ST_Intersects(a.geom, b.geom)
-),
-footprintpatch AS ( --get only points that fall inside building, patch them
+) WITH DATA;
+
+drop table footprintpatch;
+create table footprintpatch AS ( --get only points that fall inside building, patch them
 	SELECT id, pt as geom, footprint, min(z) as min 
 	FROM papoints
     WHERE
         ST_Intersects(footprint, pt)
 	GROUP BY id, geom, footprint
-),
-polygons AS (
+) WITH DATA;
+
+drop table polygons;
+create table polygons AS (
 	SELECT id, ST_Extrude(ST_Tesselate(ST_Translate(footprint,0,0, min+0.4)),0,0,0.2) as geom FROM footprintpatch
-)
+) WITH data;
+
 SELECT id, 'steiger' as type, 'grey' as color, ST_AsX3D(p.geom, 4.0, 0) as geom FROM polygons p;
