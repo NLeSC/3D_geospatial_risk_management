@@ -1,0 +1,12 @@
+drop table bgt_begroeidterreindeel;
+drop table bgt_ondersteunendwaterdeel;
+drop table bgt_onbegroeidterreindeel;
+drop table bgt_ondersteunendwegdeel;
+drop table bgt_overbruggingsdeel;
+drop table overbruggingsdeel;
+drop table bgt_overigbouwwerk;
+drop table bgt_pand;
+drop table bgt_scheiding;
+drop table bgt_tunneldeel;
+drop table bgt_waterdeel;
+drop table bgt_wegdeel;

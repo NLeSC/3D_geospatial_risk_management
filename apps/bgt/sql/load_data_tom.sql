@@ -1,0 +1,11 @@
+COPY 10000000 OFFSET 2 RECORDS INTO bgt_begroeidterreindeel FROM ('/export/scratch1/home/da-bgt3d/data/geo_data/bgt/outs_csv/bgt_begroeidterreindeel.csv') USING DELIMITERS '|','\n','"' NULL AS '' LOCKED;
+COPY 10000000 OFFSET 2 RECORDS INTO bgt_onbegroeidterreindeel FROM ('/export/scratch1/home/da-bgt3d/data/geo_data/bgt/outs_csv/bgt_onbegroeidterreindeel.csv') USING DELIMITERS '|','\n','"' NULL AS '' LOCKED;
+COPY 10000000 OFFSET 2 RECORDS INTO bgt_ondersteunendwaterdeel FROM ('/export/scratch1/home/da-bgt3d/data/geo_data/bgt/outs_csv/bgt_ondersteunendwaterdeel.csv') USING DELIMITERS '|','\n','"' NULL AS '' LOCKED;
+COPY 10000000 OFFSET 2 RECORDS INTO bgt_ondersteunendwegdeel FROM ('/export/scratch1/home/da-bgt3d/data/geo_data/bgt/outs_csv/bgt_ondersteunendwegdeel.csv') USING DELIMITERS '|','\n','"' NULL AS '' LOCKED;
+COPY 10000000 OFFSET 2 RECORDS INTO bgt_overbruggingsdeel FROM ('/export/scratch1/home/da-bgt3d/data/geo_data/bgt/outs_csv/bgt_overbruggingsdeel.csv') USING DELIMITERS '|','\n','"' NULL AS '' LOCKED;
+COPY 10000000 OFFSET 2 RECORDS INTO bgt_overigbouwwerk FROM ('/export/scratch1/home/da-bgt3d/data/geo_data/bgt/outs_csv/bgt_overigbouwwerk.csv') USING DELIMITERS '|','\n','"' NULL AS '' LOCKED;
+COPY 10000000 OFFSET 2 RECORDS INTO bgt_pand FROM ('/export/scratch1/home/da-bgt3d/data/geo_data/bgt/outs_csv/bgt_pand.csv') USING DELIMITERS '|','\n','"' NULL AS '' LOCKED;
+COPY 10000000 OFFSET 2 RECORDS INTO bgt_scheiding FROM ('/export/scratch1/home/da-bgt3d/data/geo_data/bgt/outs_csv/bgt_scheiding.csv') USING DELIMITERS '|','\n','"' NULL AS '' LOCKED;
+COPY 10000000 OFFSET 2 RECORDS INTO bgt_tunneldeel FROM ('/export/scratch1/home/da-bgt3d/data/geo_data/bgt/outs_csv/bgt_tunneldeel.csv') USING DELIMITERS '|','\n','"' NULL AS '' LOCKED;
+COPY 10000000 OFFSET 2 RECORDS INTO bgt_waterdeel FROM ('/export/scratch1/home/da-bgt3d/data/geo_data/bgt/outs_csv/bgt_waterdeel.csv') USING DELIMITERS '|','\n','"' NULL AS '' LOCKED;
+COPY 10000000 OFFSET 2 RECORDS INTO bgt_wegdeel FROM ('/export/scratch1/home/da-bgt3d/data/geo_data/bgt/outs_csv/bgt_wegdeel.csv') USING DELIMITERS '|','\n','"' NULL AS '' LOCKED;
