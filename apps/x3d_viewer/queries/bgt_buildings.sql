@@ -7,7 +7,7 @@ set _east = 93916.0;
 set _south = 463891.0;
 set _north = 463991.0;
 
-WITH
+trace WITH
 bounds AS (
     SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) as geom
 ),
@@ -17,7 +17,7 @@ pointcloud AS (
 	WHERE
     x between 93816.0 and 93916.0 and
     y between 463891.0 and 463991.0 and
-	--ST_DWithin(geom, ST_SetSRID(ST_MakePoint(x, y, z), 4326), 10)
+	--ST_DWithin(geom, ST_SetSRID(ST_MakePoint(x, y, z), 28992), 10)
 	Contains(geom, x, y)
 	and c = 6
 ),
@@ -49,7 +49,8 @@ stats_fast AS (
         max(z) as max,
         min(z) as min
 	FROM footprints, pointcloud
-    WHERE ST_Intersects(geom, ST_MakePoint(x, y, z))
+    WHERE 
+        ST_Intersects(geom, ST_SetSRID(ST_MakePoint(x, y, z), 28992))
 	GROUP BY footprints.id, footprint, bouwjaar
 ),
 polygons AS (

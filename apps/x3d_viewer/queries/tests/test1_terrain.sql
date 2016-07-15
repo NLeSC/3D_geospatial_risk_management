@@ -15,7 +15,7 @@ set _geom2 = 'POLYGON ((93910.602 463934.263, 93914.44 463934.856, 93907.227 463
 
 select ST_AddPoint(ST_ExteriorRing(ST_SETSRID(ST_GeometryFromText(_geom2),28992)), ST_StartPoint(ST_ExteriorRing(ST_SETSRID(ST_GeometryFromText(_geom2),28992))), 2);
 
-select patch_to_geom(ST_SETSRID(ST_GeometryFromText(_geom2),28992));
+--select patch_to_geom(ST_SETSRID(ST_GeometryFromText(_geom2),28992));
 
 drop table bounds;
 create table bounds AS (SELECT ST_Segmentize(ST_MakeEnvelope(_west, _south, _east, _north, 28992), _segmentlength) as geom) with data;
@@ -81,11 +81,9 @@ BEGIN
 
     insert into _papoints SELECT x, y, z from pointcloud_ground;
     insert into _edge_points SELECT path, pointg as geom FROM ST_DumpPoints(ST_ExteriorRing(ingeom)) d;
-    --insert into _emptyz SELECT a.path as path, a.geom as geom , b.z as z, ST_Distance(ST_SetSRID(a.geom, 28992), ST_SetSRID(ST_MAkePoint(x, y), 28992)) as dist FROM _edge_points a, _papoints b;
-    insert into _emptyz SELECT a.path as path, a.geom as geom , b.z as z, ST_Distance(a.geom, ST_MAkePoint(x, y, z)) as dist FROM _edge_points a, _papoints b;
+    insert into _emptyz SELECT a.path as path, a.geom as geom , b.z as z, ST_Distance(ST_SetSRID(a.geom, 28992), ST_MAkePoint(x, y, z, 28992)) as dist FROM _edge_points a, _papoints b;
     insert into _ranktest select path, geom, z, dist, RANK() over (PARTITION BY path, geom order by path, dist ASC) from _emptyz;
-    --insert into _filledz select path, ST_SetSRID(ST_MakePoint(ST_X(geom), ST_Y(geom), z), 28992) as geom from _ranktest where rank = 1 order by path;
-    insert into _filledz select path, ST_MakePoint(ST_X(geom), ST_Y(geom), z) as geom from _ranktest where rank = 1 order by path;
+    insert into _filledz select path, ST_MakePoint(ST_X(geom), ST_Y(geom), z, 28992) as geom from _ranktest where rank = 1 order by path;
     insert into _line_z SELECT ST_MakeLine(geom) as geom FROM _filledz;
     return
         --select ST_Polygon(geom, 28992) from _line_z;
@@ -105,9 +103,8 @@ create table basepoints AS (
 
 drop table triangles;
 create table triangles AS (
-	SELECT parent, ST_MakePolygon( ST_ExteriorRing( a.polygonWKB)) as geom
-	FROM ST_Dump((select ST_Triangulate2DZ(ST_Collect(geom)), id from basepoints)) a
-	GROUP BY parent
+	--SELECT parent, ST_MakePolygon( ST_ExteriorRing( a.polygonWKB)) as geom 	FROM ST_Dump((select ST_Triangulate2DZ(ST_Collect(geom)), id from basepoints)) a GROUP BY parent
+	SELECT parent, ST_MakePolygon( ST_ExteriorRing( a.polygonWKB)) as geom 	FROM ST_Dump((select ST_Triangulate2DZ(geom, 0), id from basepoints)) a GROUP BY parent
 ) with data;
 
 drop table assign_triags;

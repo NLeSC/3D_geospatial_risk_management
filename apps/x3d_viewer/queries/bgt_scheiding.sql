@@ -7,7 +7,7 @@ set _east = 93916;
 set _south = 463891;
 set _north = 463991;
 
-WITH
+trace WITH
 bounds AS (
 	SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) as geom
 ),
@@ -17,7 +17,7 @@ pointcloud_building AS (
 	WHERE
     x between 93816 and 93916 and
     y between 463891 and 463991 and
-    --ST_DWithin(geom, ST_SetSRID(ST_MakePoint(x, y, z), 28992),10) --patches should be INSIDE bounds
+    --ST_DWithin(geom, ST_MakePoint(x, y, z),10) --patches should be INSIDE bounds
     Contains(geom, x, y)
     and c = 1
 ),
@@ -68,7 +68,8 @@ stats AS (
 --	GROUP BY footprints.id, footprint
 --),
 polygons AS (
-	SELECT id, ST_Extrude(ST_Translate(footprint,0,0, min), 0,0,max-min) as geom
+	--SELECT id, ST_Extrude(ST_Translate(footprint,0,0, min), 0,0,max-min) as geom
+	SELECT id, ST_Translate(footprint,0,0, min) as geom
     FROM stats
 	--SELECT id, ST_Tesselate(ST_Translate(footprint,0,0, min + 20)) geom FROM stats_fast
 )
