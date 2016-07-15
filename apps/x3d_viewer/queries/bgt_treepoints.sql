@@ -13,7 +13,7 @@ set _segmentlength = 10;
 DROP SEQUENCE "counter";
 CREATE SEQUENCE "counter" AS INTEGER;
 
-WITH 
+WITH
 bounds AS (
 	SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) as geom
 ),
@@ -21,7 +21,7 @@ pointcloud_unclassified AS(
 	SELECT
         ST_SetSRID(ST_MakePoint(x, y, z), 28992) as geom
 	FROM
-        C_30FZ1, bounds 
+        C_30FZ1, bounds
 	WHERE
     --ST_DWithin(geom, Geometry(pa),10) --patches should be INSIDE bounds
     x between 93816.0 and 93916.0 and

@@ -1,3 +1,15 @@
+declare _west integer;
+declare _south integer;
+declare _east integer;
+declare _north integer;
+declare _segmentlength integer;
+
+set _west = 93816.0;
+set _east = 93916.0;
+set _south = 463891.0;
+set _north = 463991.0;
+set _segmentlength = 10;
+
 
 WITH
 bounds AS (
@@ -5,7 +17,7 @@ bounds AS (
 ),
 
 mainroads AS (
-	SELECT a.ogc_fid, 'road'::text AS class, a.bgt_functie as type, ST_Intersection(a.wkb_geometry,c.geom) geom 
+	SELECT a.ogc_fid, 'road'::text AS class, a.bgt_functie as type, ST_Intersection(a.wkb_geometry,c.geom) geom
 	FROM bgt_import2.wegdeel_2d a
 	LEFT JOIN bgt_import2.overbruggingsdeel_2d b
 	ON (St_Intersects((a.wkb_geometry), (b.wkb_geometry)) AND St_Contains(ST_buffer((b.wkb_geometry),1), (a.wkb_geometry)))
@@ -30,12 +42,12 @@ tunnels AS (
 	AND ST_Intersects(geom, wkb_geometry)
 ),
 pointcloud_ground AS (
-	SELECT PC_FilterEquals(pa,'classification',2) pa 
+	SELECT PC_FilterEquals(pa,'classification',2) pa
 	FROM ahn3_pointcloud.vw_ahn3, bounds
 	WHERE ST_Intersects(geom, Geometry(pa))
-	--Sometimes roads are incorrectly classified as bridges, so also include bridge points 
+	--Sometimes roads are incorrectly classified as bridges, so also include bridge points
 	/*UNION ALL
-	SELECT PC_FilterEquals(pa,'classification',26) pa 
+	SELECT PC_FilterEquals(pa,'classification',26) pa
 	FROM ahn3_pointcloud.vw_ahn3, bounds
 	WHERE ST_Intersects(geom, Geometry(pa))*/
 ),
@@ -51,7 +63,7 @@ polygons AS (
 )
 ,polygonsz AS (
 	SELECT id, fid, type, class, patch_to_geom(PC_Union(b.pa), geom) geom
-	FROM polygons a 
+	FROM polygons a
 	LEFT JOIN pointcloud_ground b
 	ON ST_Intersects(geom,Geometry(b.pa))
 	GROUP BY id, fid, type, class, geom
@@ -61,7 +73,7 @@ polygons AS (
 	WHERE ST_IsValid(geom)
 )
 ,triangles AS (
-	SELECT 
+	SELECT
 		id,
 		ST_MakePolygon(
 			ST_ExteriorRing(

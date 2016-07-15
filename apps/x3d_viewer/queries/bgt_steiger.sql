@@ -10,16 +10,16 @@ set _south = 463891.0;
 set _north = 463991.0;
 set _segmentlength = 10;
 
-WITH 
+WITH
 bounds AS (
 	SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) as geom
 ),
 pointcloud_ground AS (
-	SELECT 
+	SELECT
         ST_SetSRID(ST_MakePoint(x, y, z), 28992) as geom, z
-	FROM 
-        C_30FZ1, bounds 
-	WHERE 
+	FROM
+        C_30FZ1, bounds
+	WHERE
         --ST_DWithin(geom, Geometry(pa),10)
         x between 93816.0 and 93916.0 and
         y between 463891.0 and 463991.0 and
@@ -31,22 +31,22 @@ pointcloud_ground AS (
 --pointcloud_all AS (
 --	SELECT
 --        x, y, z
---	FROM 
---        C_30FZ1, bounds 
---	WHERE 
+--	FROM
+--        C_30FZ1, bounds
+--	WHERE
 --        ST_DWithin(geom, ST_SetSRID(ST_MakePoint(x, y, z), 28992),10)
 --),
 footprints AS (
-	SELECT 
+	SELECT
         ST_Force3D(ST_Intersection(a.wkt, b.geom)) as geom,
     	a.gml_id as id
 	FROM bgt_kunstwerkdeel a, bounds b
 	WHERE
-	    (plus_type = 'steiger') AND 
+	    (plus_type = 'steiger') AND
 	    ST_Intersects(a.wkt, b.geom)
 ),
 papoints AS ( --get points from intersecting patches
-	SELECT 
+	SELECT
 		a.id,
 		b.geom as pt,
         z,
@@ -57,7 +57,7 @@ papoints AS ( --get points from intersecting patches
     ST_Intersects(a.geom, b.geom)
 ),
 footprintpatch AS ( --get only points that fall inside building, patch them
-	SELECT id, pt as geom, footprint, min(z) as min 
+	SELECT id, pt as geom, footprint, min(z) as min
 	FROM papoints
     WHERE
         ST_Intersects(footprint, pt)

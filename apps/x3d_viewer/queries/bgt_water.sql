@@ -16,16 +16,16 @@ CREATE SEQUENCE "counter" AS INTEGER;
 DROP SEQUENCE "polygon_id";
 CREATE SEQUENCE "polygon_id" AS INTEGER;
 
-WITH 
+WITH
 bounds AS (
 	SELECT ST_Segmentize(ST_MakeEnvelope(_west, _south, _east, _north, 28992),_segmentlength) as geom
 ),
 pointcloud_water AS (
-	SELECT 
+	SELECT
         x, y, z
-	FROM 
-        C_30FZ1, bounds 
-	WHERE 
+	FROM
+        C_30FZ1, bounds
+	WHERE
         --ST_Intersects(geom, Geometry(pa))
         x between 93816.0 and 93916.0 and
         y between 463891.0 and 463991.0 and
@@ -44,7 +44,7 @@ terrain AS (
 polygons AS (
 	SELECT NEXT VALUE for "polygon_id" as polygon_id, * FROM terrain WHERE ST_GeometryType(geom) = 'ST_Polygon'
 ),
-polygonsz AS ( 
+polygonsz AS (
 	SELECT a.id, a.fid, polygon_id, a.typ, a.class, ST_Translate(ST_Force3D(a.geom), 0,0,0) as geom --fixed level
 	FROM polygons a
 	--GROUP BY a.id, a.fid, a.typ, a.class, a.geom

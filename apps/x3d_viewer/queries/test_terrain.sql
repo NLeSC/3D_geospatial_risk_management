@@ -37,6 +37,9 @@ create table pointcloud_ground AS (
 DROP SEQUENCE "counter";
 CREATE SEQUENCE "counter" AS INTEGER;
 
+DROP SEQUENCE "polygon_id";
+CREATE SEQUENCE "polygon_id" AS INTEGER;
+
 drop table terrain_;
 create table terrain_ AS (
     SELECT NEXT VALUE FOR "counter" as id, ogc_fid as fid, 'unkown' as typ, class, a.geom as a_geom, b.geom as b_geom
@@ -88,9 +91,6 @@ BEGIN
     return
         select ST_Polygon(geom, 28992) from _line_z;
 END;
-
-DROP SEQUENCE "polygon_id";
-CREATE SEQUENCE "polygon_id" AS INTEGER;
 
 drop table polygonsz;
 create table polygonsz AS (

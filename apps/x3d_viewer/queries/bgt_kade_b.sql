@@ -8,14 +8,14 @@ set _south = 463891.0;
 set _north = 463991.0;
 
 
-WITH 
+WITH
 bounds AS (
 	SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) as geom
 ),
 pointcloud_ground AS (
-	--SELECT PC_FilterEquals(pa,'classification',2) pa --ground points 
+	--SELECT PC_FilterEquals(pa,'classification',2) pa --ground points
     SELECT x, y, z
-	FROM ahn3, bounds 
+	FROM ahn3, bounds
 	WHERE
     x between 93816.0 and 93916.0 and
     y between 463891.0 and 463991.0 and
@@ -24,9 +24,9 @@ pointcloud_ground AS (
     and c =2
 ),
 pointcloud_all AS (
-	SELECT x, y, z 
-	FROM ahn3, bounds 
-	WHERE 
+	SELECT x, y, z
+	FROM ahn3, bounds
+	WHERE
     x between 93816.0 and 93916.0 and
     y between 463891.0 and 463991.0 and
     --ST_DWithin(geom, ST_MakePoint(x, y, z), 10)
@@ -37,18 +37,18 @@ footprints AS (
 	a.ogc_fid as id
 	FROM bgt_polygons a, bounds b
 	WHERE 1 = 1
-	--AND (type = 'kademuur' OR class = 'border') 
+	--AND (type = 'kademuur' OR class = 'border')
 	AND ST_Intersects(a.geom, b.geom)
 	AND ST_Intersects(ST_Centroid(a.geom), b.geom)
 ),
 papoints AS ( --get points from intersecting patches
-	SELECT 
+	SELECT
 		a.id,
 		x, y, z,
 		geom as footprint
 	FROM footprints a, pointcloud_ground b
 	--LEFT JOIN pointcloud_ground b ON (ST_Intersects(a.geom, Geometry(b.pa)))
-	where 
+	where
         ST_Intersects(a.geom, b.x, b.y, b.z, 28992)
 ),
 papatch AS (
@@ -56,13 +56,13 @@ papatch AS (
 		a.id, min(z) as min
 	FROM footprints a, pointcloud_all b
 	--LEFT JOIN pointcloud_all b ON (ST_Intersects(a.geom, Geometry(b.pa)))
-	WHERE 
+	WHERE
         ST_Intersects(a.geom,  b.x, b.y, b.z, 28992)
 	GROUP BY a.id
 ),
 footprintpatch AS ( --get only points that fall inside building, patch them
 	SELECT id, x, y, z, footprint
-	FROM papoints 
+	FROM papoints
     WHERE
         ST_Intersects(footprint, x, y, z, 28992)
 	--GROUP BY id, footprint

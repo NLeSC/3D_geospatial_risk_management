@@ -1,10 +1,22 @@
-WITH 
+declare _west integer;
+declare _south integer;
+declare _east integer;
+declare _north integer;
+declare _segmentlength integer;
+
+set _west = 93816.0;
+set _east = 93916.0;
+set _south = 463891.0;
+set _north = 463991.0;
+set _segmentlength = 10;
+
+WITH
 bounds AS (
 	SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) geom
 ),
 pointcloud_unclassified AS (
-	SELECT PC_FilterEquals(pa,'classification',26) pa --unclassified points 
-	FROM ahn3_pointcloud.vw_ahn3, bounds 
+	SELECT PC_FilterEquals(pa,'classification',26) pa --unclassified points
+	FROM ahn3_pointcloud.vw_ahn3, bounds
 	WHERE ST_DWithin(geom, Geometry(pa),10) --patches should be INSIDE bounds
 ),
 footprints AS (
@@ -17,7 +29,7 @@ footprints AS (
 	AND ST_Intersects(ST_Centroid(ST_SetSrid(ST_CurveToLine(a.wkb_geometry),28992)), b.geom)
 ),
 papoints AS ( --get points from intersecting patches
-	SELECT 
+	SELECT
 		a.type,
 		a.id,
 		PC_Explode(b.pa) pt,
@@ -44,7 +56,7 @@ filter AS (
 		type,
 		geom,
 		--is dit filter nog nodig?
-		PC_FilterBetween(pa, 'z',avg-1, avg+1) pa, 
+		PC_FilterBetween(pa, 'z',avg-1, avg+1) pa,
 		min, max, avg
 	FROM papatch
 ),

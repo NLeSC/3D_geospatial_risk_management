@@ -2,10 +2,10 @@ declare _west integer;
 declare _south integer;
 declare _east integer;
 declare _north integer;
-set _west = 93816;
-set _east = 93916;
-set _south = 463891;
-set _north = 463991;
+set _west = 93816.0;
+set _east = 93916.0;
+set _south = 463891.0;
+set _north = 463991.0;
 
 
 drop table bounds;
@@ -15,13 +15,11 @@ create table bounds AS (
 
 drop table pointcloud_ground;
 create table pointcloud_ground AS (
-    --PC_FilterEquals(pa,'classification',2) pa --ground points 
 	SELECT x, y, z
 	FROM ahn3, bounds 
 	WHERE 
-    x between 93816 and 93916 and
-    y between 463891 and 463991 and
-    --ST_DWithin(geom, ST_SetSRID(ST_MakePoint(x, y, z), 28992), 10)
+    x between 93816.0 and 93916.0 and
+    y between 463891.0 and 463991.0 and
     Contains(geom, x, y)
     and c =2
 ) with data;
@@ -31,21 +29,19 @@ create table pointcloud_all AS (
 	SELECT x, y, z 
 	FROM ahn3, bounds 
 	WHERE 
-    x between 93816 and 93916 and
-    y between 463891 and 463991 and
-    --ST_DWithin(geom, ST_SetSRID(ST_MakePoint(x, y, z), 28992), 10)
+    x between 93816.0 and 93916.0 and
+    y between 463891.0 and 463991.0 and
     Contains(geom, x, y)
 ) with data;
 
 drop table footprints;
 create table footprints AS (
-	SELECT ST_Force3D(ST_Intersection(ST_SetSRID(a.geom, 28992), b.geom)) as geom,
-	--SELECT ST_Intersection(ST_SetSRID(a.geom, 28992), b.geom) as geom,
+	SELECT ST_Force3D(ST_Intersection(a.geom, b.geom)) as geom,
 	a.ogc_fid as id
 	FROM bgt_polygons a, bounds b
 	WHERE 1 = 1
 	--AND (type = 'kademuur' OR class = 'border') 
-	AND ST_Intersects(ST_SetSRID(a.geom, 28992), b.geom)
+	AND ST_Intersects(a.geom, b.geom)
 	AND ST_Intersects(ST_Centroid(a.geom), b.geom)
 ) with data;
 
@@ -56,8 +52,7 @@ create table papoints AS ( --get points from intersecting patches
 		x, y, z,
 		geom as footprint
 	FROM footprints a, pointcloud_ground b
-	--LEFT JOIN pointcloud_ground b ON (ST_Intersects(a.geom, Geometry(b.pa)))
-	where ST_Intersects(a.geom, ST_SetSRID(ST_MakePoint(b.x, b.y, b.z), 28992))
+	where ST_Intersects(a.geom, ST_MakePoint(b.x, b.y, b.z, 28992))
 ) with data;
 
 drop table papatch;
@@ -66,14 +61,17 @@ create table papatch AS (
 		a.id, min(z) as min
 	FROM footprints a, pointcloud_all b
 	--LEFT JOIN pointcloud_all b ON (ST_Intersects(a.geom, Geometry(b.pa)))
-	WHERE ST_Intersects(a.geom,  ST_SetSRID(ST_MakePoint(b.x, b.y, b.z), 28992))
+	WHERE
+        ST_Intersects(a.geom,  ST_MakePoint(b.x, b.y, b.z, 28992))
 	GROUP BY a.id
 ) with data;
 
 drop table footprintpatch;
 create table footprintpatch AS ( --get only points that fall inside building, patch them
 	SELECT id, x, y, z, footprint
-	FROM papoints WHERE ST_Intersects(footprint,  ST_SetSRID(ST_MakePoint(x, y, z), 28992))
+	FROM papoints 
+    WHERE 
+        ST_Intersects(footprint, ST_MakePoint(x, y, z, 28992))
 	--GROUP BY id, footprint
 ) with data;
 

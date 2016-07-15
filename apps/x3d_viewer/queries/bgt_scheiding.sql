@@ -17,7 +17,7 @@ pointcloud_building AS (
 	WHERE
     x between 93816 and 93916 and
     y between 463891 and 463991 and
-    --ST_DWithin(geom, ST_SetSRID(ST_MakePoint(x, y, z), 28992),10) --patches should be INSIDE bounds
+    --ST_DWithin(geom, ST_MakePoint(x, y, z),10) --patches should be INSIDE bounds
     Contains(geom, x, y)
     and c = 1
 ),
@@ -34,19 +34,26 @@ papoints AS ( --get points from intersecting patches
 	SELECT a.id, x, y, z, geom as footprint
 	FROM footprints a, pointcloud_building b
 	--LEFT JOIN pointcloud_building b ON (ST_Intersects(a.geom, ST_SetSRID(ST_MakePoint(b.x, b.y, b.z), 28992)))
-	WHERE (ST_Intersects(a.geom, ST_SetSRID(ST_MakePoint(b.x, b.y, b.z), 28992)))
+	WHERE
+    --(ST_Intersects(a.geom, ST_SetSRID(ST_MakePoint(b.x, b.y, b.z), 28992)))
+    ST_Intersects(a.geom, b.x, b.y, b.z, 28992)
 ),
 papatch AS (
 	SELECT
 		a.id, min(z) as min
 	FROM footprints a, pointcloud_building b
 	--LEFT JOIN pointcloud_building b ON (ST_Intersects(a.geom, ST_SetSRID(ST_MakePoint(b.x, b.y, b.z), 28992)))
-	WHERE (ST_Intersects(a.geom, ST_SetSRID(ST_MakePoint(b.x, b.y, b.z), 28992)))
+	WHERE
+    --(ST_Intersects(a.geom, ST_SetSRID(ST_MakePoint(b.x, b.y, b.z), 28992)))
+    ST_Intersects(a.geom, b.x, b.y, b.z, 28992)
 	GROUP BY a.id
 ),
 footprintpatch AS ( --get only points that fall inside building, patch them
 	SELECT id, x, y, z, footprint
-	FROM papoints WHERE ST_Intersects(footprint, ST_SetSRID(ST_MakePoint(x, y, z), 28992))
+	FROM papoints
+    WHERE
+    --ST_Intersects(footprint, ST_SetSRID(ST_MakePoint(x, y, z), 28992))
+    ST_Intersects(footprint, x, y, z, 28992)
 	--GROUP BY id, footprint
 ),
 stats AS (
@@ -68,7 +75,8 @@ stats AS (
 --	GROUP BY footprints.id, footprint
 --),
 polygons AS (
-	SELECT id, ST_Extrude(ST_Translate(footprint,0,0, min), 0,0,max-min) as geom
+	--SELECT id, ST_Extrude(ST_Translate(footprint,0,0, min), 0,0,max-min) as geom
+	SELECT id, ST_Translate(footprint,0,0, min) as geom
     FROM stats
 	--SELECT id, ST_Tesselate(ST_Translate(footprint,0,0, min + 20)) geom FROM stats_fast
 )

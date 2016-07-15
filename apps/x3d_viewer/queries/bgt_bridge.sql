@@ -1,10 +1,22 @@
-WITH 
+declare _west integer;
+declare _south integer;
+declare _east integer;
+declare _north integer;
+declare _segmentlength integer;
+
+set _west = 93816.0;
+set _east = 93916.0;
+set _south = 463891.0;
+set _north = 463991.0;
+set _segmentlength = 10;
+
+WITH
 bounds AS (
 	SELECT ST_Segmentize(ST_MakeEnvelope(_west, _south, _east, _north, 28992),_segmentlength) geom
 ),
 pointcloud AS (
-	SELECT PC_FilterEquals(pa,'classification',26) pa --bridge points 
-	FROM ahn3_pointcloud.vw_ahn3, bounds 
+	SELECT PC_FilterEquals(pa,'classification',26) pa --bridge points
+	FROM ahn3_pointcloud.vw_ahn3, bounds
 	WHERE ST_DWithin(geom, Geometry(pa),10) --patches should be INSIDE bounds
 ),
 --TODO: introduce extra vertices where brdge pilon intersects
@@ -18,7 +30,7 @@ footprints AS (
 	AND ST_Intersects(ST_Centroid(ST_SetSrid(ST_CurveToLine(a.wkb_geometry),28992)), b.geom)
 )
 ,roads AS (
-	SELECT nextval('counter') id,a.ogc_fid, 'bridge'::text AS class, a.bgt_functie as type, 
+	SELECT nextval('counter') id,a.ogc_fid, 'bridge'::text AS class, a.bgt_functie as type,
 		a.wkb_geometry geom
 	FROM bgt_import2.wegdeel_2d a
 	LEFT JOIN bgt_import2.overbruggingsdeel_2d b
@@ -43,15 +55,15 @@ footprints AS (
 	FROM polygons
 )
 ,edge_points AS (
-	SELECT id, fid, type, geom0, path ring, (ST_Dumppoints(geom)).* 
+	SELECT id, fid, type, geom0, path ring, (ST_Dumppoints(geom)).*
 	FROM rings
 )
 ,edge_points_patch AS ( --get closest patch to every vertex
 	SELECT a.id, a.fid, a.type, a.geom0, a.path, a.ring, a.geom,  --find closes patch to point
-	PC_Explode(COALESCE(b.pa, --if not intersection, then get the closest one 
+	PC_Explode(COALESCE(b.pa, --if not intersection, then get the closest one
 		(
 		SELECT b.pa FROM pointcloud b
-		ORDER BY a.geom <#> Geometry(b.pa) 
+		ORDER BY a.geom <#> Geometry(b.pa)
 		LIMIT 1
 		)
 	)) pt
@@ -61,8 +73,8 @@ footprints AS (
 		geometry(pa)
 	)
 ),
-emptyz AS ( 
-	SELECT 
+emptyz AS (
+	SELECT
 		a.id, a.fid, a.type, a.path, a.ring, a.geom,
 		PC_Patch(pt) pa,
 		PC_PatchMin(PC_Patch(pt), 'z') min,
@@ -79,7 +91,7 @@ emptyz AS (
 	FROM emptyz a
 )
 -- assign z-value for every boundary point
-,filledz AS ( 
+,filledz AS (
 	SELECT id, fid, type, path, ring, ST_Translate(St_Force3D(geom), 0,0,avg(z)) geom
 	FROM filter
 	GROUP BY id, fid, type, path, ring, geom
@@ -102,7 +114,7 @@ emptyz AS (
 	GROUP BY id, fid, type
 ),
 polygonsz AS (
-	SELECT a.id, a.fid, a.type, COALESCE(ST_MakePolygon(a.geom, b.arr),ST_MakePolygon(a.geom)) geom 
+	SELECT a.id, a.fid, a.type, COALESCE(ST_MakePolygon(a.geom, b.arr),ST_MakePolygon(a.geom)) geom
 	FROM outerrings a
 	LEFT JOIN innerrings b ON a.id = b.id
 )
@@ -118,7 +130,7 @@ polygonsz AS (
 	)
 ),
 all_points AS ( -- get pts in every boundary
-	SELECT t.id, geometry(PC_Explode(pa)) geom 
+	SELECT t.id, geometry(PC_Explode(pa)) geom
 	FROM pointcloud, terrain_polygons t
 	WHERE ST_Intersects(
 		geom,
@@ -129,11 +141,11 @@ innerpoints AS (
 	SELECT a.id, a.geom
 	FROM all_points a
 	INNER JOIN terrain_polygons b
-	ON a.id = b.id 
+	ON a.id = b.id
 	AND ST_Intersects(a.geom, b.geom)
 	AND Not ST_DWithin(a.geom, ST_ExteriorRing(b.geom),1)
 	WHERE random() < (0.1 * _zoom)
-	AND (b.type != 'road') 
+	AND (b.type != 'road')
 )
 ,basepoints AS (
 	--SELECT id, geom FROM innerpoints
@@ -142,7 +154,7 @@ innerpoints AS (
 	WHERE ST_IsValid(geom)
 )
 ,triangles AS (
-	SELECT 
+	SELECT
 		id,
 		ST_MakePolygon(
 			ST_ExteriorRing(
@@ -153,9 +165,9 @@ innerpoints AS (
 	GROUP BY id
 )
 ,assign_triags AS (
-	SELECT 	a.id, 
-		CASE 
-			WHEN b.type != 'dek' THEN ST_Translate(a.geom, 0,0,1) 
+	SELECT 	a.id,
+		CASE
+			WHEN b.type != 'dek' THEN ST_Translate(a.geom, 0,0,1)
 			ELSE a.geom
 		END as geom, b.type
 	FROM triangles a
