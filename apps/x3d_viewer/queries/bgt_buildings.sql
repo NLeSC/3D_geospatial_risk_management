@@ -7,7 +7,7 @@ set _east = 93916.0;
 set _south = 463891.0;
 set _north = 463991.0;
 
-trace WITH
+WITH
 bounds AS (
     SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) as geom
 ),

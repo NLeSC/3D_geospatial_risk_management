@@ -1,136 +1,151 @@
+declare _west integer;
+declare _south integer;
+declare _east integer;
+declare _north integer;
+set _west = 93816;
+set _east = 93916;
+set _south = 463891;
+set _north = 463991;
+
 drop table bounds;
 create table bounds AS (
-	SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) geom
-)with data;
+	SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) as geom
+)with data; 
 
 drop table pointcloud;
 create table pointcloud AS (
-	SELECT PC_FilterEquals(pa,'classification',6) pa
-	FROM ahn3_pointcloud.vw_ahn3, bounds
-	WHERE ST_DWithin(geom, Geometry(pa),10) --patches should be INSIDE bounds
+	SELECT x, y, z
+	FROM ahn3, bounds
+	WHERE 
+    x between 93816 and 93916 and
+    y between 463891 and 463991 and
+    --ST_DWithin(geom, ST_SetSRID(ST_MakePoint(x, y, z), 28992),10) --patches should be INSIDE bounds
+    Contains(geom, x, y)
+    and c = 6
 ) with data;
 
+--a.geometrie2dgrondvlak does not exist
 drop table prefootprints;
 create table prefootprints AS (
 	SELECT
 		--a.ogc_fid id,
 		1 as id,
-		ST_Simplify(ST_Force2D(ST_Union(geometrie2dgrondvlak)),0.95) geom
-	FROM bgt_import.buildingpart a, bounds b
-	WHERE ST_Area(a.geometrie2dgrondvlak) > 30
-	AND eindregistratie Is Null
-	AND ST_IsValid(a.geometrie2dgrondvlak)
-	AND ST_Intersects(a.geometrie2dgrondvlak, b.geom)
-	AND ST_Intersects(ST_Centroid(a.geometrie2dgrondvlak), b.geom)
+		--ST_Simplify(ST_Force2D(ST_Union(wkt)), 0.95) as geom
+		ST_SimplifyPreserveTopology(ST_Force2D(ST_Union(wkt)), 0.95) as geom
+	FROM bgt_buildingpart a, bounds b
+	WHERE ST_Area(a.wkt) > 30
+	--AND eindregistratie Is Null
+	AND ST_IsValid(a.wkt)
+	AND ST_Intersects(a.wkt, b.geom)
+	AND ST_Intersects(ST_Centroid(a.wkt), b.geom)
 ) with data;
+
+DROP SEQUENCE "counter_id";
+CREATE SEQUENCE "counter_id" AS INTEGER;
 
 drop table footprints;
 create table footprints AS (
-	SELECT id, (ST_Dump(geom)).geom geom FROM prefootprints
+	SELECT NEXT VALUE FOR "counter_id" as footprints_id, id, polygonwkb as geom FROM ST_DUMP((select geom from prefootprints)) d
 ) with data;
 
 drop table stats_fast;
 create table stats_fast AS (
-	SELECT
-		PC_PatchAvg(PC_Union(pa),'z') max,
-		PC_PatchMin(PC_Union(pa),'z') min,
-		footprints.id,
-		geom footprint
-	FROM footprints
-	--LEFT JOIN ahn_pointcloud.ahn2objects ON (ST_Intersects(geom, geometry(pa)))
-	LEFT JOIN pointcloud ON (ST_Intersects(geom, geometry(pa)))
-	GROUP BY footprints.id, footprint
+	SELECT 
+		footprints.footprints_id as footprints_id,
+		footprints.id as id,
+		geom as footprint,
+		avg(z) as max,
+		min(z) as min
+	FROM footprints, pointcloud
+	--LEFT JOIN pointcloud ON (ST_Intersects(geom, ST_SetSRID(ST_MakePoint(x, y, z), 28992)))
+	WHERE ST_Intersects(ST_SetSRID(geom, 28992), ST_SetSRID(ST_MakePoint(x, y, z), 28992))
+	GROUP BY footprints_id, id, footprint
 ) with data;
 
 drop table polygons;
 create table polygons AS (
-	SELECT
+	SELECT 
+        footprints_id,
 		id,
-		ST_Translate(footprint,0,0, max-min)
-		geom FROM stats_fast
-	--SELECT ST_Tesselate(ST_Translate(footprint,0,0, min + 20)) geom FROM stats_fast
+		ST_Translate(footprint,0,0, max-min) as geom
+    FROM stats_fast
 ) with data;
 
 drop table rings;
 create table rings AS (
-SELECT id, ST_ExteriorRing(ST_GeometryN(geom,1)) geom
-					FROM polygons
+SELECT footprints_id, id, ST_ExteriorRing(ST_GeometryN(geom,1)) as geom
+	FROM polygons
 ) with data;
 
+DROP SEQUENCE "counter";
+CREATE SEQUENCE "counter" AS INTEGER;
+
+
+----TODO: ST_DUMP needs to receive any type
 drop table skeleton;
 create table skeleton AS (
-	SELECT id, nextval('counter') counter, (ST_Dump(ST_StraightSkeleton(geom))).geom geom
-	FROM footprints
+	SELECT parent as footprints_id, NEXT VALUE FOR "counter" as counter, d.polygonWKB as geom
+	FROM ST_Dump((select geom, footprints_id from footprints)) d
+) with data;
+
+drop table skeletonpts_dump;
+create table skeletonpts_dump AS (
+	SELECT *
+	FROM ST_DumpPoints((select geom, counter from skeleton)) d
 ) with data;
 
 drop table skeletonpts;
 create table skeletonpts AS (
-	SELECT id, counter, (ST_DumpPoints(geom)).*
-	FROM skeleton
+	--SELECT id, counter, *
+	SELECT s.footprints_id, f.id, s.counter, sd.pointG as geom
+	FROM skeleton s, skeletonpts_dump sd, footprints f
+    WHERE 
+    s.counter =  sd.parent and
+    s.footprints_id = f.footprints_id
 ) with data;
 
-drop table skeletonpoints_patch;
-create table skeletonpoints_patch AS ( --get closest patch to every vertex
-	SELECT a.id, a.counter, a.path, a.geom,  --find closes patch to point
-		COALESCE(b.pa, (
-			SELECT b.pa FROM pointcloud b
-			ORDER BY a.geom <#> Geometry(b.pa)
-			LIMIT 1)
-		) pa
-	FROM skeletonpts a LEFT JOIN pointcloud b
-	ON ST_Intersects(
-		a.geom,
-		geometry(pa)
-	)
-) with data;
+drop table skeletonpoints_dist;
+create table skeletonpoints_dist as (
+    select footprints_id , id, a.counter, a.geom, ST_SetSRID(ST_MakePoint(x, y, z), 28992) as pt, ST_Distance(ST_SetSRID(a.geom, 28992), ST_SetSRID(ST_MakePoint(x, y, z), 28992)) as dist 
+    from skeletonpts a, pointcloud b
+    where
+    ST_DWITHIN(ST_SetSRID(a.geom, 28992), ST_SetSRID(ST_MakePoint(x, y, z), 28992), 10)
+) WITH DATA;
 
-drop table emptyz;
-create table emptyz AS ( --find closest pt for every boundary point
-	SELECT a.*, ( --find closest pc.pt to point
-		SELECT b.pt FROM (SELECT PC_Explode(a.pa) pt ) b
-		ORDER BY a.geom <#> Geometry(b.pt)
-		LIMIT 1
-		) pt
-	FROM skeletonpoints_patch a
-) with data;
+drop table skeletonpoints_rank;
+create table skeletonpoints_rank as (
+    select footprints_id, id, counter, geom, pt, dist, RANK() over (PARTITION BY footprints_id, id, counter, geom order by footprints_id, id, counter, dist ASC) as rank
+    from skeletonpoints_dist
+) WITH DATA;
 
 drop table filledz;
-create table filledz AS (
-	SELECT id,counter, path, PC_Get(first(pt),'z') z,
-	ST_Translate(St_Force3D(geom), 0,0,PC_Get(first(pt),'z')) geom
-	FROM emptyz
-	GROUP BY id, counter, path, geom
-	ORDER BY id, path
+create table filledz AS ( --get closest patch to every vertex
+	SELECT footprints_id, id, counter, ST_Translate(St_Force3D(geom), 0, 0, ST_Z(pt)) as geom
+    from skeletonpoints_rank
+    where
+    rank = 1 --find closes patch to point
 ) with data;
 
+
+--TODO we need a subMakeLine, another aggregate function.
 drop table skeletonz;
 create table skeletonz AS (
-	SELECT id, counter, ST_MakeLine(geom) geom
-	FROM filledz
-	GROUP BY id,counter
-	UNION ALL
-	SELECT id,
-	0 AS counter, geom
-	FROM rings
+	SELECT id, counter, ST_MakeLine(geom) as geom FROM filledz GROUP BY id,counter UNION ALL SELECT id, 0 AS counter, geom FROM rings
 ) with data;
 
 drop table unions;
 create table unions AS (
-	SELECT id, ST_Union(geom) geom FROM skeletonz
-	GROUP BY id
+	SELECT id, ST_Union(geom) as geom FROM skeletonz GROUP BY id
 ) with data;
 
 drop table polygonsz;
 create table polygonsz AS (
-	SELECT id, ST_Polygonize(geom) geom
-	FROM unions
-	GROUP BY id
+	SELECT id, ST_Polygonize(geom) as geom FROM unions --GROUP BY id
 ) with data;
 
 drop table dumped;
 create table dumped AS (
-	SELECT id, (ST_Dump(geom)).geom geom
-	FROM polygonsz
+    SELECT parent as id, polygonWKB as geom FROM ST_Dump((select id, geom from polygonsz)) d
 ) with data;
 
-SELECT id, 'roof' as type, 'red' color, ST_AsX3d(ST_Collect(p.geom)) geom FROM dumped p GROUP BY p.id;
+SELECT id, 'roof' as type, 'red' as color, ST_AsX3d(ST_Collect(p.geom), 4.0, 0) as geom FROM dumped p GROUP BY p.id;
