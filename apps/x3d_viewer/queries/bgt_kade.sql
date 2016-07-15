@@ -56,13 +56,13 @@ papatch AS (
 		a.id, min(z) as min
 	FROM footprints a, pointcloud_all b
 	--LEFT JOIN pointcloud_all b ON (ST_Intersects(a.geom, Geometry(b.pa)))
-	WHERE
+	WHERE 
         ST_Intersects(a.geom,  ST_SetSRID(ST_MakePoint(b.x, b.y, b.z), 28992))
 	GROUP BY a.id
 ),
 footprintpatch AS ( --get only points that fall inside building, patch them
 	SELECT id, x, y, z, footprint
-	FROM papoints
+	FROM papoints 
     WHERE
         ST_Intersects(footprint,  ST_SetSRID(ST_MakePoint(x, y, z), 28992))
 	--GROUP BY id, footprint

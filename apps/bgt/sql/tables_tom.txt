@@ -1,0 +1,11 @@
+bgt_begroeidterreindeel
+bgt_onbegroeidterreindeel
+bgt_ondersteunendwaterdeel
+bgt_ondersteunendwegdeel
+bgt_overbruggingsdeel
+bgt_overigbouwwerk
+bgt_pand
+bgt_scheiding
+bgt_tunneldeel
+bgt_waterdeel
+bgt_wegdeel
