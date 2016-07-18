@@ -33,13 +33,12 @@ pointcloud_all AS (
     Contains(geom, x, y)
 ),
 footprints AS (
-	SELECT ST_Force3D(ST_Intersection(a.geom, b.geom)) as geom,
+	SELECT ST_Force3D(ST_Intersection(a.wkt, b.geom)) as geom,
 	a.ogc_fid as id
-	FROM bgt_polygons a, bounds b
+	FROM bgt_scheiding a, bounds b
 	WHERE 1 = 1
-	--AND (type = 'kademuur' OR class = 'border')
-	AND ST_Intersects(a.geom, b.geom)
-	AND ST_Intersects(ST_Centroid(a.geom), b.geom)
+	AND (bgt_type = 'kademuur')
+	AND ST_Intersects(a.wkt, b.geom)
 ),
 papoints AS ( --get points from intersecting patches
 	SELECT
@@ -74,8 +73,8 @@ stats AS (
 	GROUP BY a.id, footprint, min
 ),
 polygons_kade AS (
-	--SELECT id, ST_Extrude(ST_Tesselate(ST_Translate(footprint,0,0, min)), 0,0,max-min) as geom
-	SELECT id, ST_Tesselate(ST_Translate(footprint,0,0, min)) as geom
+	SELECT id, ST_Extrude(ST_Tesselate(ST_Translate(footprint,0,0, min)), 0,0,max-min) as geom
+	--SELECT id, ST_Tesselate(ST_Translate(footprint,0,0, min)) as geom
     FROM stats
 )
 SELECT id, 'kade' as typ, 'grey' as color, ST_AsX3D(p.geom, 4.0, 0) as geom FROM polygons_kade p;
