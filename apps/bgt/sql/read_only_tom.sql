@@ -1,0 +1,12 @@
+alter table bgt_begroeidterreindeel set read only;
+alter table bgt_ondersteunendwaterdeel set read only;
+alter table bgt_onbegroeidterreindeel set read only;
+alter table bgt_ondersteunendwegdeel set read only;
+alter table bgt_overbruggingsdeel set read only;
+alter table overbruggingsdeel set read only;
+alter table bgt_overigbouwwerk set read only;
+alter table bgt_pand set read only;
+alter table bgt_scheiding set read only;
+alter table bgt_tunneldeel set read only;
+alter table bgt_waterdeel set read only;
+alter table bgt_wegdeel set read only;

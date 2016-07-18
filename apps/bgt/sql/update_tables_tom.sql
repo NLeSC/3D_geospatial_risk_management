@@ -1,0 +1,12 @@
+update bgt_begroeidterreindeel SET wkt = ST_SetSrid(wkt, 28992);
+update bgt_ondersteunendwaterdeel SET wkt = ST_SetSrid(wkt, 28992);
+update bgt_onbegroeidterreindeel SET wkt = ST_SetSrid(wkt, 28992);
+update bgt_ondersteunendwegdeel SET wkt = ST_SetSrid(wkt, 28992);
+update bgt_overbruggingsdeel SET wkt = ST_SetSrid(wkt, 28992);
+update overbruggingsdeel SET wkt = ST_SetSrid(wkt, 28992);
+update bgt_overigbouwwerk SET wkt = ST_SetSrid(wkt, 28992);
+update bgt_pand SET wkt = ST_SetSrid(wkt, 28992);
+update bgt_scheiding SET wkt = ST_SetSrid(wkt, 28992);
+update bgt_tunneldeel SET wkt = ST_SetSrid(wkt, 28992);
+update bgt_waterdeel SET wkt = ST_SetSrid(wkt, 28992);
+update bgt_wegdeel SET wkt = ST_SetSrid(wkt, 28992);
