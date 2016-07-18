@@ -23,7 +23,7 @@ pointcloud AS (
 ),
 footprints AS (
 	SELECT ST_Force3D(ST_GeometryN(ST_SimplifyPreserveTopology(wkt, 0.4),1)) as geom,
-	a.gml_id as id,
+	a.ogc_fid as id,
 	0 as bouwjaar
 	FROM bgt_pand a, bounds b
 	WHERE 1 = 1
