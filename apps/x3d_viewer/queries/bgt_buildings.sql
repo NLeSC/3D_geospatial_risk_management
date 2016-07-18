@@ -22,13 +22,12 @@ pointcloud AS (
 	and c = 6
 ),
 footprints AS (
-	SELECT ST_Force3D(ST_GeometryN(wkt,1)) as geom,
-	--SELECT ST_GeometryN(wkt,1) as geom,
+	SELECT ST_Force3D(ST_GeometryN(ST_SimplifyPreserveTopology(wkt, 0.4),1)) as geom,
 	a.gml_id as id,
 	0 as bouwjaar
-	FROM bgt_buildingpart a, bounds b
+	FROM bgt_pand a, bounds b
 	WHERE 1 = 1
-	AND ST_Area(a.wkt) > 10
+	AND ST_Area(a.wkt) > 30
 	AND ST_Intersects(a.wkt, b.geom)
 	AND ST_Intersects(ST_Centroid(a.wkt), b.geom)
 	AND ST_IsValid(a.wkt)
@@ -59,8 +58,8 @@ polygons AS (
 		id, bouwjaar,
 		(
 			ST_Extrude(
-				ST_Translate(footprint,0,0, min)
-			, 0,0,max-min -2)
+				ST_Translate(footprint,0,0, min - 1)
+			, 0,0,max-min -1)
 		) as geom
         FROM stats_fast
 )
