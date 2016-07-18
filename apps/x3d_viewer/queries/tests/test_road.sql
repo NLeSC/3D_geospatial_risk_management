@@ -18,91 +18,121 @@ create table bounds AS (
 
 drop table mainroads;
 create table mainroads AS (
-	SELECT a.ogc_fid, 'road'::text AS class, a.bgt_functie as type, ST_Intersection(a.wkb_geometry,c.geom) geom 
-	FROM bgt_import2.wegdeel_2d a
-	LEFT JOIN bgt_import2.overbruggingsdeel_2d b
-	ON (St_Intersects((a.wkb_geometry), (b.wkb_geometry)) AND St_Contains(ST_buffer((b.wkb_geometry),1), (a.wkb_geometry)))
-	,bounds c
+	SELECT a.ogc_fid, 'road' AS class, a.bgt_functie as type, ST_Intersection(a.wkt,c.geom) as geom 
+	FROM bgt_wegdeel a
+	--LEFT JOIN bgt_import2.overbruggingsdeel_2d b
+	bgt_overbruggingsdeel b
+	--ON (St_Intersects((a.wkt), (b.wkt)) AND St_Contains(ST_buffer((b.wkt),1), (a.wkt)))
+	, bounds c
 	WHERE a.relatieveHoogteligging = 0
-	AND ST_CurveToLine(b.wkb_geometry) Is Null
+	AND ST_CurveToLine(b.wkt) Is Null
 	AND a.eindregistratie Is Null
 	AND b.eindregistratie Is Null
-	AND ST_Intersects(geom, a.wkb_geometry)
+	--AND ST_Intersects(geom, a.wkb_geometry)
+	AND [geom] Intersects [a.wkt]
+	--AND St_Intersects((a.wkb_geometry), (b.wkb_geometry))
+	AND [a.wkt] Intersects [b.wkt]
+    AND St_Contains(ST_buffer((b.wkt),1), (a.wkt)))
 ) WITH DATA;
 
 drop table auxroads;
 create table auxroads AS (
-	SELECT ogc_fid, 'road'::text AS class, bgt_functie as type, ST_Intersection(wkb_geometry,geom) geom
-	FROM bgt_import2.ondersteunendwegdeel_2d, bounds
+	SELECT ogc_fid, 'road' AS class, bgt_functie as type, ST_Intersection(wkb_geometry,geom) as geom
+	FROM bgt_ondersteunendwegdeel, bounds
 	WHERE relatieveHoogteligging = 0
 	AND eindregistratie Is Null
-	AND ST_Intersects(geom, wkb_geometry)
+	--AND ST_Intersects(geom, wkb_geometry)
+	AND [geom] Intersects [wkb_geometry]
 ) WITH DATA;
 
 drop table tunnels;
 create table tunnels AS (
-	SELECT ogc_fid, 'road'::text AS class, 'tunnel'::text as type, ST_Intersection(wkb_geometry,geom) geom
-	FROM bgt_import2.tunneldeel_2d, bounds
+	SELECT ogc_fid, 'road' AS class, 'tunnel' as type, ST_Intersection(wkb_geometry,geom) as geom
+	FROM bgt_tunneldeel, bounds
 	WHERE eindregistratie Is Null
 	AND ST_Intersects(geom, wkb_geometry)
 ) WITH DATA;
 
 drop table pointcloud_ground;
 create table pointcloud_ground AS (
-	SELECT PC_FilterEquals(pa,'classification',2) pa 
-	FROM ahn3_pointcloud.vw_ahn3, bounds
-	WHERE ST_Intersects(geom, Geometry(pa))
+	SELECT x, y, z
+	FROM ahn3, bounds
+	WHERE 
+    ST_Intersects(geom, x, y, z, 28992) AND
+    c = 2
 ) WITH DATA;
+
+DROP SEQUENCE "counter";
+CREATE SEQUENCE "counter" AS INTEGER;
 
 drop table polygons;
 create table polygons AS (
-	SELECT nextval('counter') id, ogc_fid fid, type, class,(ST_Dump(geom)).geom
+	SELECT next value for "counter" as id, ogc_fid as fid, type, class, geom
 	FROM mainroads
 	UNION ALL
-	SELECT nextval('counter') id, ogc_fid fid, type, class,(ST_Dump(geom)).geom
+	SELECT next value for "counter" as id, ogc_fid as fid, type, class, geom
 	FROM auxroads
 	UNION ALL
-	SELECT nextval('counter') id, ogc_fid fid, type, class,(ST_Dump(geom)).geom
+	SELECT next value for "counter" as id, ogc_fid as fid, type, class, geom
 	FROM tunnels
+) WITH DATA;
+
+drop table polygons_dump;
+create table polygons_dump AS (
+    SELECT parent as id, polygonWKB as geom
+    FROM ST_DUMP((select geom, id from polygons)) d
 ) WITH DATA;
 
 drop table polygonsz;
 create table polygonsz AS (
-	SELECT id, fid, type, class, patch_to_geom(PC_Union(b.pa), geom) geom
-	FROM polygons a 
-	LEFT JOIN pointcloud_ground b
-	ON ST_Intersects(geom,Geometry(b.pa))
+	SELECT id, fid, type, class, patch_to_geom(x, y, z, geom) as geom
+	FROM polygons a,
+	--LEFT JOIN pointcloud_ground b
+	pointcloud_ground b
+    , polygons_dump c
+	WHERE 
+        a.id = c.id AND
+	    --ON ST_Intersects(geom,Geometry(b.pa))
+        ST_Intersects(geom, x, y, z, 28992) and
+        ST_IsValid(geom)
 	GROUP BY id, fid, type, class, geom
 ) WITH DATA;
 
 drop table basepoints;
 create table basepoints AS (
-	SELECT id,geom FROM polygonsz
+	SELECT id, ST_Triangulate2DZ(ST_Collect(geom)) FROM polygonsz
 	WHERE ST_IsValid(geom)
+    GROUP BY id
+) WITH DATA;
+
+drop table basepoints_dump;
+create table basepoints_dump AS (
+    select parent as id, polygonWKB as geom
+    FROM ST_DUMP((select geom, id from basepoints)) d
 ) WITH DATA;
 
 drop table triangles;
 create table triangles AS (
-	SELECT 
-		id,
-		ST_MakePolygon(
-			ST_ExteriorRing(
-				(ST_Dump(ST_Triangulate2DZ(ST_Collect(a.geom)))).geom
-			)
-		)geom
-	FROM basepoints a
-	GROUP BY id
+	SELECT  id,
+		ST_MakePolygon(ST_ExteriorRing(a.geom)) as geom
+	FROM basepoints a, basepoints_dump b
+    WHERE
+    a.id = b.id;
 ) WITH DATA;
 
 drop table assign_triags;
 create table assign_triags AS (
 	SELECT 	a.*, b.type, b.class
 	FROM triangles a
-	INNER JOIN polygons b
-	ON ST_Contains(b.geom, a.geom)
-	,bounds c
-	WHERE ST_Intersects(ST_Centroid(b.geom), c.geom)
-	AND a.id = b.id
+	--INNER JOIN polygons b
+	, polygons b
+	, bounds c
+	WHERE 
+    --ST_Intersects(ST_Centroid(b.geom), c.geom) AND
+    [ST_Centroid(b.geom)] Intersects [c.geom] AND
+	a.id = b.id AND
+	--ON ST_Contains(b.geom, a.geom)
+	ST_Contains(b.geom, a.geom)
 ) WITH DATA;
 
 
