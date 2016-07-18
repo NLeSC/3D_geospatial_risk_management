@@ -39,7 +39,7 @@ pointcloud_ground AS (
 footprints AS (
 	SELECT
         ST_Force3D(ST_Intersection(a.wkt, b.geom)) as geom,
-    	a.gml_id as id
+    	a.ogc_fid as id
 	FROM bgt_kunstwerkdeel a, bounds b
 	WHERE
 	    (plus_type = 'steiger') AND

@@ -33,7 +33,7 @@ pointcloud_water AS (
         c = 9
 ),
 terrain_ AS (
-	SELECT NEXT VALUE FOR "counter" as id, gml_id as fid, plus_type as typ, 'water' as class, ST_Intersection(a.wkt, b.geom) as geom FROM  bgt_waterdeel a, bounds b WHERE ST_Intersects(a.wkt, b.geom)
+	SELECT NEXT VALUE FOR "counter" as id, ogc_fid as fid, plus_type as typ, 'water' as class, ST_Intersection(a.wkt, b.geom) as geom FROM  bgt_waterdeel a, bounds b WHERE ST_Intersects(a.wkt, b.geom)
 ),
 terrain_dump AS (
 	SELECT parent as id, polygonWKB as geom FROM ST_Dump((select geom, id from terrain_)) a
