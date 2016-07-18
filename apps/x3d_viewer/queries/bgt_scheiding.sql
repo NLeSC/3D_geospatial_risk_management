@@ -7,7 +7,7 @@ set _east = 93916;
 set _south = 463891;
 set _north = 463991;
 
-trace WITH
+WITH
 bounds AS (
 	SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) as geom
 ),
@@ -20,15 +20,21 @@ pointcloud_building AS (
     --ST_DWithin(geom, ST_MakePoint(x, y, z),10) --patches should be INSIDE bounds
     Contains(geom, x, y)
     and c = 1
+    and r = 1
+    and i > 150
 ),
 footprints AS (
-	SELECT ST_Force3D(a.geom) as geom,
-	a.ogc_fid as id
-	FROM bgt_polygons a, bounds b
-	WHERE 1 = 1
-	AND type = 'muur'
-	AND ST_Intersects(a.geom, b.geom)
-	AND ST_Intersects(ST_Centroid(a.geom), b.geom)
+	SELECT a.ogc_fid as id, 'border' as class, a.bgt_type as type,
+    --ST_Force3D(ST_CurveToLine(a.wkt)) as geom
+    ST_Force3D(a.wkt) as geom
+	FROM bgt_scheiding a, bgt_overbruggingsdeel b, bounds c
+	WHERE a.relatieveHoogteligging > -1
+	AND bgt_type = 'muur'
+    AND (b.wkt) Is Null
+	AND ST_Intersects(a.wkt, c.geom)
+	AND ST_Intersects(ST_Centroid(a.wkt), c.geom)
+    AND St_Intersects((a.wkt), (b.wkt))
+    AND St_Contains(ST_buffer((b.wkt),1), (a.wkt))
 ),
 papoints AS ( --get points from intersecting patches
 	SELECT a.id, x, y, z, geom as footprint
@@ -75,8 +81,7 @@ stats AS (
 --	GROUP BY footprints.id, footprint
 --),
 polygons AS (
-	--SELECT id, ST_Extrude(ST_Translate(footprint,0,0, min), 0,0,max-min) as geom
-	SELECT id, ST_Translate(footprint,0,0, min) as geom
+	SELECT id, ST_Extrude(ST_Translate(footprint,0,0, min), 0,0,max-min) as geom
     FROM stats
 	--SELECT id, ST_Tesselate(ST_Translate(footprint,0,0, min + 20)) geom FROM stats_fast
 )
