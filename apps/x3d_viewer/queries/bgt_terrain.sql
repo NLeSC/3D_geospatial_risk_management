@@ -76,12 +76,16 @@ polygons_dump AS (
 ),
 polygons AS (
 	SELECT a.*
-	FROM polygons_ a, polygons_dump b
-    where
-    a.id = b.id
+	FROM polygons_ a
+    LEFT JOIN polygons_dump b
+    ON a.id = b.id
 ),
 polygonsz AS (
-	SELECT id, fid, type, class, patch_to_geom(geom) as geom FROM polygons a, pointcloud_ground b WHERE Contains(geom, x, y) GROUP BY id, fid, type, class, geom
+	SELECT id, fid, type, class, patch_to_geom(geom) as geom
+    FROM polygons a
+    LEFT JOIN pointcloud_ground b
+    ON ST_Intersects(geom, x, y, z, 28992)
+    GROUP BY id, fid, type, class, geom
 ),
 basepoints AS (
 	SELECT id, geom FROM polygonsz WHERE ST_IsValid(geom)
