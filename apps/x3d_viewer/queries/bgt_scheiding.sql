@@ -27,31 +27,26 @@ footprints AS (
 	SELECT a.ogc_fid as id, 'border' as class, a.bgt_type as type,
     --ST_Force3D(ST_CurveToLine(a.wkt)) as geom
     ST_Force3D(a.wkt) as geom
-	FROM bgt_scheiding a, bgt_overbruggingsdeel b, bounds c
+	FROM bgt_scheiding a
+    LEFT JOIN bgt_overbruggingsdeel b
+    ON ([a.wkt] Intersects [b.wkt]) AND St_Contains(ST_buffer((b.wkt),1), (a.wkt))
+    , bounds c
 	WHERE a.relatieveHoogteligging > -1
 	AND bgt_type = 'muur'
     AND (b.wkt) Is Null
-	AND ST_Intersects(a.wkt, c.geom)
-	AND ST_Intersects(ST_Centroid(a.wkt), c.geom)
-    AND St_Intersects((a.wkt), (b.wkt))
-    AND St_Contains(ST_buffer((b.wkt),1), (a.wkt))
+	AND [a.wkt] Intersects [c.geom]
+	AND [ST_Centroid(a.wkt)] Intersects [c.geom]
 ),
 papoints AS ( --get points from intersecting patches
 	SELECT a.id, x, y, z, geom as footprint
-	FROM footprints a, pointcloud_building b
-	--LEFT JOIN pointcloud_building b ON (ST_Intersects(a.geom, ST_SetSRID(ST_MakePoint(b.x, b.y, b.z), 28992)))
-	WHERE
-    --(ST_Intersects(a.geom, ST_SetSRID(ST_MakePoint(b.x, b.y, b.z), 28992)))
-    ST_Intersects(a.geom, b.x, b.y, b.z, 28992)
+	FROM footprints a
+	LEFT JOIN pointcloud_building b ON (ST_Intersects(a.geom, b.x, b.y, b.z, 28992))
 ),
 papatch AS (
 	SELECT
 		a.id, min(z) as min
-	FROM footprints a, pointcloud_building b
-	--LEFT JOIN pointcloud_building b ON (ST_Intersects(a.geom, ST_SetSRID(ST_MakePoint(b.x, b.y, b.z), 28992)))
-	WHERE
-    --(ST_Intersects(a.geom, ST_SetSRID(ST_MakePoint(b.x, b.y, b.z), 28992)))
-    ST_Intersects(a.geom, b.x, b.y, b.z, 28992)
+	FROM footprints a
+	LEFT JOIN pointcloud_building b ON (ST_Intersects(a.geom, b.x, b.y, b.z, 28992))
 	GROUP BY a.id
 ),
 footprintpatch AS ( --get only points that fall inside building, patch them
