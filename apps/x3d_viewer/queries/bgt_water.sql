@@ -39,7 +39,7 @@ terrain_dump AS (
 	SELECT parent as id, polygonWKB as geom FROM ST_Dump((select geom, id from terrain_)) a
 ),
 terrain AS (
-	SELECT a.id, a.fid, a.typ, a.class, b.geom FROM terrain_ a, terrain_dump b WHERE a.id = b.id
+	SELECT a.id, a.fid, a.typ, a.class, b.geom FROM terrain_ a LEFT JOIN terrain_dump b ON a.id = b.id
 ),
 polygons AS (
 	SELECT NEXT VALUE for "polygon_id" as polygon_id, * FROM terrain WHERE ST_GeometryType(geom) = 'ST_Polygon'
@@ -55,18 +55,24 @@ basepoints AS (
 triangles_b AS (
     select polygon_id, id, ST_Triangulate2DZ(ST_Collect(geom), 0) as geom from basepoints group by polygon_id, id
 ),
-triangles AS (
+triangles_dump AS (
     SELECT parent as polygon_id, ST_MakePolygon(ST_ExteriorRing( a.polygonWKB)) as geom FROM ST_Dump((select geom, polygon_id from triangles_b)) a
 ),
+triangle as (
+    SELECT a.*, b.id
+    FROM triangles b
+    LEFT JOIN triangles_dump b
+    ON a.polygon_id = b.polygon_id
+),
 assign_triags AS (
-	SELECT 	a.*, d.id, b.typ, b.class
+	SELECT 	a.*, b.typ, b.class
 	FROM triangles a
 	INNER JOIN polygons b
 	ON ST_Contains(ST_SetSRID(b.geom, 28992), ST_SetSRID(a.geom, 28992))
-	, bounds c, triangles_b d
-	WHERE
+	, bounds c
+    WHERE
     --ST_Intersects(ST_Centroid(b.geom), c.geom)
     [ST_Centroid(b.geom)] Intersects [c.geom]
-	AND a.polygon_id = b.polygon_id and a.polygon_id = d.polygon_id
+	AND a.polygon_id = b.polygon_id
 )
 SELECT p.id AS id, 'water' as type, ST_AsX3D(ST_Collect(p.geom),4.0, 0) as geom FROM assign_triags p GROUP BY id, type;
