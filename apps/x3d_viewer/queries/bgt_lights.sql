@@ -34,7 +34,7 @@ points AS (
 	FROM bgt_paal a, bounds b
 	WHERE
     (plus_type = 'lichtmast' OR plus_type Is Null)
-	AND ST_Intersects(a.wkt, b.geom)
+	AND [a.wkt] Intersects [b.geom]
 ),
 pointsz As (
 	SELECT a.id, ST_Translate(ST_Force3D(a.geom), 0, 0, avg(z)+5) as geom
