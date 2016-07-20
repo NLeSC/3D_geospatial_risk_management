@@ -20,26 +20,26 @@ mainroads AS (
 	SELECT a.ogc_fid, 'road'::text AS class, a.bgt_functie as type, ST_Intersection(a.wkb_geometry,c.geom) geom
 	FROM bgt_import2.wegdeel_2d a
 	LEFT JOIN bgt_import2.overbruggingsdeel_2d b
-	ON (St_Intersects((a.wkb_geometry), (b.wkb_geometry)) AND St_Contains(ST_buffer((b.wkb_geometry),1), (a.wkb_geometry)))
+	ON ([a.wkt] Intersects [b.wkt]) AND St_Contains(ST_buffer((b.wkb_geometry),1), (a.wkb_geometry)))
 	,bounds c
 	WHERE a.relatieveHoogteligging = 0
 	AND ST_CurveToLine(b.wkb_geometry) Is Null
 	AND a.eindregistratie Is Null
 	AND b.eindregistratie Is Null
-	AND ST_Intersects(geom, a.wkb_geometry)
+	AND [geom] Intersects [a.wkb_geometry]
 ),
 auxroads AS (
 	SELECT ogc_fid, 'road'::text AS class, bgt_functie as type, ST_Intersection(wkb_geometry,geom) geom
 	FROM bgt_import2.ondersteunendwegdeel_2d, bounds
 	WHERE relatieveHoogteligging = 0
 	AND eindregistratie Is Null
-	AND ST_Intersects(geom, wkb_geometry)
+	AND [geom] Intersects [wkb_geometry]
 ),
 tunnels AS (
 	SELECT ogc_fid, 'road'::text AS class, 'tunnel'::text as type, ST_Intersection(wkb_geometry,geom) geom
 	FROM bgt_import2.tunneldeel_2d, bounds
 	WHERE eindregistratie Is Null
-	AND ST_Intersects(geom, wkb_geometry)
+	AND [geom] Intersects [wkb_geometry]
 ),
 pointcloud_ground AS (
 	SELECT PC_FilterEquals(pa,'classification',2) pa
@@ -65,7 +65,7 @@ polygons AS (
 	SELECT id, fid, type, class, patch_to_geom(PC_Union(b.pa), geom) geom
 	FROM polygons a
 	LEFT JOIN pointcloud_ground b
-	ON ST_Intersects(geom,Geometry(b.pa))
+	ON ST_Intersects(geom, x, y, z, 28992)
 	GROUP BY id, fid, type, class, geom
 )
 ,basepoints AS (
@@ -89,7 +89,7 @@ polygons AS (
 	INNER JOIN polygons b
 	ON ST_Contains(b.geom, a.geom)
 	,bounds c
-	WHERE ST_Intersects(ST_Centroid(b.geom), c.geom)
+	WHERE [ST_Centroid(b.geom)] Intersects [c.geom]
 	AND a.id = b.id
 )
 
