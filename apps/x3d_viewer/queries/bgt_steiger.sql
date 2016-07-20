@@ -43,7 +43,7 @@ footprints AS (
 	FROM bgt_kunstwerkdeel a, bounds b
 	WHERE
 	    (plus_type = 'steiger') AND
-	    ST_Intersects(a.wkt, b.geom)
+	    [a.wkt] Intersects [b.geom]
 ),
 papoints AS ( --get points from intersecting patches
 	SELECT
@@ -54,13 +54,13 @@ papoints AS ( --get points from intersecting patches
 	FROM footprints a
 	LEFT JOIN
     pointcloud_ground b ON
-    ST_Intersects(a.geom, b.geom)
+    [a.geom] Intersects [b.geom]
 ),
 footprintpatch AS ( --get only points that fall inside building, patch them
 	SELECT id, pt as geom, footprint, min(z) as min
 	FROM papoints
     WHERE
-        ST_Intersects(footprint, pt)
+        [footprint] Intersects [pt]
 	GROUP BY id, geom, footprint
 ),
 polygons AS (
