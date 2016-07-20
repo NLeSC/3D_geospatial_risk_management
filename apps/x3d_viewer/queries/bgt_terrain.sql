@@ -93,19 +93,25 @@ basepoints AS (
 triangles_b as (
     select id, ST_Triangulate2DZ(ST_Collect(geom), 0) as geom from basepoints group by id
 ),
-triangles AS (
+triangles_dump AS (
     SELECT parent as id, ST_MakePolygon(ST_ExteriorRing( a.polygonWKB)) as geom FROM ST_Dump((select geom, id from triangles_b)) a
 ),
+triangles AS (
+    SELECT a.*, b.geom
+    FROM triangles b
+    LEFT JOIN triangle_dump b
+    ON a.id = b.id
+),
 assign_triags AS (
-	SELECT 	a.*, d.id, b.type, b.class
+	SELECT 	a.*, b.type, b.class
 	FROM triangles a
 	INNER JOIN polygons b
 	ON ST_Contains(ST_SetSRID(b.geom, 28992), ST_SetSRID(a.geom, 28992))
-	, bounds c, triangles_b d
+	, bounds c
 	WHERE
     --ST_Intersects(ST_Centroid(b.geom), c.geom)
     [ST_Centroid(b.geom)] Intersects [c.geom]
-	AND a.id = b.id and a.id = d.id
+	AND a.id = b.id
 )
 
 SELECT p.id as id, p.type as type, ST_AsX3D(ST_Collect(p.geom),4.0, 0) as geom FROM assign_triags p GROUP BY id, type;
