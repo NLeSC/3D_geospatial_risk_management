@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title>X3Dom demo</title>
+<meta charset="utf-8">
+ <!-- Bootstrap -->
+ <!--
+ <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+ <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+ -->
+ <link rel="stylesheet" type="text/css" href="http://x3dom.org/download/dev/x3dom.css" />
+ <script src="http://x3dom.org/download/dev/x3dom.js"></script>
+ <script src="./bower_components/d3/d3.min.js"></script>
+ 
+ <script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.2.1/proj4.js"></script>
+ 
+<style>
+	html, body {
+	    width: 100%;
+	    height: 100%;
+	    margin: 0px;
+	    padding: 0px;
+	    color: white;
+	}
+	
+	.popup {
+		color: white;
+		font-size: 20pt;
+	}
+	.title {
+	    color: white;
+	    font-size: 40pt;
+	    position: absolute;
+	    top: 20px;
+	    z-index: 10;
+	}
+	#webgl1 {
+	    width: 100%;
+	    display: block;
+	}
+	
+	#debug {
+	    display: block;
+		position: absolute;
+		right: 20px;
+		top: 20px;
+		width: 200px;
+		height: 200px;
+	}
+	#viewMat {
+		position: absolute;
+		color: white;
+		bottom: 0px;
+	}
+	
+</style>
+
+<script>
+
+
+var themeconfig = {
+	gray: {
+	 materials: {
+	 	land: {diffuseColor: 'orange',transparency: '0'},
+		pand: {diffuseColor: 'orange',transparency: '0'},
+		waterloop: {specularColor: '0.823529 0.705882 0.54902', diffuseColor: '0.9 1 1', shininess: '1'},
+		voetpad: {diffuseColor: 'gray'},
+		rijbaan_lokale_weg: {diffuseColor: 'gray'},
+		open_verharding:{diffuseColor: 'gray'},
+		erf:{diffuseColor: 'gray'},
+		groenvoorziening:{diffuseColor: 'green'},
+		'gemengd bos':{diffuseColor: 'green'},
+		struiken: {diffuseColor: 'green'},
+		dek:{diffuseColor: 'gray'},
+		pijler: {diffuseColor: 'gray'},
+		light: {emissiveColor: 'yellow', transparency: 0},
+		post: {diffuseColor: 'gray'},
+		roof: {diffuseColor: 'orange'},
+		scene: {skyColor: '0.1 0.1 0.1'}
+	 }
+	},
+	light: {
+	  materials: {
+	  land: {emissiveColor: '0.9 0.9 0.9',diffuseColor: 'white'},
+		pand: {emissiveColor: '0.9 0.9 0.9',diffuseColor: 'white'},
+		waterloop: {diffuseColor: '0.7 0.7 1.0'},
+		light: {emissiveColor: 'black', transparency: 1},
+		scene: {skyColor: '0.4 0.6 0.8'},
+		erf:{diffuseColor: 'white'},
+	  }
+	},
+	functional: {
+		materials: {
+			fietspad:{diffuseColor: 'brown'},
+			inrit: {diffuseColor: 'gray'},
+			'OV-baan':{diffuseColor: 'gray'},
+			overweg:{diffuseColor: 'gray'},
+			parkeervlak:{diffuseColor: 'gray'},
+			'rijbaan autosnelweg': {diffuseColor: 'gray'},
+			'rijbaan autoweg': {diffuseColor: 'gray'},
+			'rijbaan lokale weg':{diffuseColor: 'gray'},
+			'rijbaan regionale weg':{diffuseColor: 'gray'},
+			spoorbaan:{diffuseColor: 'darkGray'},
+			transitie:{diffuseColor: 'purple'},
+			voetgangersgebied:{diffuseColor: 'white'},
+			voetpad:{diffuseColor: 'white'},
+			'voetpad op trap':{diffuseColor: 'white'},
+			woonerf:{diffuseColor: 'gray'},
+		}
+	}
+};   
+</script>
+
+</head>
+<body>
+	<div id="webgl1">
+	    <div class="title">MonetDB 3D</div>
+	    <div id="viewMat"></div>
+	</div>
+	<div id="debug"></div>
+
+
+<script src="x3d_map.js"></script>
+
+<script type="">
+
+
+// viewpoint changed
+//http://x3dom.org/x3dom/example/x3dom_uiEvents.html
+function viewFunc(evt)
+{
+	// show viewpoint values
+	if (evt)
+	{
+		var pos = evt.position;
+		var rot = evt.orientation;
+		var mat = evt.matrix;
+	
+		var camPos = pos.x.toFixed(4)+' '+pos.y.toFixed(4)+' '+pos.z.toFixed(4);
+		var camRot = rot[0].x.toFixed(4)+' '+rot[0].y.toFixed(4)+' '+rot[0].z.toFixed(4)+' '+rot[1].toFixed(4);
+	
+		document.getElementById("viewMat").innerHTML = "&ltViewpoint position='" + 
+														camPos + "' orientation='" + camRot + "'&gt";
+	}
+	
+	// update 2d marker also if camera changes since projection is now wrong
+	/*
+	var trans = x3d.fields.SFVec3f.parse(document.getElementById('bar').getAttribute("translation"));
+	var pos2d = runtime.calcPagePos(trans.x, trans.y, trans.z);
+	var anno = document.getElementById("anno2d");
+	
+	anno.innerHTML = "(" + pos2d[0] + ", " + pos2d[1] + ")";
+	anno.style.left = (pos2d[0]+1) + "px";
+	anno.style.top = (pos2d[1]+1) + "px";
+	*/
+}
+document.onload= function() 
+{
+	document.getElementById('viewpointwebgl1').addEventListener('viewpointChanged', viewFunc, false);
+    viewFunc(null);
+}
+
+var tilesize = 100;
+/* Some UI changeable settings **/
+var div = d3.select('#debug');
+div.append('div').html('Location');
+var input = div.append('input');
+
+input.on('blur', function(d){
+    var url = '/service/geosearch/free?q='+this.value+'&facet=true&facet.field=type&wt=json&_=1413275899673';
+    d3.json(url, function(z){
+            var point = z.response.docs[0].geom_rd;
+            var coords = point.replace('POINT(','').replace(')','').split(' ');
+            //var toproj = '+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.999908 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +no_defs';
+            //var coords = proj4(toproj, wgscoords);
+            var x = Math.round(coords[0]);
+            var y = Math.round(coords[1]);
+            var radius = 200; 
+            map.dim.minx = x -radius;
+            map.dim.maxx = x +radius;
+            map.dim.miny = y -radius;
+            map.dim.maxy = y +radius;
+            loadlist.forEach(function(val){
+                val.reload = true;
+                d3.selectAll('.'+ val.name).remove();
+            });
+            d3.selectAll('.toposhape').remove();
+            map.bbox2tiles(map.dim.getBounds());
+            
+            var centerX = (map.dim.minx + map.dim.maxx) / 2;
+            var centerY = (map.dim.miny + map.dim.maxy) / 2;
+            map.scene.append("viewpoint")
+                .attr( "centerOfRotation", centerX + " " + centerY + " 0" )
+                .attr( "position", centerX + " " + centerY + " 550")
+                .attr( "orientation", "0 0 0 1" )
+                .attr('set_bind',true);
+                //<viewpoint id='back_cam' description='back_cam' orientation='0.996843 -0.079223 -0.00522 6.15119' position='4.43222 99.5907 503.808' fieldOfView='0.950022'></viewpoint>
+                //document.getElementById('front_cam').setAttribute('set_bind','true');
+            
+    });
+});
+
+
+
+div.append('div').html('Theme');
+var select =  div.append('select');
+for (var key in themeconfig){
+	select.append('option').attr('value',key).html(key);
+}
+select.on('change', function(){
+	for (var key in themeconfig[this.value]['materials']){
+		var material = d3.selectAll('.' + key).select('.material');
+		for (var attr in themeconfig[this.value]['materials'][key]){
+			var value = themeconfig[this.value]['materials'][key][attr];
+			material.attr(attr,value);
+		}
+	}
+});
+
+div.append('div').html('TimeOfDay ');
+var select =  div.append('select');
+select.append('option').attr('value','0 0 1').html('Midnight');
+select.append('option').attr('value','-1 0 -0.2').html('Dusk');
+select.append('option').attr('value','0.2 0.2 -1').attr('selected',true).html('Midday');
+select.append('option').attr('value','1 0 -0.2').html('Dawn');
+select.on('change', function(){
+	var direction = this.value;
+	light1.transition().duration('2000').attr('direction',direction);
+});
+div.append('div').html('Headlight');
+div.append('button').on('click', function(){
+		if (d3.select('#navInfo').attr('headlight') == 'true'){
+			d3.select(this).html('OFF');
+			d3.select('#navInfo').attr('headlight','false');
+		}
+		else {
+			d3.select(this).html('ON');
+			d3.select('#navInfo').attr('headlight','true');
+		}
+}).html('OFF');
+
+div.append('div').html('Viewpoint ');
+div.append('button').on('click', function(){
+    document.getElementById('viewpointwebgl1').setAttribute('set_bind','true');
+}).html('Default');
+div.append('button').on('click', function(){
+	document.getElementById('leiden1').setAttribute('set_bind','true');
+}).html('View1');
+div.append('button').on('click', function(){
+    document.getElementById('leiden2').setAttribute('set_bind','true');
+}).html('View2');
+div.append('button').on('click', function(){
+    document.getElementById('leiden3').setAttribute('set_bind','true');
+}).html('View3');
+
+/** End of UI settings **/
+var loadlist = [
+	{name: 'terrain', reload: true, url: '/service/monetdb_3d'},
+	{name: 'treepoints', reload: true, url: '/service/monetdb_3d'}
+]; 
+
+render(wxs3, 'webgl1', {
+	loadlist: loadlist,
+	//bbox:'188045,428786, 188411,429044', //klein stukje nijmegen (Valkhof)
+	//bbox: '154459,463904,154947,464231' //Amersfoort
+	//bbox: '154678.0,463991.2,154783.9,464063.7' //Amersfoort_small
+	bbox: '93616,463691,93887,463981' //Leiden
+	//bbox: '93468.9,462610.7,93667.9,462735.3' //Leiden prof wijk
+	//bbox: '78657,455471,78828,455679' //Scheveningen
+	//bbox: '148945,411439, 148975,411471' //Den Bosch
+	//bbox: '90870,391146, 91346,392412'
+});
+
+</script>
+</body>
+</html>
