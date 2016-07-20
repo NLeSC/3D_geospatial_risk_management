@@ -28,8 +28,8 @@ footprints AS (
 	FROM bgt_pand a, bounds b
 	WHERE 1 = 1
 	AND ST_Area(a.wkt) > 30
-	AND ST_Intersects(a.wkt, b.geom)
-	AND ST_Intersects(ST_Centroid(a.wkt), b.geom)
+	AND [a.wkt] Intersects [b.geom]
+	AND [ST_Centroid(a.wkt)] Intersects [b.geom]
 	AND ST_IsValid(a.wkt)
 ),
 --papoints AS ( --get points from intersecting patches
@@ -47,8 +47,8 @@ stats_fast AS (
 		geom as footprint,
         max(z) as max,
         min(z) as min
-	FROM footprints, pointcloud
-    WHERE
+	FROM footprints
+    LEFT JOIN pointcloud ON
         --ST_Intersects(geom, ST_SetSRID(ST_MakePoint(x, y, z), 28992))
         ST_Intersects(geom, x, y, z, 28992)
 	GROUP BY footprints.id, footprint, bouwjaar
