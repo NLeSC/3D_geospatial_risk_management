@@ -38,25 +38,21 @@ footprints AS (
 	FROM bgt_scheiding a, bounds b
 	WHERE 1 = 1
 	AND (bgt_type = 'kademuur')
-	AND ST_Intersects(a.wkt, b.geom)
+	AND [a.wkt] Intersects [b.geom]
 ),
 papoints AS ( --get points from intersecting patches
 	SELECT
 		a.id,
 		x, y, z,
 		geom as footprint
-	FROM footprints a, pointcloud_ground b
-	--LEFT JOIN pointcloud_ground b ON (ST_Intersects(a.geom, Geometry(b.pa)))
-	where
-        ST_Intersects(a.geom, b.x, b.y, b.z, 28992)
+	FROM footprints a
+	LEFT JOIN pointcloud_ground b ON (ST_Intersects(a.geom, b.x, b.y, b.z, 28992))
 ),
 papatch AS (
 	SELECT
 		a.id, min(z) as min
-	FROM footprints a, pointcloud_all b
-	--LEFT JOIN pointcloud_all b ON (ST_Intersects(a.geom, Geometry(b.pa)))
-	WHERE
-        ST_Intersects(a.geom,  b.x, b.y, b.z, 28992)
+	FROM footprints a
+	LEFT JOIN pointcloud_all b ON (ST_Intersects(a.geom,  b.x, b.y, b.z, 28992))
 	GROUP BY a.id
 ),
 footprintpatch AS ( --get only points that fall inside building, patch them
