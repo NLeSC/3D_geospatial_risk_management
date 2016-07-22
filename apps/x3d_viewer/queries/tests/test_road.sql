@@ -20,9 +20,9 @@ drop table mainroads;
 create table mainroads AS (
 	SELECT a.ogc_fid, 'road' AS class, a.bgt_functie as type, ST_Intersection(a.wkt,c.geom) as geom 
 	FROM bgt_wegdeel a
-	--LEFT JOIN bgt_import2.overbruggingsdeel_2d b
-	bgt_overbruggingsdeel b
+	LEFT JOIN bgt_overbruggingsdeel b
 	--ON (St_Intersects((a.wkt), (b.wkt)) AND St_Contains(ST_buffer((b.wkt),1), (a.wkt)))
+	ON ([a.wkt] Intersects [b.wkt]) AND St_Contains(ST_buffer((b.wkt),1), (a.wkt))
 	, bounds c
 	WHERE a.relatieveHoogteligging = 0
 	AND ST_CurveToLine(b.wkt) Is Null
@@ -30,9 +30,6 @@ create table mainroads AS (
 	AND b.eindregistratie Is Null
 	--AND ST_Intersects(geom, a.wkb_geometry)
 	AND [geom] Intersects [a.wkt]
-	--AND St_Intersects((a.wkb_geometry), (b.wkb_geometry))
-	AND [a.wkt] Intersects [b.wkt]
-    AND St_Contains(ST_buffer((b.wkt),1), (a.wkt)))
 ) WITH DATA;
 
 drop table auxroads;
@@ -50,7 +47,7 @@ create table tunnels AS (
 	SELECT ogc_fid, 'road' AS class, 'tunnel' as type, ST_Intersection(wkb_geometry,geom) as geom
 	FROM bgt_tunneldeel, bounds
 	WHERE eindregistratie Is Null
-	AND ST_Intersects(geom, wkb_geometry)
+	AND [geom] Intersects [wkb_geometry]
 ) WITH DATA;
 
 drop table pointcloud_ground;
@@ -58,7 +55,8 @@ create table pointcloud_ground AS (
 	SELECT x, y, z
 	FROM ahn3, bounds
 	WHERE 
-    ST_Intersects(geom, x, y, z, 28992) AND
+    --ST_Intersects(geom, x, y, z, 28992) AND
+    [geom] Intersects [x, y, z, 28992] AND
     c = 2
 ) WITH DATA;
 
@@ -87,13 +85,12 @@ drop table polygonsz;
 create table polygonsz AS (
 	SELECT id, fid, type, class, patch_to_geom(x, y, z, geom) as geom
 	FROM polygons a,
-	--LEFT JOIN pointcloud_ground b
-	pointcloud_ground b
+	LEFT JOIN pointcloud_ground b
+	--ON ST_Intersects(geom,Geometry(b.pa))
+	ON [geom] Intersects [x, y, z, 28992]
     , polygons_dump c
 	WHERE 
         a.id = c.id AND
-	    --ON ST_Intersects(geom,Geometry(b.pa))
-        ST_Intersects(geom, x, y, z, 28992) and
         ST_IsValid(geom)
 	GROUP BY id, fid, type, class, geom
 ) WITH DATA;
