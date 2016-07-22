@@ -26,7 +26,8 @@ create table pointcloud AS (
 	SELECT x, y, z
 	FROM ahn3, bounds
 	WHERE 
-        ST_DWithin(geom, Geometry(pa),10) --patches should be INSIDE bounds
+        --ST_DWithin(geom, x, y, z, 28992, 10) --patches should be INSIDE bounds
+        [geom] DWithin [x, y, z, 28992, 10] --patches should be INSIDE bounds
         and c = 26
 ) WITH DATA;
 
@@ -46,8 +47,8 @@ create table footprints AS (
 
 drop table roads;
 create table roads AS (
-	SELECT next value for "counter" as id, a.ogc_fid, 'bridge' AS class, a.bgt_functie as type,
-		a.wkb_geometry geom
+	SELECT next value for "counter" as id, a.ogc_fid, 'bridge' AS class, --a.bgt_typefunctie as type,
+		a.wkt as geom
 	FROM bgt_wegdeel a
 	LEFT JOIN bgt_overbruggingsdeel b
 	--ON (St_Intersects((a.wkb_geometry), (b.wkb_geometry)) AND St_Contains(ST_buffer((b.wkb_geometry),1), (a.wkb_geometry)))
@@ -74,13 +75,13 @@ create table polygons AS (
 
 drop table rings;
 create table rings AS (
-	SELECT id, fid, type, geom as geom0, (ST_DumpRings(geom)).*
+	SELECT id, fid, type, geom as geom0, geom
 	FROM polygons
 ) WITH DATA;
 
 drop table rings_dump;
 create table rings_dump AS (
-    SELECT parent as id, polygonWKB as geom, path
+    SELECT parent as id, polygonWKB as geom
     FROM ST_DumpRings((Select geom, id form polygons)) d
 ) WITH DATA;
 
