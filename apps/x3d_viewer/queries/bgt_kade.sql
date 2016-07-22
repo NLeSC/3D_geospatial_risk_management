@@ -20,7 +20,7 @@ pointcloud_ground AS (
     x between 93816.0 and 93916.0 and
     y between 463891.0 and 463991.0 and
     --ST_DWithin(geom, ST_MakePoint(x, y, z), 10)
-    Contains(geom, x, y)
+    [geom] DWithin [x, y, z, 28992, 10]
     and c =2
 ),
 pointcloud_all AS (
@@ -30,41 +30,41 @@ pointcloud_all AS (
     x between 93816.0 and 93916.0 and
     y between 463891.0 and 463991.0 and
     --ST_DWithin(geom, ST_MakePoint(x, y, z), 10)
-    Contains(geom, x, y)
+    [geom] DWithin [x, y, z, 28992, 10]
 ),
 footprints AS (
-	SELECT ST_Force3D(ST_Intersection(a.geom, b.geom)) as geom,
+	SELECT ST_Force3D(ST_Intersection(a.wkt, b.geom)) as geom,
 	a.ogc_fid as id
-	FROM bgt_polygons a, bounds b
+	FROM bgt_scheiding a, bounds b
 	WHERE 1 = 1
-	--AND (type = 'kademuur' OR class = 'border')
-	AND ST_Intersects(a.geom, b.geom)
-	AND ST_Intersects(ST_Centroid(a.geom), b.geom)
+	AND bgt_type = 'kademuur'
+	AND [a.wkt] Intersects [b.geom]
+	AND [ST_Centroid(a.wkt)] Intersects [b.geom]
 ),
 papoints AS ( --get points from intersecting patches
 	SELECT
 		a.id,
 		x, y, z,
 		geom as footprint
-	FROM footprints a, pointcloud_ground b
-	--LEFT JOIN pointcloud_ground b ON (ST_Intersects(a.geom, Geometry(b.pa)))
-	where
-        ST_Intersects(a.geom, ST_SetSRID(ST_MakePoint(b.x, b.y, b.z), 28992))
+	FROM footprints a
+	LEFT JOIN pointcloud_ground b
+    --ON (ST_Intersects(a.geom, Geometry(b.pa)))
+    ON ([a.geom] Intersects [x, y, z, 28992])
 ),
 papatch AS (
 	SELECT
 		a.id, min(z) as min
-	FROM footprints a, pointcloud_all b
-	--LEFT JOIN pointcloud_all b ON (ST_Intersects(a.geom, Geometry(b.pa)))
-	WHERE 
-        ST_Intersects(a.geom,  ST_SetSRID(ST_MakePoint(b.x, b.y, b.z), 28992))
-	GROUP BY a.id
+	FROM footprints a
+	LEFT JOIN pointcloud_all b
+    -- ON (ST_Intersects(a.geom, Geometry(b.pa)))
+    ON [a.geom] Intersects [x, y, z, 28992]
+    GROUP BY a.id
 ),
 footprintpatch AS ( --get only points that fall inside building, patch them
 	SELECT id, x, y, z, footprint
 	FROM papoints 
     WHERE
-        ST_Intersects(footprint,  ST_SetSRID(ST_MakePoint(x, y, z), 28992))
+        [footprint] Intersects [x, y, z, 28992]
 	--GROUP BY id, footprint
 ),
 stats AS (
@@ -73,9 +73,8 @@ stats AS (
 	WHERE (a.id = b.id)
 	GROUP BY a.id, footprint, min
 ),
-polygons_kade AS (
-	--SELECT id, ST_Extrude(ST_Tesselate(ST_Translate(footprint,0,0, min)), 0,0,max-min) as geom
-	SELECT id, ST_Tesselate(ST_Translate(footprint,0,0, min)) as geom
+polygons AS (
+	SELECT id, ST_Extrude(ST_Tesselate(ST_Translate(footprint,0,0, min)), 0,0,max-min) as geom
     FROM stats
 )
-SELECT id, 'kade' as typ, 'grey' as color, ST_AsX3D(p.geom, 4.0, 0) as geom FROM polygons_kade p;
+SELECT id, 'kade' as typ, 'grey' as color, ST_AsX3D(p.geom, 4.0, 0) as geom FROM polygons p;
