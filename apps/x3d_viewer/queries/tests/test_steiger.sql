@@ -23,23 +23,13 @@ create table pointcloud_ground AS (
         C_30FZ1, bounds 
 	WHERE 
         --ST_DWithin(geom, Geometry(pa),10)
+        [geom] DWithin [x, y, z, 28992, 10] and
         x between 93816.0 and 93916.0 and
         y between 463891.0 and 463991.0 and
-    	Contains(geom, x, y) and
         c = 1 and
         r = 1 and
         i > 150
 ) WITH DATA;
-
---drop table pointcloud_all;
---create table pointcloud_all AS (
---	SELECT
---        x, y, z
---	FROM 
---        C_30FZ1, bounds 
---	WHERE 
---        ST_DWithin(geom, ST_SetSRID(ST_MakePoint(x, y, z), 28992),10)
---) WITH DATA;
 
 drop table footprints;
 create table footprints AS (
@@ -49,7 +39,7 @@ create table footprints AS (
 	FROM bgt_kunstwerkdeel a, bounds b
 	WHERE
 	    (plus_type = 'steiger') AND 
-	    ST_Intersects(a.wkt, b.geom)
+	    [a.wkt] Intersects [b.geom]
 ) WITH DATA;
 
 drop table papoints;
@@ -62,7 +52,7 @@ create table papoints AS ( --get points from intersecting patches
 	FROM footprints a
 	LEFT JOIN
     pointcloud_ground b ON
-    ST_Intersects(a.geom, b.geom)
+    [a.geom] Intersects [b.geom]
 ) WITH DATA;
 
 drop table footprintpatch;
@@ -70,7 +60,8 @@ create table footprintpatch AS ( --get only points that fall inside building, pa
 	SELECT id, pt as geom, footprint, min(z) as min 
 	FROM papoints
     WHERE
-        ST_Intersects(footprint, pt)
+        --ST_Intersects(footprint, pt)
+        [footprint] Intersects [pt]
 	GROUP BY id, geom, footprint
 ) WITH DATA;
 
