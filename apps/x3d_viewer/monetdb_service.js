@@ -21,6 +21,19 @@ for( var s in sets ) {
         sets [ s ].sql = fs.readFileSync( sets [ s ].file ).toString( );
 };
 
+var options = {
+host     : 'localhost',
+           port     : 55000,
+           dbname   : 'bgt',
+           user     : 'monetdb',
+           password : 'monetdb',
+           maxReconnects : 100,
+           reconnectTimeout : 30000
+};
+
+var client = new MDB(options);
+var p = client.connect();
+
 app.use(express.static('public'));
 app.use( cors( ));
 app.use(compress());
@@ -32,6 +45,7 @@ app.get( '/service/monetdb_3d', function( req, res ) {
                 var set = req.query [ 'set' ] || 'terrain';
                 //var client = require('monetdb')();
 
+                /*
                 var options = {
                     host     : 'localhost',
                     port     : 55000,
@@ -41,6 +55,7 @@ app.get( '/service/monetdb_3d', function( req, res ) {
                     maxReconnects : 100,
                     reconnectTimeout : 30000
                 };
+                */
                 var querystring = sets [ set ].sql;
                                 querystring = querystring
                                         .replace( /_west/g, west )
@@ -50,8 +65,8 @@ app.get( '/service/monetdb_3d', function( req, res ) {
                                         .replace( /_zoom/g ,1)
                                         .replace( /_segmentlength/g,10);
                 console.log('running: ',querystring);
-                var client = new MDB(options);
-                var p = client.connect();
+                //var client = new MDB(options);
+                //var p = client.connect();
                 p.then(function( err ) {
                         if( err ) {
                             res.send( 'Romulo could not connect to monetdb');

@@ -1,1 +1,1 @@
-node --max-old-space-size=8192 data/monetdb_service.js
+node --max-old-space-size=8192 monetdb_service.js
