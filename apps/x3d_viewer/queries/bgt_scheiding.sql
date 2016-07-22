@@ -18,7 +18,7 @@ pointcloud_building AS (
     x between 93816 and 93916 and
     y between 463891 and 463991 and
     --ST_DWithin(geom, ST_MakePoint(x, y, z),10) --patches should be INSIDE bounds
-    Contains(geom, x, y)
+    [geom] DWithin [x, y, z, 28992, 10] --patches should be INSIDE bounds
     and c = 1
     and r = 1
     and i > 150
@@ -40,13 +40,17 @@ footprints AS (
 papoints AS ( --get points from intersecting patches
 	SELECT a.id, x, y, z, geom as footprint
 	FROM footprints a
-	LEFT JOIN pointcloud_building b ON (ST_Intersects(a.geom, b.x, b.y, b.z, 28992))
+	LEFT JOIN pointcloud_building b
+    --ON (ST_Intersects(a.geom, b.x, b.y, b.z, 28992))
+    ON [a.geom] Intersects [b.x, b.y, b.z, 28992]
 ),
 papatch AS (
 	SELECT
 		a.id, min(z) as min
 	FROM footprints a
-	LEFT JOIN pointcloud_building b ON (ST_Intersects(a.geom, b.x, b.y, b.z, 28992))
+	LEFT JOIN pointcloud_building b
+    --ON (ST_Intersects(a.geom, b.x, b.y, b.z, 28992))
+    ON [a.geom] Intersects [b.x, b.y, b.z, 28992]
 	GROUP BY a.id
 ),
 footprintpatch AS ( --get only points that fall inside building, patch them
@@ -54,7 +58,7 @@ footprintpatch AS ( --get only points that fall inside building, patch them
 	FROM papoints
     WHERE
     --ST_Intersects(footprint, ST_SetSRID(ST_MakePoint(x, y, z), 28992))
-    ST_Intersects(footprint, x, y, z, 28992)
+    [footprint] Intersects [x, y, z, 28992]
 	--GROUP BY id, footprint
 ),
 stats AS (
@@ -65,16 +69,6 @@ stats AS (
 	WHERE (a.id = b.id)
 	GROUP BY a.id, footprint, min
 ),
---stats_fast AS (
---	SELECT
---		PC_PatchAvg(PC_Union(pa),'z') max,
---		PC_PatchMin(PC_Union(pa),'z') min,
---		footprints.id,
---		geom footprint
---	FROM footprints
---	LEFT JOIN pointcloud_building ON (ST_Intersects(geom, geometry(pa)))
---	GROUP BY footprints.id, footprint
---),
 polygons AS (
 	SELECT id, ST_Extrude(ST_Translate(footprint,0,0, min), 0,0,max-min) as geom
     FROM stats
