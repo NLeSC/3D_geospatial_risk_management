@@ -29,10 +29,10 @@ pointcloud_unclassified AS(
 ),
 points AS (
 	SELECT a.gml_id as id, a.wkt as geom
-	FROM bgt_paal a, bounds b
+	FROM bgt_paal a, bounds d
 	WHERE
     (plus_type = 'lichtmast' OR plus_type Is Null)
-	AND [a.wkt] Intersects [b.geom]
+	AND [a.wkt] Intersects [d.geom]
 ),
 pointsz As (
 	SELECT a.id, ST_Translate(ST_Force3D(a.geom), 0, 0, avg(z)+5) as geom
@@ -40,7 +40,7 @@ pointsz As (
 	LEFT JOIN
     pointcloud_unclassified b ON
     --ST_DWithin(b.geom, a.geom,1)
-    [b.beom] DWithin [a.geom,1]
+    [b.geom] DWithin [a.geom,1]
 	GROUP BY a.id, a.geom
 )
 SELECT id, 'light' as type, ST_X(geom) as x, ST_Y(geom) as y, ST_Z(geom) as z FROM pointsz;
