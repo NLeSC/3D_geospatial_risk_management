@@ -10,27 +10,6 @@ set _south = 463891.0;
 set _north = 463991.0;
 set _segmentlength = 10;
 
-DROP ALL FUNCTION patch_to_geom;
-CREATE FUNCTION patch_to_geom(ingeom geometry) RETURNS geometry
-BEGIN
-    Declare table _edge_points( path int, geom geometry);
-    Declare table _emptyz(path int, geom geometry, z decimal(9,3), dist double);
-    Declare table _ranktest(path int, geom geometry, z decimal(9,3), dist double, rank int);
-    Declare table _filledz( path int, geom geometry);
-    Declare table _line_z(geom geometry);
-
-    insert into _edge_points SELECT cast(path as int) as path, pointg as geom FROM ST_DumpPoints(ST_ExteriorRing(ingeom)) d;
-    insert into _emptyz SELECT a.path as path, a.geom as geom , b.z as z, ST_Distance(ST_SetSRID(a.geom, 28992), ST_SetSRID(ST_MakePoint(x, y, z), 28992)) as dist FROM _edge_points a, pointcloud_ground b;
-    insert into _ranktest select path, geom, z, dist, RANK() over (PARTITION BY path, geom order by path, dist ASC) as rank from _emptyz;
-    insert into _filledz select path, ST_MakePoint(ST_X(geom), ST_Y(geom), z) as geom from _ranktest where rank = 1 order by path;
-    insert into _line_z SELECT ST_MakeLine(geom) as geom FROM _filledz;
-    return
-        select ST_Polygon(geom, 28992) from _line_z;
-END;
-
-DROP SEQUENCE "counter";
-CREATE SEQUENCE "counter" AS INTEGER;
-
 WITH
 bounds AS (
     SELECT ST_Segmentize(ST_MakeEnvelope(_west, _south, _east, _north, 28992), _segmentlength) as geom
@@ -81,26 +60,43 @@ polygons AS (
     ON a.id = b.id
 ),
 polygonsz AS (
-	SELECT id, fid, type, class, patch_to_geom(geom) as geom
+	--SELECT id, fid, type, class, patch_to_geom(geom) as geom
+	SELECT id, fid, type, class, ST_ExteriorRing(geom) as geom
     FROM polygons a
     LEFT JOIN pointcloud_ground b
     ON ST_Intersects(geom, x, y, z, 28992)
     GROUP BY id, fid, type, class, geom
 ),
+--insert into _edge_points SELECT cast(path as int) as path, pointg as geom FROM ST_DumpPoints(ST_ExteriorRing(ingeom)) d;
+edge_points AS (
+    SELECT parent as polygon_id, cast(path as int) as path, ST_SetSRID(pointg, 28992) as geom FROM ST_DumpPoints((select geom, id from polygonsz)) d
+),
+--insert into _emptyz SELECT a.path as path, a.geom as geom , b.z as z, ST_Distance(ST_SetSRID(a.geom, 28992), ST_SetSRID(ST_MakePoint(x, y, z), 28992)) as dist FROM _edge_points a, pointcloud_ground b;
+emptyz AS (
+    --SELECT polygon_id, a.path as path, a.geom as geom , b.z as z, ST_Distance(ST_SetSRID(a.geom, 28992), ST_SetSRID(ST_MakePoint(x, y, z), 28992)) as dist FROM edge_points a, pointcloud_ground b WHERE ST_DWithin(a.geom, x, y, z, 28992, 10)
+    --SELECT polygon_id, a.path as path, a.geom as geom , b.z as z, ST_Distance(a.geom, x, y, z, 28992) as dist FROM edge_points a, pointcloud_ground b WHERE ST_DWithin(a.geom, x, y, z, 28992, 10)
+    SELECT polygon_id, a.path as path, a.geom as geom , b.z as z, ST_Distance(a.geom, x, y, z, 28992) as dist FROM edge_points a, pointcloud_ground b WHERE [a.geom] DWithin [x, y, z, 28992, 10]
+),
+--insert into _ranktest select path, geom, z, dist, RANK() over (PARTITION BY path, geom order by path, dist ASC) as rank from _emptyz;
+ranktest AS (
+    select polygon_id, path, geom, z, dist, RANK() over (PARTITION BY path, geom order by polygon_id, path, dist ASC) as rank from emptyz
+),
+--insert into _filledz select path, ST_MakePoint(ST_X(geom), ST_Y(geom), z) as geom from _ranktest where rank = 1 order by path;
+filledz AS (
+    select polygon_id, path, ST_MakePoint(ST_X(geom), ST_Y(geom), z) as geom from ranktest where rank = 1
+),
+--insert into _line_z SELECT ST_MakeLine(geom) as geom FROM _filledz;
+line_z AS (
+    SELECT polygon_id, ST_MakeLine(geom) as geom FROM filledz group by polygon_id
+),
 basepoints AS (
-	SELECT id, geom FROM polygonsz WHERE ST_IsValid(geom)
+	SELECT polygon_id as id, geom FROM line_z WHERE ST_IsValid(geom)
 ),
 triangles_b as (
     select id, ST_Triangulate2DZ(ST_Collect(geom), 0) as geom from basepoints group by id
 ),
-triangles_dump AS (
-    SELECT parent as id, ST_MakePolygon(ST_ExteriorRing( a.polygonWKB)) as geom FROM ST_Dump((select geom, id from triangles_b)) a
-),
 triangles AS (
-    SELECT a.*, b.geom
-    FROM triangles b
-    LEFT JOIN triangle_dump b
-    ON a.id = b.id
+    SELECT parent as id, ST_MakePolygon(ST_ExteriorRing( a.polygonWKB)) as geom FROM ST_Dump((select geom, id from triangles_b)) a
 ),
 assign_triags AS (
 	SELECT 	a.*, b.type, b.class
