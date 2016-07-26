@@ -120,7 +120,7 @@ create table line_z AS (
 
 drop table basepoints;
 create table basepoints AS (
-	SELECT polygon_id as id, geom FROM line_z WHERE ST_IsValid(geom)
+	SELECT polygon_id as id, ST_Triangulate2DZ(ST_Collect(geom), 0) as geom  FROM line_z WHERE ST_IsValid(geom) group by id
 ) WITH DATA;
 
 drop table triangles_b;
@@ -130,7 +130,8 @@ create table triangles_b as (
 
 drop table triangles;
 create table triangles AS (
-    SELECT parent as id, ST_MakePolygon(ST_ExteriorRing( a.polygonWKB)) as geom FROM ST_Dump((select geom, id from triangles_b)) a
+    --SELECT parent as id, ST_MakePolygon(ST_ExteriorRing( a.polygonWKB)) as geom FROM ST_Dump((select geom, id from triangles_b)) a
+    SELECT parent as id, ST_MakePolygon(ST_ExteriorRing( a.polygonWKB)) as geom FROM ST_Dump((select geom, id from basepoints)) a
 ) WITH DATA;
 
 drop table assign_triags;

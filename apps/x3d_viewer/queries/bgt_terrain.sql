@@ -90,13 +90,15 @@ line_z AS (
     SELECT polygon_id, ST_MakeLine(geom) as geom FROM filledz group by polygon_id
 ),
 basepoints AS (
-	SELECT polygon_id as id, geom FROM line_z WHERE ST_IsValid(geom)
+	--SELECT polygon_id as id, geom FROM line_z WHERE ST_IsValid(geom)
+	SELECT polygon_id as id, ST_Triangulate2DZ(ST_Collect(geom), 0) as geom FROM line_z WHERE ST_IsValid(geom) group by id
 ),
-triangles_b as (
-    select id, ST_Triangulate2DZ(ST_Collect(geom), 0) as geom from basepoints group by id
-),
+--triangles_b as (
+--    select id, ST_Triangulate2DZ(ST_Collect(geom), 0) as geom from basepoints group by id
+--),
 triangles AS (
-    SELECT parent as id, ST_MakePolygon(ST_ExteriorRing( a.polygonWKB)) as geom FROM ST_Dump((select geom, id from triangles_b)) a
+    --SELECT parent as id, ST_MakePolygon(ST_ExteriorRing( a.polygonWKB)) as geom FROM ST_Dump((select geom, id from triangles_b)) a
+    SELECT parent as id, ST_MakePolygon(ST_ExteriorRing( a.polygonWKB)) as geom FROM ST_Dump((select geom, id from basepoints)) a
 ),
 assign_triags AS (
 	SELECT 	a.*, b.type, b.class
