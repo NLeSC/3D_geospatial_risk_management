@@ -58,8 +58,8 @@ triangles_b AS (
 triangles_dump AS (
     SELECT parent as polygon_id, ST_MakePolygon(ST_ExteriorRing( a.polygonWKB)) as geom FROM ST_Dump((select geom, polygon_id from triangles_b)) a
 ),
-triangles as (
-    SELECT a.*, b.geom
+triangles AS (
+    SELECT a.polygon_id, a.id, b.geom
     FROM triangles_b a
     LEFT JOIN triangles_dump b
     ON a.polygon_id = b.polygon_id
