@@ -10,7 +10,7 @@ set _north = 463991;
 
 drop table bounds;
 create table bounds AS (
-	SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) as geom
+	SELECT ST_MakeEnvelope(_west+10, _south+10, _east+10, _north+10, 28992) as geom
 ) WITH DATA;
 
 drop table pointcloud_building;
@@ -21,26 +21,33 @@ create table pointcloud_building AS (
     x between 93816 and 93916 and
     y between 463891 and 463991 and
     --ST_DWithin(geom, ST_MakePoint(x, y, z),10) --patches should be INSIDE bounds
-    [geom] DWithin [x, y, z,10] and --patches should be INSIDE bounds
+    --[geom] DWithin [x, y, z, 28992, 10] --patches should be INSIDE bounds
+    Contains(geom, x, y)
     and c = 1
     and r = 1
     and i > 150
 ) WITH DATA;
 
-drop table footprints;
-create table footprints AS (
+drop table bgt_scheiding_light;
+create table bgt_scheiding_light AS (
 	SELECT a.ogc_fid as id, 'border' as class, a.bgt_type as type,
     --ST_Force3D(ST_CurveToLine(a.wkt)) as geom
     ST_Force3D(a.wkt) as geom
-	FROM bgt_scheiding a
-    LEFT JOIN bgt_overbruggingsdeel b
-    ON ([a.wkt] Intersects [b.wkt]) AND St_Contains(ST_buffer((b.wkt),1), (a.wkt))
-    , bounds c
+	FROM bgt_scheiding a, bounds c
 	WHERE a.relatieveHoogteligging > -1
 	AND bgt_type = 'muur'
-    AND (b.wkt) Is Null
 	AND [a.wkt] Intersects [c.geom]
 	AND [ST_Centroid(a.wkt)] Intersects [c.geom]
+) WITH DATA;
+
+drop table footprints;
+create table footprints AS (
+	SELECT a.id, a.class, a.type, a.geom
+	FROM bgt_scheiding_light a
+    LEFT JOIN bgt_overbruggingsdeel b
+    ON ([a.geom] Intersects [b.wkt]) AND St_Contains(ST_buffer((b.wkt),1), (a.geom))
+	WHERE
+    (b.wkt) Is Null
 ) WITH DATA;
 
 drop table papoints;
@@ -89,5 +96,4 @@ create table polygons AS (
     FROM stats
 	--SELECT id, ST_Tesselate(ST_Translate(footprint,0,0, min + 20)) geom FROM stats_fast
 ) WITH DATA;
-
 SELECT id,'building' as type, '0.66 0.37 0.13' as color, ST_AsX3D(polygons.geom, 4.0, 0) as  geom FROM polygons;

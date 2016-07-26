@@ -9,7 +9,7 @@ set _north = 463991;
 
 WITH
 bounds AS (
-	SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) as geom
+	SELECT ST_MakeEnvelope(_west+10, _south+10, _east+10, _north+10, 28992) as geom
 ),
 pointcloud_building AS (
 	SELECT x, y, z
@@ -18,24 +18,29 @@ pointcloud_building AS (
     x between 93816 and 93916 and
     y between 463891 and 463991 and
     --ST_DWithin(geom, ST_MakePoint(x, y, z),10) --patches should be INSIDE bounds
-    [geom] DWithin [x, y, z, 28992, 10] --patches should be INSIDE bounds
+    --[geom] DWithin [x, y, z, 28992, 10] --patches should be INSIDE bounds
+    Contains(geom, x, y)
     and c = 1
     and r = 1
     and i > 150
 ),
-footprints AS (
+bgt_scheiding_light AS (
 	SELECT a.ogc_fid as id, 'border' as class, a.bgt_type as type,
     --ST_Force3D(ST_CurveToLine(a.wkt)) as geom
     ST_Force3D(a.wkt) as geom
-	FROM bgt_scheiding a
-    LEFT JOIN bgt_overbruggingsdeel b
-    ON ([a.wkt] Intersects [b.wkt]) AND St_Contains(ST_buffer((b.wkt),1), (a.wkt))
-    , bounds c
+	FROM bgt_scheiding a, bounds c
 	WHERE a.relatieveHoogteligging > -1
 	AND bgt_type = 'muur'
-    AND (b.wkt) Is Null
 	AND [a.wkt] Intersects [c.geom]
 	AND [ST_Centroid(a.wkt)] Intersects [c.geom]
+),
+footprints AS (
+	SELECT a.id, a.class, a.type, a.geom
+	FROM bgt_scheiding_light a
+    LEFT JOIN bgt_overbruggingsdeel b
+    ON ([a.geom] Intersects [b.wkt]) AND St_Contains(ST_buffer((b.wkt),1), (a.geom))
+	WHERE
+    (b.wkt) Is Null
 ),
 papoints AS ( --get points from intersecting patches
 	SELECT a.id, x, y, z, geom as footprint
