@@ -72,7 +72,7 @@ polygons_b AS (
 ),
 polygons_dump AS (
     SELECT parent as fid, polygonWKB as geom
-    FROM ST_DUMP((select geom, fid from polygons)) d
+    FROM ST_DUMP((select geom, fid from polygons_b)) d
 ),
 polygons AS (
    select a.fid, a.type, a.class, b.geom
