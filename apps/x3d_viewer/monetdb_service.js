@@ -13,9 +13,17 @@ var app = express( ), server = http.createServer(), socket = require('socket.io'
 var fs = require( 'fs' );
 var MDB = require('monetdb')();
 var sets = {
-        terrain: { file : 'data/monetdb_terrain.sql',sql: ''},
-        treepoints: { file : 'data/monetdb_treepoints.sql',sql: ''},
-        terrainpoints: { file : 'data/monetdb_terrainpoints.sql',sql: ''}
+        bridgepilons: { file : 'data/bgt_bridgepilons.sql',sql: ''},
+        buildings: { file : 'data/bgt_buildings.sql',sql: ''},
+        groundpoints: { file : 'data/bgt_groundpoints.sql',sql: ''},
+        kade: { file : 'data/bgt_kade.sql',sql: ''},
+        lights: { file : 'data/bgt_lights.sql',sql: ''},
+        road: { file : 'data/bgt_road.sql',sql: ''},
+        scheiding: { file : 'data/bgt_scheiding.sql',sql: ''},
+        steiger: { file : 'data/bgt_steiger.sql',sql: ''},
+        terrain: { file : 'data/bgt_terrain.sql',sql: ''},
+        treepoints: { file : 'data/bgt_treepoints.sql',sql: ''},
+        water: { file : 'data/bgt_water.sql',sql: ''}
 };
 for( var s in sets ) {
         sets [ s ].sql = fs.readFileSync( sets [ s ].file ).toString( );
