@@ -255,20 +255,29 @@ div.append('button').on('click', function(){
 
 /** End of UI settings **/
 var loadlist = [
-	{name: 'terrain', reload: true, url: '/service/monetdb_3d'},
-	{name: 'treepoints', reload: true, url: '/service/monetdb_3d'}
+    {name: 'bridgepilons', reload: true, url: '/service/monetdb_3d'},
+    //{name: 'buildings', reload: true, url: '/service/monetdb_3d'},
+    {name: 'groundpoints', reload: true, url: '/service/monetdb_3d'},
+    {name: 'kade', reload: true, url: '/service/monetdb_3d'},
+    {name: 'lights', reload: true, url: '/service/monetdb_3d'},
+    {name: 'road', reload: true, url: '/service/monetdb_3d'},
+    {name: 'scheiding', reload: true, url: '/service/monetdb_3d'},
+    {name: 'steiger', reload: true, url: '/service/monetdb_3d'},
+    {name: 'terrain', reload: true, url: '/service/monetdb_3d'},
+    {name: 'treepoints', reload: true, url: '/service/monetdb_3d'},
+    //{name: 'water', reload: true, url: '/service/monetdb_3d'}
 ]; 
 
 render(wxs3, 'webgl1', {
 	loadlist: loadlist,
-	//bbox:'188045,428786, 188411,429044', //klein stukje nijmegen (Valkhof)
-	//bbox: '154459,463904,154947,464231' //Amersfoort
-	//bbox: '154678.0,463991.2,154783.9,464063.7' //Amersfoort_small
-	bbox: '93616,463691,93887,463981' //Leiden
-	//bbox: '93468.9,462610.7,93667.9,462735.3' //Leiden prof wijk
-	//bbox: '78657,455471,78828,455679' //Scheveningen
-	//bbox: '148945,411439, 148975,411471' //Den Bosch
-	//bbox: '90870,391146, 91346,392412'
+	bbox:'188045,428786, 188411,429044', //klein stukje nijmegen (Valkhof)
+	bbox: '154459,463904,154947,464231', //Amersfoort
+	bbox: '154678.0,463991.2,154783.9,464063.7', //Amersfoort_small
+	bbox: '93616,463691,93887,463981', //Leiden
+	bbox: '93468.9,462610.7,93667.9,462735.3', //Leiden prof wijk
+	bbox: '78657,455471,78828,455679', //Scheveningen
+	bbox: '148945,411439, 148975,411471', //Den Bosch
+	bbox: '90870,391146, 91346,392412'
 });
 
 </script>
