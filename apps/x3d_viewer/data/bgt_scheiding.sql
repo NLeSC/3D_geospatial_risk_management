@@ -1,7 +1,7 @@
-declare _west integer;
-declare _south integer;
-declare _east integer;
-declare _north integer;
+declare _west decimal(7,1);
+declare _south decimal(7,1);
+declare _east decimal(7,1);
+declare _north decimal(7,1);
 set _west = 93816;
 set _east = 93916;
 set _south = 463891;
@@ -15,8 +15,8 @@ pointcloud_building AS (
 	SELECT x, y, z
 	FROM ahn3, bounds
 	WHERE
-    x between 93816 and 93916 and
-    y between 463891 and 463991 and
+    x between _west and _east and
+    y between _south and _north and
     --ST_DWithin(geom, ST_MakePoint(x, y, z),10) --patches should be INSIDE bounds
     --[geom] DWithin [x, y, z, 28992, 10] --patches should be INSIDE bounds
     Contains(geom, x, y)

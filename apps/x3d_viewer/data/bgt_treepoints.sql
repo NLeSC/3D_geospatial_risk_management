@@ -1,8 +1,8 @@
-declare _west integer;
-declare _south integer;
-declare _east integer;
-declare _north integer;
-declare _segmentlength integer;
+declare _west decimal(7,1);
+declare _south decimal(7,1);
+declare _east decimal(7,1);
+declare _north decimal(7,1);
+declare _segmentlength decimal(7,1);
 
 set _west = 93816.0;
 set _east = 93916.0;
@@ -22,11 +22,11 @@ pointcloud_unclassified AS(
 	SELECT
         ST_SetSRID(ST_MakePoint(x, y, z), 28992) as geom
 	FROM
-        C_30FZ1, bounds
+        ahn3, bounds
 	WHERE
     --ST_DWithin(geom, Geometry(pa),10) --patches should be INSIDE bounds
-    x between 93816.0 and 93916.0 and
-    y between 463891.0 and 463991.0 and
+    x between _west and _east and
+    y between _south and _north and
     c = 1 AND
     i < 150 AND
     r < n-1 and

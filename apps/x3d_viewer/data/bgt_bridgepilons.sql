@@ -1,8 +1,8 @@
-declare _west integer;
-declare _south integer;
-declare _east integer;
-declare _north integer;
-declare _segmentlength integer;
+declare _west decimal(7,1);
+declare _south decimal(7,1);
+declare _east decimal(7,1);
+declare _north decimal(7,1);
+declare _segmentlength decimal(7,1);
 
 set _west = 93816.0;
 set _east = 93916.0;
@@ -18,21 +18,17 @@ pointcloud_unclassified_ AS (
 	SELECT x, y,z
 	FROM ahn3, bounds_ 
 	WHERE 
-        --ST_DWithin(geom, ST_SetSRID(ST_MakePoint(x, y, z), 28992),10) --patches should be INSIDE bounds_
         [geom] DWithin [x, y, z, 28992,10]
         AND c = 26
 ),
 footprints_ AS (
 	SELECT 
-        --ST_Force3D(ST_SetSrid(ST_CurveToLine(a.wkb_geometry),28992)) as geom,
         ST_Force3D(a.wkt) as geom,
     	a.ogc_fid as id, 'pijler' as type
 	FROM bgt_overbruggingsdeel a, bounds_ b
 	WHERE 1 = 1
 	AND typeoverbruggingsdeel = 'pijler'
-	--AND ST_Intersects(ST_SetSrid(ST_CurveToLine(a.wkb_geometry),28992), b.geom)
 	AND [a.wkt] Intersects [b.geom]
-	--AND ST_Intersects(ST_Centroid(ST_SetSrid(ST_CurveToLine(a.wkb_geometry),28992)), b.geom)
 	AND [ST_Centroid(a.wkt)] Intersects [b.geom]
 ),
 papoints_ AS ( --get points from intersecting patches
@@ -42,8 +38,6 @@ papoints_ AS ( --get points from intersecting patches
 		x, y, z,
 		geom
 	FROM footprints_ a
-	--LEFT JOIN pointcloud_unclassified_ b ON (ST_Intersects(a.geom, geometry(b.pa)))
-	--LEFT JOIN pointcloud_unclassified_ b ON (ST_Intersects(a.geom, x, y, z,28992))
 	LEFT JOIN pointcloud_unclassified_ b ON ([a.geom] Intersects [x, y, z,28992])
 ),
 papatch_ AS (
@@ -57,8 +51,6 @@ papatch_ AS (
         avg(z) as avg
 	FROM papoints_
 	WHERE 
-        --ST_Intersects(geometry(pt), geom)
-        --ST_Intersects(geom, x, y,z, 28992)
         [geom] Intersects [x, y,z, 28992]
 	GROUP BY id, geom, type, z
 ),
@@ -67,8 +59,6 @@ filter_ AS (
 		id,
 		type,
 		geom,
-		--is dit filter_ nog nodig?
-		--PC_FilterBetween(pa, 'z',avg-1, avg+1) pa, 
         z,
 		min, max, avg
 	FROM papatch_

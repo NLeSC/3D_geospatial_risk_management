@@ -1,8 +1,8 @@
-declare _west integer;
-declare _south integer;
-declare _east integer;
-declare _north integer;
-declare _segmentlength integer;
+declare _west decimal(7,1);
+declare _south decimal(7,1);
+declare _east decimal(7,1);
+declare _north decimal(7,1);
+declare _segmentlength decimal(7,1);
 
 set _west = 93816.0;
 set _east = 93916.0;
@@ -34,12 +34,12 @@ bare AS (
 ),
 pointcloud_ground AS (
 	SELECT x, y, z
-	FROM C_30FZ1, bounds
+	FROM ahn3, bounds
 	--FROM ahn3, bounds
 	WHERE
     c = 2 and
-    x between 93816.0 and 93916.0 and
-    y between 463891.0 and 463991.0 and
+    x between _west and _east and
+    y between _south and _north and
     --ST_Intersects(geom, Geometry(pa))
 	Contains(geom, x, y)
 ),
