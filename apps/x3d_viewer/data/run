@@ -1,0 +1,11 @@
+time ../../monetdb/scripts/mclient optimized sql < bgt_bridgepilons.sql > bgt_bridgepilons.out
+time ../../monetdb/scripts/mclient optimized sql < bgt_buildings.sql > bgt_buildings.out
+time ../../monetdb/scripts/mclient optimized sql < bgt_groundpoints.sql > bgt_groundpoints.out
+time ../../monetdb/scripts/mclient optimized sql < bgt_kade.sql > bgt_kade.out
+time ../../monetdb/scripts/mclient optimized sql < bgt_lights.sql > bgt_lights.out
+time ../../monetdb/scripts/mclient optimized sql < bgt_road.sql > bgt_road.out
+time ../../monetdb/scripts/mclient optimized sql < bgt_scheiding.sql > bgt_scheiding.out
+time ../../monetdb/scripts/mclient optimized sql < bgt_steiger.sql > bgt_steiger.out
+time ../../monetdb/scripts/mclient optimized sql < bgt_terrain.sql > bgt_terrain.out
+time ../../monetdb/scripts/mclient optimized sql < bgt_treepoints.sql > bgt_treepoints.out
+time ../../monetdb/scripts/mclient optimized sql < bgt_water.sql > bgt_water.out
