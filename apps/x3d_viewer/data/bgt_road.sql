@@ -58,7 +58,7 @@ pointcloud_ground AS (
     c = 2 and
     x between _west and _east and
     y between _south and _north and
-    Contains(geom, x, y)
+    Contains(geom, x, y, z, 28992)
 ),
 polygons_b AS (
 	SELECT ogc_fid as fid, type, class, geom

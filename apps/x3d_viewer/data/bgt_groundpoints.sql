@@ -24,7 +24,7 @@ pointcloud_unclassified AS(
 	WHERE
     x between _west and _east and
     y between _south and _north and
-	Contains(geom, x, y) and
+	Contains(geom, x, y, z, 28992) and
     c = 2
 ),
 points_filtered AS (

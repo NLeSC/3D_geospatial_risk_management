@@ -19,7 +19,7 @@ pointcloud_building AS (
     y between _south and _north and
     --ST_DWithin(geom, ST_MakePoint(x, y, z),10) --patches should be INSIDE bounds
     --[geom] DWithin [x, y, z, 28992, 10] --patches should be INSIDE bounds
-    Contains(geom, x, y)
+    Contains(geom, x, y, z, 28992)
     and c = 1
     and r = 1
     and i > 150

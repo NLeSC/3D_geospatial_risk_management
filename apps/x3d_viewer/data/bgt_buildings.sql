@@ -7,7 +7,7 @@ set _east = 93916.0;
 set _south = 463891.0;
 set _north = 463991.0;
 
-WITH
+trace WITH
 bounds AS (
     SELECT ST_MakeEnvelope(_west+10, _south+10, _east+10, _north+10, 28992) as geom
 ),
@@ -17,7 +17,8 @@ pointcloud AS (
 	WHERE
     x between _west and _east and
     y between _south and _north and
-	Contains(geom, x, y)
+	--Contains(geom, x, y, z, 28992)
+	Contains(geom, x, y, z, 28992)
 	and c = 6
 ),
 footprints AS (

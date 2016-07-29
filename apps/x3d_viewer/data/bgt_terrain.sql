@@ -41,7 +41,7 @@ pointcloud_ground AS (
     x between _west and _east and
     y between _south and _north and
     --ST_Intersects(geom, Geometry(pa))
-	Contains(geom, x, y)
+	Contains(geom, x, y, z, 28992)
 ),
 polygons_ AS (
     SELECT NEXT VALUE FOR "counter" as id, ogc_fid as fid, COALESCE(type,'transitie') as type, class, geom
