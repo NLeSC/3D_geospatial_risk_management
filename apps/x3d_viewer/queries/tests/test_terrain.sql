@@ -10,8 +10,6 @@ set _south = 463891.0;
 set _north = 463991.0;
 set _segmentlength = 10;
 
-WITH
-
 drop table bounds;
 create table bounds AS (
     SELECT ST_Segmentize(ST_MakeEnvelope(_west, _south, _east, _north, 28992), _segmentlength) as geom
@@ -43,6 +41,7 @@ drop table pointcloud_ground;
 create table pointcloud_ground AS (
 	SELECT x, y, z
 	FROM C_30FZ1, bounds
+	--FROM ahn3, bounds
 	WHERE
     c = 2 and
     x between 93816.0 and 93916.0 and
@@ -93,22 +92,19 @@ create table edge_points AS (
 
 drop table emptyz;
 create table emptyz AS (
-    --SELECT polygon_id, a.path as path, a.geom as geom , b.z as z, ST_Distance(ST_SetSRID(a.geom, 28992), ST_SetSRID(ST_MakePoint(x, y, z), 28992)) as dist FROM edge_points a, pointcloud_ground b WHERE ST_DWithin(a.geom, x, y, z, 28992, 10)
-    --SELECT polygon_id, a.path as path, a.geom as geom , b.z as z, ST_Distance(a.geom, x, y, z, 28992) as dist FROM edge_points a, pointcloud_ground b WHERE ST_DWithin(a.geom, x, y, z, 28992, 10)
-    SELECT polygon_id, a.path as path, a.geom as geom , b.z as z, ST_Distance(a.geom, x, y, z, 28992) as dist FROM edge_points a, pointcloud_ground b WHERE [a.geom] DWithin [x, y, z, 28992, 10]
+    --SELECT polygon_id, a.path as path, a.geom as geom , b.z as z, ST_Distance(a.geom, x, y, z, 28992) as dist FROM edge_points a, pointcloud_ground b WHERE [a.geom] DWithin [x, y, z, 28992, 10]
+    SELECT polygon_id, a.path as path, a.geom as geom , b.z as z FROM edge_points a, pointcloud_ground b WHERE [a.geom] DWithin [x, y, z, 28992, 10]
 ) WITH DATA;
 --insert into _ranktest select path, geom, z, dist, RANK() over (PARTITION BY path, geom order by path, dist ASC) as rank from _emptyz;
 
 drop table ranktest;
 create table ranktest AS (
-    select polygon_id, path, geom, z, dist, RANK() over (PARTITION BY path, geom order by polygon_id, path, dist ASC) as rank from emptyz
-    --select polygon_id, path, geom, z, dist, RANK() over (PARTITION BY polygon_id, path, geom) as rank from emptyz
+    select polygon_id, path, geom, z, dist, RANK() over (PARTITION BY polygon_id, path order by polygon_id, path, dist ASC) as rank from emptyz
 ) WITH DATA;
 --insert into _filledz select path, ST_MakePoint(ST_X(geom), ST_Y(geom), z) as geom from _ranktest where rank = 1 order by path;
 
 drop table filledz;
 create table filledz AS (
-    --select polygon_id, path, ST_MakePoint(ST_X(geom), ST_Y(geom), z) as geom from ranktest where rank = 1 order by path
     select polygon_id, path, ST_MakePoint(ST_X(geom), ST_Y(geom), z) as geom from ranktest where rank = 1
 ) WITH DATA;
 --insert into _line_z SELECT ST_MakeLine(geom) as geom FROM _filledz;
@@ -120,13 +116,12 @@ create table line_z AS (
 
 drop table basepoints;
 create table basepoints AS (
-	SELECT polygon_id as id, ST_Triangulate2DZ(ST_Collect(geom), 0) as geom  FROM line_z WHERE ST_IsValid(geom) group by id
+	--SELECT polygon_id as id, geom FROM line_z WHERE ST_IsValid(geom)
+	SELECT polygon_id as id, ST_Triangulate2DZ(ST_Collect(geom), 0) as geom FROM line_z WHERE ST_IsValid(geom) group by id
 ) WITH DATA;
-
-drop table triangles_b;
-create table triangles_b as (
-    select id, ST_Triangulate2DZ(ST_Collect(geom), 0) as geom from basepoints group by id
-) WITH DATA;
+--triangles_b as (
+--    select id, ST_Triangulate2DZ(ST_Collect(geom), 0) as geom from basepoints group by id
+--),
 
 drop table triangles;
 create table triangles AS (
