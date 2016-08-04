@@ -16,7 +16,7 @@ CREATE SEQUENCE "counter" AS INTEGER;
 DROP SEQUENCE "polygon_id";
 CREATE SEQUENCE "polygon_id" AS INTEGER;
 
-WITH
+ with
 bounds AS (
 	SELECT ST_Segmentize(ST_MakeEnvelope(_west, _south, _east, _north, 28992),_segmentlength) as geom
 ),
@@ -31,6 +31,7 @@ pointcloud_water AS (
         x between _west and _east and
         y between _south and _north and
     	Contains(geom, x, y, z, 28992) and
+    	--[geom] Contains [x, y, z, 28992] and
         c = 9
 ),
 terrain_ AS (
@@ -43,7 +44,10 @@ terrain AS (
 	SELECT a.id, a.fid, a.typ, a.class, b.geom FROM terrain_ a LEFT JOIN terrain_dump b ON a.id = b.id
 ),
 polygons AS (
-	SELECT NEXT VALUE for "polygon_id" as polygon_id, * FROM terrain WHERE ST_GeometryType(geom) = 'ST_Polygon'
+	SELECT NEXT VALUE for "polygon_id" as polygon_id, * FROM terrain
+    WHERE
+    --ST_GeometryType(geom) = 'ST_Polygon'
+    [geom] IsType ['ST_Polygon']
 ),
 polygonsz AS (
 	SELECT a.id, a.fid, polygon_id, a.typ, a.class, ST_Translate(ST_Force3D(a.geom), 0,0,0) as geom --fixed level
@@ -51,7 +55,10 @@ polygonsz AS (
 	--GROUP BY a.id, a.fid, a.typ, a.class, a.geom
 ),
 basepoints AS (
-	SELECT id, polygon_id, geom FROM polygonsz WHERE ST_IsValid(geom)
+	SELECT id, polygon_id, geom FROM polygonsz
+    WHERE
+    --ST_IsValid(geom)
+    [geom] IsValidD [ST_MakePoint(1.0, 1.0, 1.0)]
 ),
 triangles_b AS (
     select polygon_id, id, ST_Triangulate2DZ(ST_Collect(geom), 0) as geom from basepoints group by polygon_id, id
@@ -69,7 +76,8 @@ assign_triags AS (
 	SELECT 	a.*, b.typ, b.class
 	FROM triangles a
 	INNER JOIN polygons b
-	ON ST_Contains(ST_SetSRID(b.geom, 28992), ST_SetSRID(a.geom, 28992))
+	--ON ST_Contains(ST_SetSRID(b.geom, 28992), ST_SetSRID(a.geom, 28992))
+	ON [ST_SetSRID(b.geom, 28992)] Contains [ST_SetSRID(a.geom, 28992)]
 	, bounds c
     WHERE
     --ST_Intersects(ST_Centroid(b.geom), c.geom)

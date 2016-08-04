@@ -1,4 +1,4 @@
-WITH points AS (
+ with points AS (
 	SELECT x,y,z
     --FROM ahn3
     FROM C_30FZ1

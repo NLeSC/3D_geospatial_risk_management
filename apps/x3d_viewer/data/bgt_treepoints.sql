@@ -13,7 +13,7 @@ set _segmentlength = 10;
 DROP SEQUENCE "counter";
 CREATE SEQUENCE "counter" AS INTEGER;
 
-WITH
+ with
 bounds AS (
 	--SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) as geom
 	SELECT ST_MakeEnvelope(_west+10, _south+10, _east+10, _north+10, 28992) as geom
@@ -32,5 +32,6 @@ pointcloud_unclassified AS(
     r < n-1 and
     --[geom] DWithin [x, y, z, 28992, 10] --patches should be INSIDE bounds
     Contains(geom, x, y, z, 28992) --patches should be INSIDE bounds
+    --[geom] Contains [x, y, z, 28992] --patches should be INSIDE bounds
 )
 SELECT NEXT VALUE for "counter" as id, 'tree' as type, '0 ' || rand() * 0.1 ||' 0' as color, ST_AsX3D(ST_Collect(geom), 4.0, 0) as geom FROM pointcloud_unclassified a;

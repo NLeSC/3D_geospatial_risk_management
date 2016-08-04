@@ -7,7 +7,7 @@ set _east = 93916;
 set _south = 463891;
 set _north = 463991;
 
-WITH
+ with
 bounds AS (
 	SELECT ST_MakeEnvelope(_west+10, _south+10, _east+10, _north+10, 28992) as geom
 ),
@@ -20,6 +20,7 @@ pointcloud_building AS (
     --ST_DWithin(geom, ST_MakePoint(x, y, z),10) --patches should be INSIDE bounds
     --[geom] DWithin [x, y, z, 28992, 10] --patches should be INSIDE bounds
     Contains(geom, x, y, z, 28992)
+    --[geom] Contains [x, y, z, 28992]
     and c = 1
     and r = 1
     and i > 150
@@ -38,7 +39,8 @@ footprints AS (
 	SELECT a.id, a.class, a.type, a.geom
 	FROM bgt_scheiding_light a
     LEFT JOIN bgt_overbruggingsdeel b
-    ON ([a.geom] Intersects [b.wkt]) AND St_Contains(ST_buffer((b.wkt),1), (a.geom))
+    --ON ([a.geom] Intersects [b.wkt]) AND St_Contains(ST_buffer((b.wkt),1), (a.geom))
+    ON ([a.geom] Intersects [b.wkt]) AND [ST_buffer((b.wkt),1)] Contains [a.geom]
 	WHERE
     (b.wkt) Is Null
 ),

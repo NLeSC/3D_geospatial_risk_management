@@ -13,7 +13,7 @@ set _segmentlength = 10;
 DROP SEQUENCE "counter";
 CREATE SEQUENCE "counter" AS INTEGER;
 
-WITH
+ with
 bounds AS (
 	SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) as geom
 ),
@@ -25,6 +25,7 @@ pointcloud_unclassified AS(
     x between _west and _east and
     y between _south and _north and
 	Contains(geom, x, y, z, 28992) and
+	--[geom] Contains [x, y, z, 28992] and
     c = 2
 ),
 points_filtered AS (

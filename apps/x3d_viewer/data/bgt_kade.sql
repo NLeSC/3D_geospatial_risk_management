@@ -8,29 +8,25 @@ set _south = 463891.0;
 set _north = 463991.0;
 
 
-WITH
+ with
 bounds AS (
 	SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) as geom
+),
+pointcloud_all AS (
+	SELECT x, y, z, c
+	FROM ahn3, bounds
+	WHERE
+    x between _west and _east and
+    y between _south and _north and
+    --ST_DWithin(geom, ST_MakePoint(x, y, z), 10)
+    [geom] DWithin [x, y, z, 28992, 10]
 ),
 pointcloud_ground AS (
 	--SELECT PC_FilterEquals(pa,'classification',2) pa --ground points
     SELECT x, y, z
-	FROM ahn3, bounds
+	FROM pointcloud_all
 	WHERE
-    x between _west and _east and
-    y between _south and _north and
-    --ST_DWithin(geom, ST_MakePoint(x, y, z), 10)
-    [geom] DWithin [x, y, z, 28992, 10]
-    and c =2
-),
-pointcloud_all AS (
-	SELECT x, y, z
-	FROM ahn3, bounds
-	WHERE
-    x between _west and _east and
-    y between _south and _north and
-    --ST_DWithin(geom, ST_MakePoint(x, y, z), 10)
-    [geom] DWithin [x, y, z, 28992, 10]
+    c =2
 ),
 footprints AS (
 	SELECT ST_Force3D(ST_Intersection(a.wkt, b.geom)) as geom,

@@ -11,7 +11,7 @@ set _north = 463991.0;
 set _segmentlength = 10;
 
 
-WITH
+ with
 bounds AS (
 	SELECT ST_Segmentize(ST_MakeEnvelope(_west, _south, _east, _north, 28992),_segmentlength) as geom
 ),
@@ -59,6 +59,7 @@ pointcloud_ground AS (
     x between _west and _east and
     y between _south and _north and
     Contains(geom, x, y, z, 28992)
+    --[geom] Contains [x, y, z, 28992]
 ),
 polygons_b AS (
 	SELECT ogc_fid as fid, type, class, geom
@@ -87,7 +88,8 @@ polygonsz AS (
 	--ON ST_Intersects(geom,Geometry(b.pa))
 	ON [geom] Intersects [x, y, z, 28992]
 	WHERE 
-        ST_IsValid(geom)
+        --ST_IsValid(geom)
+    [geom] IsValidD [ST_MakePoint(1.0, 1.0, 1.0)]
 	GROUP BY fid, type, class, geom
 ),
 edge_points AS (
@@ -109,7 +111,9 @@ line_z AS (
 ),
 basepoints AS (
 	SELECT polygon_id as id, ST_Triangulate2DZ(ST_Collect(geom),0) as geom FROM line_z
-	WHERE ST_IsValid(geom)
+	WHERE 
+    --ST_IsValid(geom)
+    [geom] IsValidD [ST_MakePoint(1.0, 1.0, 1.0)]
     GROUP BY id
 ),
 triangles AS (

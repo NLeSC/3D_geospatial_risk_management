@@ -10,7 +10,7 @@ set _south = 463891.0;
 set _north = 463991.0;
 set _segmentlength = 10;
 
-WITH
+with
 bounds AS (
     SELECT ST_Segmentize(ST_MakeEnvelope(_west, _south, _east, _north, 28992), _segmentlength) as geom
 ),
@@ -22,6 +22,7 @@ plantcover AS (
     --ST_Intersects(geom, wkt) AND
     [geom] Intersects [wkt] AND
     ST_GeometryType(wkt) = 'ST_Polygon'
+    --[wkt] IsType ['ST_Polygon']
 ),
 bare AS (
 	SELECT ogc_fid, 'bare' AS class, bgt_fysiekVoorkomen as type, St_Intersection(wkt, geom) as geom
@@ -30,7 +31,8 @@ bare AS (
     eindregistratie Is Null AND
     --ST_Intersects(geom, wkt) AND
     [geom] Intersects [wkt] AND
-    ST_GeometryType(wkt) = 'ST_Polygon'
+    --ST_GeometryType(wkt) = 'ST_Polygon'
+    [wkt] IsType ['ST_Polygon']
 ),
 pointcloud_ground AS (
 	SELECT x, y, z
@@ -42,6 +44,7 @@ pointcloud_ground AS (
     y between _south and _north and
     --ST_Intersects(geom, Geometry(pa))
 	Contains(geom, x, y, z, 28992)
+	--[geom] Contains [x, y, z, 28992]
 ),
 polygons_ AS (
     SELECT NEXT VALUE FOR "counter" as id, ogc_fid as fid, COALESCE(type,'transitie') as type, class, geom
@@ -65,7 +68,8 @@ polygonsz AS (
 	SELECT id, fid, type, class, ST_ExteriorRing(geom) as geom
     FROM polygons a
     LEFT JOIN pointcloud_ground b
-    ON ST_Intersects(geom, x, y, z, 28992)
+    --ON ST_Intersects(geom, x, y, z, 28992)
+    ON [geom] Intersects [x, y, z, 28992]
     GROUP BY id, fid, type, class, geom
 ),
 --insert into _edge_points SELECT cast(path as int) as path, pointg as geom FROM ST_DumpPoints(ST_ExteriorRing(ingeom)) d;
@@ -92,7 +96,11 @@ line_z AS (
 ),
 basepoints AS (
 	--SELECT polygon_id as id, geom FROM line_z WHERE ST_IsValid(geom)
-	SELECT polygon_id as id, ST_Triangulate2DZ(ST_Collect(geom), 0) as geom FROM line_z WHERE ST_IsValid(geom) group by id
+	SELECT polygon_id as id, ST_Triangulate2DZ(ST_Collect(geom), 0) as geom FROM line_z
+    WHERE
+    --ST_IsValid(geom)
+    [geom] IsValidD [ST_MakePoint(1.0, 1.0, 1.0)]
+    group by id
 ),
 --triangles_b as (
 --    select id, ST_Triangulate2DZ(ST_Collect(geom), 0) as geom from basepoints group by id
@@ -105,7 +113,8 @@ assign_triags AS (
 	SELECT 	a.*, b.type, b.class
 	FROM triangles a
 	INNER JOIN polygons b
-	ON ST_Contains(ST_SetSRID(b.geom, 28992), ST_SetSRID(a.geom, 28992))
+	--ON ST_Contains(ST_SetSRID(b.geom, 28992), ST_SetSRID(a.geom, 28992))
+	ON [ST_SetSRID(b.geom, 28992)] Contains [ST_SetSRID(a.geom, 28992)]
 	, bounds c
 	WHERE
     --ST_Intersects(ST_Centroid(b.geom), c.geom)
