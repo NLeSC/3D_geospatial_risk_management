@@ -45,58 +45,65 @@ create table footprints AS (
 	AND [ST_Centroid(a.wkt)] Intersects [b.geom]
 ) WITH DATA;
 
+drop table bgt_wegdeel_light;
+create table bgt_wegdeel_light AS (
+	SELECT next value for "counter" as id, a.ogc_fid as fid, 'bridge' AS class, 
+    --a.bgt_typefunctie as type, 
+    bgt_status as type, a.wkt as geom
+	FROM bgt_wegdeel a, bounds c
+	WHERE a.relatieveHoogteligging > -1
+	AND a.eindregistratie Is Null
+	AND [c.geom] Intersects [a.wkt]
+	AND [ST_Centroid(a.wkt)] Intersects [c.geom]
+) WITH DATA;
+
 drop table roads;
 create table roads AS (
-	SELECT next value for "counter" as id, a.ogc_fid, 'bridge' AS class, --a.bgt_typefunctie as type,
-		a.wkt as geom
-	FROM bgt_wegdeel a
+	SELECT id, fid, class, type, geom
+	FROM bgt_wegdeel_light a
 	LEFT JOIN bgt_overbruggingsdeel b
 	--ON (St_Intersects((a.wkb_geometry), (b.wkb_geometry)) AND St_Contains(ST_buffer((b.wkb_geometry),1), (a.wkb_geometry)))
-	ON ([a.wkt] Intersects [b.wkt] AND St_Contains(ST_buffer(b.wkt,1), a.wkt))
-	, bounds c
-	WHERE a.relatieveHoogteligging > -1
-	--AND ST_CurveToLine(b.wkb_geometry) Is Not Null
-	AND a.eindregistratie Is Null
-	AND b.eindregistratie Is Null
-	--AND ST_Intersects(c.geom, a.wkb_geometry)
-	AND [c.geom] Intersects [a.wkt]
-	--AND ST_Intersects(ST_Centroid(ST_SetSrid(ST_CurveToLine(a.wkb_geometry),28992)), c.geom)
-	AND [ST_Centroid(a.wkt)] Intersects [c.geom]
+	ON ([a.geom] Intersects [b.wkt] AND [ST_buffer(b.wkt,1)] Contains [a.geom])
+	WHERE
+	b.eindregistratie Is Null
 ) WITH DATA;
 
 drop table polygons;
 create table polygons AS (
 	SELECT * FROM footprints
-	WHERE ST_GeometryType(geom) = 'ST_Polygon'
+	WHERE 
+    --ST_GeometryType(geom) = 'ST_Polygon'
+    [geom] IsType ['ST_Polygon']
 	UNION ALL
 	SELECT * FROM roads
-	WHERE ST_GeometryType(geom) = 'ST_Polygon'
-) WITH DATA;
-
-drop table rings;
-create table rings AS (
-	SELECT id, fid, type, geom as geom0, geom
-	FROM polygons
+	WHERE 
+    --ST_GeometryType(geom) = 'ST_Polygon'
+    [geom] IsType ['ST_Polygon']
 ) WITH DATA;
 
 drop table rings_dump;
 create table rings_dump AS (
-    SELECT parent as id, polygonWKB as geom
-    FROM ST_DumpRings((Select geom, id form polygons)) d
+    SELECT parent as fid, cast(path as int) as path, polygonWKB as geom
+    FROM ST_DumpRings((Select geom, fid from polygons)) d
+) WITH DATA;
+
+drop table rings;
+create table rings as (
+    select id, a.fid, type, path, a.geom as geom0, b.geom
+    from polygons a LEFT JOIN rings_dump b on a.fid = b.fid
+) WITH DATA;
+
+drop table edge_points_dump;
+create table edge_points_dump AS (
+	SELECT parent as fid, pointG as geom, path
+	FROM ST_DumpPoints( (select geom, fid from rings)) d
 ) WITH DATA;
 
 drop table edge_points;
 create table edge_points AS (
-	SELECT id, fid, type, geom0, path as ring, (ST_Dumppoints(geom)).*
-	FROM rings a, rings_dump b
-    where a.id = b.id
+	SELECT id, a.fid, type, geom0, a.path as ring, ST_SetSRID(b.geom, 28992) as geom, b.path
+	FROM rings a LEFT JOIN edge_points_dump b ON a.fid = b.fid
 ) WITH DATA;
-
---TODO we need lateral join here.
-drop table edge_points_dump;
-create table edge_points_dump AS (
-    SELECT parent as id
-
 
 drop table edge_points_patch;
 create table edge_points_patch AS ( --get closest patch to every vertex
@@ -111,29 +118,30 @@ create table edge_points_patch AS ( --get closest patch to every vertex
 	--)) pt
 	FROM edge_points a LEFT JOIN pointcloud b
 	--ON ST_Intersects(a.geom, geometry(pa))
-	ON (ST_Intersects(a.geom, x, y, z, 28992) OR ST_DWITHIN(a.geom, x, y, z, 28992, 10))
+	--ON (ST_Intersects(a.geom, x, y, z, 28992) OR ST_DWITHIN(a.geom, x, y, z, 28992, 10))
+	ON [a.geom] Intersects [x, y, z, 28992] OR [a.geom] DWITHIN [x, y, z, 28992, 10]
 ) WITH DATA;
 
 drop table emptyz;
 create table emptyz AS (
 	SELECT
 		a.id, a.fid, a.type, a.path, a.ring, a.geom,
-        z
+        z,
 		min(z) as min,
-		maz(z) as max,
+		max(z) as max,
 		avg(z) as avg
 	FROM edge_points_patch a
 	WHERE 
         --ST_Intersects(geom0, Geometry(pt))
-        ST_Intersects(geom0, x, y, z, 28992)
+        --ST_Intersects(geom0, x, y, z, 28992)
+        [geom0] Intersects [x, y, z, 28992]
 	GROUP BY a.id, a.fid, a.type, a.path, a.ring, a.geom, z
 ) WITH DATA;
 
 drop table filter;
 create table filter AS (
 	SELECT
-		a.id, a.fid, a.type, a.path, a.ring, a.geom,
-        z
+		a.id, a.fid, a.type, a.path, a.ring, a.geom, z
 	FROM emptyz a
     WHERE
         z between avg-0.2 and avg+0.2
@@ -149,7 +157,8 @@ create table filledz AS (
 
 drop table allrings;
 create table allrings AS (
-	SELECT id, fid, type, ring, ST_AddPoint(ST_MakeLine(geom), First(geom)) as geom
+	--SELECT id, fid, type, ring, ST_AddPoint(ST_MakeLine(geom), First(geom)) as geom
+	SELECT id, fid, type, ring, ST_MakeLine(geom) as geom
 	FROM filledz
 	GROUP BY id,fid, type, ring
 ) WITH DATA;
@@ -157,22 +166,24 @@ create table allrings AS (
 --TODO: Here we should use existent functions
 drop table outerrings;
 create table outerrings AS (
-	SELECT *
+	SELECT id, fid, type, ring, ST_AddPoint(geom, ST_StartPoint(geom), ST_NumPoints(geom)) as geom --The Point is added at the beginning, not at the end.
 	FROM allrings
-	WHERE ring[1] = 0
+	WHERE ring = 1
 ) WITH DATA;
 
 drop table innerrings;
 create table innerrings AS (
-	SELECT id, fid, type, St_Accum(geom) arr
+	--SELECT id, fid, type, St_Accum(geom) as arr
+	SELECT id, fid, type, geom as arr
 	FROM allrings
-	WHERE ring[1] > 0
-	GROUP BY id, fid, type
+	WHERE ring > 1
+	--GROUP BY id, fid, type
 ) WITH DATA;
 
 drop table polygonsz;
 create table polygonsz AS (
-	SELECT a.id, a.fid, a.type, COALESCE(ST_MakePolygon(a.geom, b.arr),ST_MakePolygon(a.geom)) geom
+	--SELECT a.id, a.fid, a.type, COALESCE(ST_MakePolygon(a.geom, b.arr),ST_MakePolygon(a.geom)) as geom --We do not have MakePolygon outer ring and list of inner rings.
+	SELECT a.id, a.fid, a.type, ST_Polygon(a.geom, 28992) as geom
 	FROM outerrings a
 	LEFT JOIN innerrings b ON a.id = b.id
 ) WITH DATA;
@@ -182,23 +193,13 @@ create table terrain_polygons AS (
     SELECT * FROM polygonsz
 ) WITH DATA;
 
-drop table patches;
-create table patches AS (
-	SELECT t.id, pa
-	FROM pointcloud, terrain_polygons t
-	WHERE 
-        --ST_Intersects(geom, geometry(pa))
-        ST_Intersects(geom, x, y, z, 28992)
-) WITH DATA;
-
 drop table all_points;
 create table all_points AS ( -- get pts in every boundary
 	SELECT t.id, ST_SetSRID(ST_MakePoint(x, y, z), 28992) as geom
 	FROM pointcloud, terrain_polygons t
 	WHERE 
         --ST_Intersects(geom, geometry(pa))
-        ST_Intersects(geom, x, y, z, 28992)
-	)
+        [geom] Intersects [x, y, z, 28992]
 ) WITH DATA;
 
 drop table innerpoints;
@@ -208,11 +209,14 @@ create table innerpoints AS (
 	--INNER JOIN terrain_polygons b
 	--ON a.id = b.id
     WHERE
-	a.id = b.id
-	AND ST_Intersects(a.geom, b.geom)
-	AND Not ST_DWithin(a.geom, ST_ExteriorRing(b.geom),1)
+	a.id = b.id AND 
+   -- ST_Intersects(a.geom, b.geom)
+   [a.geom] Intersects [b.geom] AND
+	--AND Not ST_DWithin(a.geom, ST_ExteriorRing(b.geom),1)
+	--Not [a.geom] DWithin [ST_ExteriorRing(b.geom),1]
+	Not [a.geom] DWithin [ST_ExteriorRing(b.geom),1]
 	AND random() < (0.1 * _zoom)
-	AND (b.type != 'road')
+	AND (b.type <> 'road')
 ) WITH DATA;
 
 drop table basepoints;
@@ -220,13 +224,15 @@ create table basepoints AS (
 	--SELECT id, geom FROM innerpoints
 	--UNION
 	SELECT id,geom FROM polygonsz
-	WHERE ST_IsValid(geom)
+	WHERE 
+    --ST_IsValid(geom)
+    [ST_Buffer(geom, 1.0)] IsValidD [ST_MakePoint(1.0, 1.0, 1.0)] --ST_Buffer to avoid: !ERROR: Ring Self-intersection at or near point
 ) WITH DATA;
 
 drop table triangles_a;
 create table triangles_a AS (
 	SELECT
-		id, ST_Triangulate2DZ(ST_Collect(a.geom)) as geom
+		id, ST_Triangulate2DZ(ST_Collect(a.geom), 0) as geom
 	FROM basepoints a
 	GROUP BY id
 ) WITH DATA;
@@ -244,16 +250,16 @@ drop table assign_triags;
 create table assign_triags AS (
 	SELECT 	a.id,
 		CASE
-			WHEN b.type != 'dek' THEN ST_Translate(a.geom, 0,0,1)
+			WHEN b.type <> 'dek' THEN ST_Translate(a.geom, 0,0,1)
 			ELSE a.geom
 		END as geom, b.type
 	FROM triangles a
 	INNER JOIN polygons b
-	ON ST_Contains(b.geom, a.geom)
+	ON [b.geom] Contains [a.geom]
 	,bounds c
 	WHERE 
     --ST_Intersects(ST_Centroid(b.geom), c.geom)
-    [ST_Centroid] Intersects [c.geom]
+    [ST_Centroid(b.geom)] Intersects [c.geom]
 	AND a.id = b.id
 ) WITH DATA;
 
