@@ -20,7 +20,8 @@ create table pointcloud_unclassified AS (
 	SELECT x, y,z
 	FROM ahn3, bounds 
 	WHERE 
-        ST_DWithin(geom, ST_SetSRID(ST_MakePoint(x, y, z), 28992),10) --patches should be INSIDE bounds
+        --ST_DWithin(geom, ST_SetSRID(ST_MakePoint(x, y, z), 28992),10) --patches should be INSIDE bounds
+        [geom] DWithin [x, y, z, 28992, 10.0] --patches should be INSIDE bounds
         AND c = 26
 ) WITH DATA;
 
@@ -48,7 +49,7 @@ create table papoints AS ( --get points from intersecting patches
 		geom
 	FROM footprints a
 	--LEFT JOIN pointcloud_unclassified b ON (ST_Intersects(a.geom, geometry(b.pa)))
-	LEFT JOIN pointcloud_unclassified b ON (ST_Intersects(a.geom, x, y, z,28992))
+	LEFT JOIN pointcloud_unclassified b ON ([a.geom] Intersects [x, y, z,28992])
 ) WITH DATA;
 
 drop table papatch;
@@ -64,7 +65,8 @@ create table papatch AS (
 	FROM papoints
 	WHERE 
         --ST_Intersects(geometry(pt), geom)
-        ST_Intersects(geom, x, y,z, 28992)
+        --ST_Intersects(geom, x, y,z, 28992)
+        [geom] Intersects [x, y,z, 28992]
 	GROUP BY id, geom, type, z
 ) WITH DATA;
 

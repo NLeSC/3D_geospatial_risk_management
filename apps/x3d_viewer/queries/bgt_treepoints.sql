@@ -1,8 +1,8 @@
-declare _west integer;
-declare _south integer;
-declare _east integer;
-declare _north integer;
-declare _segmentlength integer;
+declare _west decimal(7,1);
+declare _south decimal(7,1);
+declare _east decimal(7,1);
+declare _north decimal(7,1);
+declare _segmentlength decimal(7,1);
 
 set _west = 93816.0;
 set _east = 93916.0;
@@ -13,7 +13,7 @@ set _segmentlength = 10;
 DROP SEQUENCE "counter";
 CREATE SEQUENCE "counter" AS INTEGER;
 
-WITH
+with
 bounds AS (
 	--SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) as geom
 	SELECT ST_MakeEnvelope(_west+10, _south+10, _east+10, _north+10, 28992) as geom
@@ -22,7 +22,8 @@ pointcloud_unclassified AS(
 	SELECT
         ST_SetSRID(ST_MakePoint(x, y, z), 28992) as geom
 	FROM
-        C_30FZ1, bounds
+        --C_30FZ1, bounds
+        ahn3, bounds
 	WHERE
     --ST_DWithin(geom, Geometry(pa),10) --patches should be INSIDE bounds
     x between 93816.0 and 93916.0 and

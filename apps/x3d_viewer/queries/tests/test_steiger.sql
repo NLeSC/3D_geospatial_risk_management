@@ -17,13 +17,14 @@ create table bounds AS (
 
 drop table pointcloud_ground;
 create table pointcloud_ground AS (
-	SELECT 
+	SELECT
         ST_SetSRID(ST_MakePoint(x, y, z), 28992) as geom, z
-	FROM 
-        C_30FZ1, bounds 
-	WHERE 
+	FROM
+        --ahn3, bounds
+        C_30FZ1, bounds
+	WHERE
         --ST_DWithin(geom, Geometry(pa),10)
-        [geom] DWithin [x, y, z, 28992, 10] and
+        [geom] DWithin [x, y, z, 28992,10] and
         x between 93816.0 and 93916.0 and
         y between 463891.0 and 463991.0 and
         c = 1 and
@@ -33,18 +34,18 @@ create table pointcloud_ground AS (
 
 drop table footprints;
 create table footprints AS (
-	SELECT 
+	SELECT
         ST_Force3D(ST_Intersection(a.wkt, b.geom)) as geom,
-    	a.gml_id as id
+    	a.ogc_fid as id
 	FROM bgt_kunstwerkdeel a, bounds b
 	WHERE
-	    (plus_type = 'steiger') AND 
+	    (plus_type = 'steiger') AND
 	    [a.wkt] Intersects [b.geom]
 ) WITH DATA;
 
 drop table papoints;
 create table papoints AS ( --get points from intersecting patches
-	SELECT 
+	SELECT
 		a.id,
 		b.geom as pt,
         z,
@@ -57,10 +58,9 @@ create table papoints AS ( --get points from intersecting patches
 
 drop table footprintpatch;
 create table footprintpatch AS ( --get only points that fall inside building, patch them
-	SELECT id, pt as geom, footprint, min(z) as min 
+	SELECT id, pt as geom, footprint, min(z) as min
 	FROM papoints
     WHERE
-        --ST_Intersects(footprint, pt)
         [footprint] Intersects [pt]
 	GROUP BY id, geom, footprint
 ) WITH DATA;
@@ -68,6 +68,6 @@ create table footprintpatch AS ( --get only points that fall inside building, pa
 drop table polygons;
 create table polygons AS (
 	SELECT id, ST_Extrude(ST_Tesselate(ST_Translate(footprint,0,0, min+0.4)),0,0,0.2) as geom FROM footprintpatch
-) WITH data;
+) WITH DATA;
 
 SELECT id, 'steiger' as type, 'grey' as color, ST_AsX3D(p.geom, 4.0, 0) as geom FROM polygons p;

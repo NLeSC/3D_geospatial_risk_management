@@ -1,8 +1,8 @@
-declare _west integer;
-declare _south integer;
-declare _east integer;
-declare _north integer;
-declare _segmentlength integer;
+declare _west decimal(7,1);
+declare _south decimal(7,1);
+declare _east decimal(7,1);
+declare _north decimal(7,1);
+declare _segmentlength decimal(7,1);
 
 set _west = 93816.0;
 set _east = 93916.0;
@@ -10,23 +10,24 @@ set _south = 463891.0;
 set _north = 463991.0;
 set _segmentlength = 10;
 
-WITH
-bounds AS (
+with
+bounds_ AS (
 	SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) as geom
 ),
-pointcloud_unclassified AS (
+pointcloud_unclassified_ AS (
 	SELECT x, y,z
-	FROM ahn3, bounds 
+	FROM ahn3, bounds_ 
 	WHERE 
-        ST_DWithin(geom, ST_SetSRID(ST_MakePoint(x, y, z), 28992),10) --patches should be INSIDE bounds
+        --ST_DWithin(geom, ST_SetSRID(ST_MakePoint(x, y, z), 28992),10) --patches should be INSIDE bounds_
+        [geom] DWithin [x, y, z, 28992,10]
         AND c = 26
 ),
-footprints AS (
+footprints_ AS (
 	SELECT 
         --ST_Force3D(ST_SetSrid(ST_CurveToLine(a.wkb_geometry),28992)) as geom,
         ST_Force3D(a.wkt) as geom,
     	a.ogc_fid as id, 'pijler' as type
-	FROM bgt_overbruggingsdeel a, bounds b
+	FROM bgt_overbruggingsdeel a, bounds_ b
 	WHERE 1 = 1
 	AND typeoverbruggingsdeel = 'pijler'
 	--AND ST_Intersects(ST_SetSrid(ST_CurveToLine(a.wkb_geometry),28992), b.geom)
@@ -34,17 +35,18 @@ footprints AS (
 	--AND ST_Intersects(ST_Centroid(ST_SetSrid(ST_CurveToLine(a.wkb_geometry),28992)), b.geom)
 	AND [ST_Centroid(a.wkt)] Intersects [b.geom]
 ),
-papoints AS ( --get points from intersecting patches
+papoints_ AS ( --get points from intersecting patches
 	SELECT 
 		a.type,
 		a.id,
 		x, y, z,
 		geom
-	FROM footprints a
-	--LEFT JOIN pointcloud_unclassified b ON (ST_Intersects(a.geom, geometry(b.pa)))
-	LEFT JOIN pointcloud_unclassified b ON (ST_Intersects(a.geom, x, y, z,28992))
+	FROM footprints_ a
+	--LEFT JOIN pointcloud_unclassified_ b ON (ST_Intersects(a.geom, geometry(b.pa)))
+	--LEFT JOIN pointcloud_unclassified_ b ON (ST_Intersects(a.geom, x, y, z,28992))
+	LEFT JOIN pointcloud_unclassified_ b ON ([a.geom] Intersects [x, y, z,28992])
 ),
-papatch AS (
+papatch_ AS (
 	SELECT
 		id,
 		geom,
@@ -53,34 +55,35 @@ papatch AS (
 		min(z) as min,
         max(z) as max,
         avg(z) as avg
-	FROM papoints
+	FROM papoints_
 	WHERE 
         --ST_Intersects(geometry(pt), geom)
-        ST_Intersects(geom, x, y,z, 28992)
+        --ST_Intersects(geom, x, y,z, 28992)
+        [geom] Intersects [x, y,z, 28992]
 	GROUP BY id, geom, type, z
 ),
-filter AS (
+filter_ AS (
 	SELECT
 		id,
 		type,
 		geom,
-		--is dit filter nog nodig?
+		--is dit filter_ nog nodig?
 		--PC_FilterBetween(pa, 'z',avg-1, avg+1) pa, 
         z,
 		min, max, avg
-	FROM papatch
+	FROM papatch_
     WHERE z between avg-1 and avg+1
 ),
-stats AS (
+stats_ AS (
 	SELECT  id, geom,type,
 		max,
 		0 as min,
 		avg,
 		avg(z) as z
-	FROM filter
+	FROM filter_
 	GROUP BY id, geom, type, max, min, avg, z
 ),
-polygons AS (
-	SELECT id, type,ST_Extrude(ST_Tesselate(ST_Translate(geom,0,0, min)), 0,0,avg-min -0.1) as geom FROM stats
+polygons_ AS (
+	SELECT id, type,ST_Extrude(ST_Tesselate(ST_Translate(geom,0,0, min)), 0,0,avg-min -0.1) as geom FROM stats_
 )
-SELECT id, type, '0.66 0.37 0.13' as color, ST_AsX3D(polygons.geom, 4.0, 0) as geom FROM polygons;
+SELECT id, type, '0.66 0.37 0.13' as color, ST_AsX3D(polygons_.geom, 4.0, 0) as geom FROM polygons_;

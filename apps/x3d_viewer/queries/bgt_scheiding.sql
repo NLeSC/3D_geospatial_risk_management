@@ -1,13 +1,13 @@
-declare _west integer;
-declare _south integer;
-declare _east integer;
-declare _north integer;
+declare _west decimal(7,1);
+declare _south decimal(7,1);
+declare _east decimal(7,1);
+declare _north decimal(7,1);
 set _west = 93816;
 set _east = 93916;
 set _south = 463891;
 set _north = 463991;
 
-WITH
+with
 bounds AS (
 	SELECT ST_MakeEnvelope(_west+10, _south+10, _east+10, _north+10, 28992) as geom
 ),

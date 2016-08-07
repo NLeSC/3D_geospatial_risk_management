@@ -1,8 +1,8 @@
-declare _west integer;
-declare _south integer;
-declare _east integer;
-declare _north integer;
-declare _segmentlength integer;
+declare _west decimal(7,1);
+declare _south decimal(7,1);
+declare _east decimal(7,1);
+declare _north decimal(7,1);
+declare _segmentlength decimal(7,1);
 
 set _west = 93816.0;
 set _east = 93916.0;
@@ -16,7 +16,7 @@ CREATE SEQUENCE "counter" AS INTEGER;
 DROP SEQUENCE "polygon_id";
 CREATE SEQUENCE "polygon_id" AS INTEGER;
 
-WITH
+with
 bounds AS (
 	SELECT ST_Segmentize(ST_MakeEnvelope(_west, _south, _east, _north, 28992),_segmentlength) as geom
 ),
@@ -24,7 +24,8 @@ pointcloud_water AS (
 	SELECT
         x, y, z
 	FROM
-        C_30FZ1, bounds
+        --C_30FZ1, bounds
+        ahn3, bounds
 	WHERE
         --ST_Intersects(geom, Geometry(pa))
         x between 93816.0 and 93916.0 and

@@ -1,8 +1,8 @@
-declare _west integer;
-declare _south integer;
-declare _east integer;
-declare _north integer;
-declare _segmentlength integer;
+declare _west decimal(7,1);
+declare _south decimal(7,1);
+declare _east decimal(7,1);
+declare _north decimal(7,1);
+declare _segmentlength decimal(7,1);
 
 set _west = 93816.0;
 set _east = 93916.0;
@@ -10,7 +10,7 @@ set _south = 463891.0;
 set _north = 463991.0;
 set _segmentlength = 10;
 
-WITH
+with
 bounds AS (
     SELECT ST_Segmentize(ST_MakeEnvelope(_west, _south, _east, _north, 28992), _segmentlength) as geom
 ),
@@ -35,6 +35,7 @@ bare AS (
 pointcloud_ground AS (
 	SELECT x, y, z
 	FROM C_30FZ1, bounds
+	--FROM ahn3, bounds
 	WHERE
     c = 2 and
     x between 93816.0 and 93916.0 and
@@ -79,7 +80,7 @@ emptyz AS (
 ),
 --insert into _ranktest select path, geom, z, dist, RANK() over (PARTITION BY path, geom order by path, dist ASC) as rank from _emptyz;
 ranktest AS (
-    select polygon_id, path, geom, z, dist, RANK() over (PARTITION BY path, geom order by polygon_id, path, dist ASC) as rank from emptyz
+    select polygon_id, path, geom, z, dist, RANK() over (PARTITION BY polygon_id, path order by polygon_id, path, dist ASC) as rank from emptyz
 ),
 --insert into _filledz select path, ST_MakePoint(ST_X(geom), ST_Y(geom), z) as geom from _ranktest where rank = 1 order by path;
 filledz AS (

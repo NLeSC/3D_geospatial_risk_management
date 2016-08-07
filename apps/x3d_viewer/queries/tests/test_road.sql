@@ -1,8 +1,8 @@
-declare _west integer;
-declare _south integer;
-declare _east integer;
-declare _north integer;
-declare _segmentlength integer;
+declare _west decimal(7,1);
+declare _south decimal(7,1);
+declare _east decimal(7,1);
+declare _north decimal(7,1);
+declare _segmentlength decimal(7,1);
 
 set _west = 93816.0;
 set _east = 93916.0;
@@ -59,14 +59,15 @@ create table tunnels AS (
 drop table pointcloud_ground;
 create table pointcloud_ground AS (
 	SELECT x, y, z
+	--FROM ahn3, bounds
 	FROM ahn3, bounds
 	WHERE 
     --ST_Intersects(geom, x, y, z, 28992) AND
     --[geom] Intersects [x, y, z, 28992] AND
+    c = 2 and
     x between _west and _east and
-    y between _south and _north and 
-    Contains(geom, x, y) AND
-    c = 2
+    y between _south and _north and
+    Contains(geom, x, y, z, 28992)
 ) WITH DATA;
 
 drop table polygons_b;
@@ -84,7 +85,7 @@ create table polygons_b AS (
 drop table polygons_dump;
 create table polygons_dump AS (
     SELECT parent as fid, polygonWKB as geom
-    FROM ST_DUMP((select geom, fid from polygons)) d
+    FROM ST_DUMP((select geom, fid from polygons_b)) d
 ) WITH DATA;
 
 drop table polygons;
@@ -112,29 +113,22 @@ create table edge_points AS (
     --SELECT parent as polygon_id, cast(path as int) as path, ST_SetSRID(pointg, 28992) as geom FROM ST_DumpPoints((select geom, fid from polygonsz)) d
     SELECT parent as polygon_id, cast((SUBSTRING(path, POSITION(',' IN path)+1)) as int) as path, ST_SetSRID(pointg, 28992) as geom FROM ST_DumpPoints((select geom, fid from polygonsz)) d
 ) WITH DATA;
---insert into _emptyz SELECT a.path as path, a.geom as geom , b.z as z, ST_Distance(ST_SetSRID(a.geom, 28992), ST_SetSRID(ST_MakePoint(x, y, z), 28992)) as dist FROM _edge_points a, pointcloud_ground b;
 
 drop table emptyz;
 create table emptyz AS (
-    --SELECT polygon_id, a.path as path, a.geom as geom , b.z as z, ST_Distance(ST_SetSRID(a.geom, 28992), ST_SetSRID(ST_MakePoint(x, y, z), 28992)) as dist FROM edge_points a, pointcloud_ground b WHERE ST_DWithin(a.geom, x, y, z, 28992, 10)
-    --SELECT polygon_id, a.path as path, a.geom as geom , b.z as z, ST_Distance(a.geom, x, y, z, 28992) as dist FROM edge_points a, pointcloud_ground b WHERE ST_DWithin(a.geom, x, y, z, 28992, 10)
     SELECT polygon_id, a.path as path, a.geom as geom , b.z as z, ST_Distance(a.geom, x, y, z, 28992) as dist FROM edge_points a, pointcloud_ground b WHERE [a.geom] DWithin [x, y, z, 28992, 10]
 ) WITH DATA;
---insert into _ranktest select path, geom, z, dist, RANK() over (PARTITION BY path, geom order by path, dist ASC) as rank from _emptyz;
 
 drop table ranktest;
 create table ranktest AS (
-    select polygon_id, path, geom, z, dist, RANK() over (PARTITION BY path, geom order by polygon_id, path, dist ASC) as rank from emptyz
-    --select polygon_id, path, geom, z, dist, RANK() over (PARTITION BY polygon_id, path, geom) as rank from emptyz
+    select polygon_id, path, geom, z, dist, RANK() over (PARTITION BY polygon_id, path order by polygon_id, path, dist ASC) as rank from emptyz
 ) WITH DATA;
---insert into _filledz select path, ST_MakePoint(ST_X(geom), ST_Y(geom), z) as geom from _ranktest where rank = 1 order by path;
 
 drop table filledz;
 create table filledz AS (
     --select polygon_id, path, ST_MakePoint(ST_X(geom), ST_Y(geom), z) as geom from ranktest where rank = 1 order by path
     select polygon_id, path, ST_MakePoint(ST_X(geom), ST_Y(geom), z) as geom from ranktest where rank = 1
 ) WITH DATA;
---insert into _line_z SELECT ST_MakeLine(geom) as geom FROM _filledz;
 
 drop table line_z;
 create table line_z AS (

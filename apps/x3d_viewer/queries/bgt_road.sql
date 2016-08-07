@@ -1,8 +1,8 @@
-declare _west integer;
-declare _south integer;
-declare _east integer;
-declare _north integer;
-declare _segmentlength integer;
+declare _west decimal(7,1);
+declare _south decimal(7,1);
+declare _east decimal(7,1);
+declare _north decimal(7,1);
+declare _segmentlength decimal(7,1);
 
 set _west = 93816.0;
 set _east = 93916.0;
@@ -51,14 +51,14 @@ tunnels AS (
 pointcloud_ground AS (
 	SELECT x, y, z
 	--FROM ahn3, bounds
-	FROM C_30FZ1, bounds
+	FROM ahn3, bounds
 	WHERE 
     --ST_Intersects(geom, x, y, z, 28992) AND
     --[geom] Intersects [x, y, z, 28992] AND
     c = 2 and
-    x between 93816.0 and 93916.0 and
-    y between 463891.0 and 463991.0 and
-    Contains(geom, x, y)
+    x between _west and _east and
+    y between _south and _north and
+    Contains(geom, x, y, z, 28992)
 ),
 polygons_b AS (
 	SELECT ogc_fid as fid, type, class, geom
@@ -95,13 +95,10 @@ edge_points AS (
     SELECT parent as polygon_id, cast((SUBSTRING(path, POSITION(',' IN path)+1)) as int) as path, ST_SetSRID(pointg, 28992) as geom FROM ST_DumpPoints((select geom, fid from polygonsz)) d
 ),
 emptyz AS (
-    --SELECT polygon_id, a.path as path, a.geom as geom , b.z as z, ST_Distance(ST_SetSRID(a.geom, 28992), ST_SetSRID(ST_MakePoint(x, y, z), 28992)) as dist FROM edge_points a, pointcloud_ground b WHERE ST_DWithin(a.geom, x, y, z, 28992, 10)
-    --SELECT polygon_id, a.path as path, a.geom as geom , b.z as z, ST_Distance(a.geom, x, y, z, 28992) as dist FROM edge_points a, pointcloud_ground b WHERE ST_DWithin(a.geom, x, y, z, 28992, 10)
     SELECT polygon_id, a.path as path, a.geom as geom , b.z as z, ST_Distance(a.geom, x, y, z, 28992) as dist FROM edge_points a, pointcloud_ground b WHERE [a.geom] DWithin [x, y, z, 28992, 10]
 ),
 ranktest AS (
-    select polygon_id, path, geom, z, dist, RANK() over (PARTITION BY path, geom order by polygon_id, path, dist ASC) as rank from emptyz
-    --select polygon_id, path, geom, z, dist, RANK() over (PARTITION BY polygon_id, path, geom) as rank from emptyz
+    select polygon_id, path, geom, z, dist, RANK() over (PARTITION BY polygon_id, path order by polygon_id, path, dist ASC) as rank from emptyz
 ),
 filledz AS (
     --select polygon_id, path, ST_MakePoint(ST_X(geom), ST_Y(geom), z) as geom from ranktest where rank = 1 order by path

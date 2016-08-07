@@ -1,4 +1,4 @@
-WITH bounds AS (
+with bounds AS (
 	SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) geom
 ),
 	pointcloud AS (
