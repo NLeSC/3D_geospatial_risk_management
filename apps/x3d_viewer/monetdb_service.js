@@ -66,10 +66,10 @@ app.get( '/service/monetdb_3d', function( req, res ) {
                 */
                 var querystring = sets [ set ].sql;
                                 querystring = querystring
-                                        .replace( /_west/g, west )
-                                        .replace( /_east/g, east )
-                                        .replace( /_south/g, south )
-                                        .replace( /_north/g, north )
+                                        .replace( /_west/g, west + '.0')
+                                        .replace( /_east/g, east + '.0')
+                                        .replace( /_south/g, south + '.0')
+                                        .replace( /_north/g, north + '.0')
                                         .replace( /_zoom/g ,1)
                                         .replace( /_segmentlength/g,10);
                 console.log('running: ',querystring);
@@ -92,19 +92,21 @@ app.get( '/service/monetdb_3d', function( req, res ) {
                                 //}
 
                                 resultstring += "\n";
-                                result.data.forEach( function( row ) {
-                                        for (var key in row){
-                                        resultstring += row[key] + ';'
-                                        }               
-                                        resultstring += '\n';
-                                        } );                            
+                                if (result.data)
+                                    result.data.forEach( function( row ) {
+                                            for (var key in row){
+                                            resultstring += row[key] + ';'
+                                            }               
+                                            resultstring += '\n';
+                                            } );                            
                                 res.set( "Content-Type", 'text/plain' );
                                 res.send(resultstring);         
                                 /*                              
                                                                 res.set("Content-Type", 'text/javascript'); // i added this to avoid the "Resource interpreted as Script but tra                                     nsferred with MIME type text/html" message
                                                                 res.send(JSON.stringify({data: result.rows}));
                                                                 */                              
-                                console.log( 'Sending results', result.data.length );
+                                if (result.data)
+                                    console.log( 'Sending results', result.data.length );
 
                         } ).catch(function(e){                          
                             console.warn('monetdb did a boo boo',e);   
