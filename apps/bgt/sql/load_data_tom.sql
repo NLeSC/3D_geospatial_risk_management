@@ -9,3 +9,9 @@ COPY 10000000 OFFSET 2 RECORDS INTO bgt_scheiding FROM ('/scratch/goncalve/data/
 COPY 10000000 OFFSET 2 RECORDS INTO bgt_tunneldeel FROM ('/scratch/goncalve/data/geo_data/bgt/outs_csv/bgt_tunneldeel.csv') USING DELIMITERS '|','\n','"' NULL AS '' LOCKED;
 COPY 10000000 OFFSET 2 RECORDS INTO bgt_waterdeel FROM ('/scratch/goncalve/data/geo_data/bgt/outs_csv/bgt_waterdeel.csv') USING DELIMITERS '|','\n','"' NULL AS '' LOCKED;
 COPY 10000000 OFFSET 2 RECORDS INTO bgt_wegdeel FROM ('/scratch/goncalve/data/geo_data/bgt/outs_csv/bgt_wegdeel.csv') USING DELIMITERS '|','\n','"' NULL AS '' LOCKED;
+
+CREATE SEQUENCE "count" as integer START WITH 1;
+COPY 10000000 OFFSET 2 RECORDS INTO bgt_paal FROM ('/scratch/goncalve/data/geo_data/bgt/outs_csv/bgt_paal.csv') (wkt,gml_id,creationdate,namespace,lokaalid,relatievehoogteligging,lv_publicatiedatum,inonderzoek,tijdstipregistratie,bgt_status,plus_status,bronhouder,functionalitie,plus_type,hectometeraanduiding) USING DELIMITERS ',','\n','"' NULL AS '' LOCKED;
+
+ALTER SEQUENCE "count" RESTART WITH 1;
+COPY 10000000 OFFSET 2 RECORDS INTO bgt_kunstwerkdeel FROM ('/scratch/goncalve/data/geo_data/bgt/outs_csv/bgt_kunstwerkdeel.csv') (wkt,gml_id,creationdate,tijdstipregistratie,inonderzoek,relatievehoogteligging,lv_publicatiedatum,namespace,lokaalid,bgt_status,plus_status,bronhouder,bgt_type,plus_type) USING DELIMITERS ',','\n','"' NULL AS '' LOCKED;
