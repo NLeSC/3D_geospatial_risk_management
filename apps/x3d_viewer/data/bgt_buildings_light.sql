@@ -27,11 +27,12 @@ footprints AS (
 	0 as bouwjaar
 	FROM bgt_pand a, bounds b
 	WHERE 1 = 1
-	AND ST_Area(a.wkt) > 30
+	--AND ST_Area(a.wkt) > 30
+	AND col_area > 30
 	AND [a.wkt] Intersects [b.geom]
 	AND [ST_Centroid(a.wkt)] Intersects [b.geom]
 	--AND ST_IsValid(a.wkt)
-	AND [a.wkt] IsValidD [ST_MakePoint(1.0,1.0,1.0)]
+	--AND [a.wkt] IsValidD [ST_MakePoint(1.0,1.0,1.0)]
 ),
 stats_fast AS (
 	SELECT

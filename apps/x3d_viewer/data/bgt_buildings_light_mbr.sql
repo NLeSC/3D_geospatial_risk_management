@@ -7,7 +7,7 @@ set _east = 93916.0;
 set _south = 463891.0;
 set _north = 463991.0;
 
- with
+trace with
 bounds AS (
     SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) as geom
 ),
@@ -17,8 +17,8 @@ pointcloud AS (
 	WHERE
     x between _west and _east and
     y between _south and _north and
-	Contains(geom, x, y, z, 28992)
-	--[geom] Contains [x, y, z, 28992]
+	--Contains(geom, x, y, z, 28992)
+	[geom] Contains [x, y, z, 28992]
 	and c = 6
 ),
 footprints AS (
@@ -26,12 +26,21 @@ footprints AS (
 	a.ogc_fid as id,
 	0 as bouwjaar
 	FROM bgt_pand a, bounds b
-	WHERE 1 = 1
-	AND ST_Area(a.wkt) > 30
-	AND [a.wkt] Intersects [b.geom]
+	WHERE --1 = 1
+	--AND ST_Area(a.wkt) > 30
+	--AND
+    col_area > 30.0 AND 
+    (NOT
+    ((a.col_ymax < _south) OR
+    (a.col_ymin  > _north) OR
+    (a.col_xmax  < _west) OR
+    (a.col_xmin  > _east))
+    ) AND
+    [a.wkt] Intersects [b.geom]
 	AND [ST_Centroid(a.wkt)] Intersects [b.geom]
 	--AND ST_IsValid(a.wkt)
-	AND [a.wkt] IsValidD [ST_MakePoint(1.0,1.0,1.0)]
+	--AND [a.wkt] IsValidD [ST_MakePoint(1.0,1.0,1.0)]
+    AND col_isvalid = true
 ),
 stats_fast AS (
 	SELECT

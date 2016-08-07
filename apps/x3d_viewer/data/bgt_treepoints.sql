@@ -15,8 +15,7 @@ CREATE SEQUENCE "counter" AS INTEGER;
 
  with
 bounds AS (
-	--SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) as geom
-	SELECT ST_MakeEnvelope(_west+10, _south+10, _east+10, _north+10, 28992) as geom
+	SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) as geom
 ),
 pointcloud_unclassified AS(
 	SELECT
