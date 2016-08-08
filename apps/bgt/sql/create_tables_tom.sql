@@ -232,3 +232,41 @@ create table bgt_wegdeel (
 	plus_fysiekvoorkomen string,
 	wegdeeloptalud boolean
 );
+
+create table bgt_paal_(
+    ogc_fid integer default next value for "count",
+    wkt geometry,
+	gml_id string,
+	creationdate date,
+	namespace string,
+	lokaalid string,
+	relatievehoogteligging integer,
+	lv_publicatiedatum timestamp,
+	inonderzoek boolean,
+	tijdstipregistratie timestamp,
+	bgt_status string,
+	plus_status string,
+	bronhouder string,
+	functionalitie string,
+	plus_type string,
+	hectometeraanduiding string
+);
+
+create table bgt_kunstwerkdeel(
+    ogc_fid integer default next value for "count",
+    wkt geometry,
+	gml_id string,
+	creationdate date,
+	tijdstipregistratie timestamp,
+	inonderzoek boolean,
+	relatievehoogteligging integer,
+	lv_publicatiedatum timestamp,
+	namespace string,
+	lokaalid string,
+	bgt_status string,
+	plus_status string,
+	bronhouder string,
+	bgt_type string,
+	plus_type string
+);
+
