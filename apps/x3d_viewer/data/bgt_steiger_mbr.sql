@@ -18,7 +18,6 @@ pointcloud_ground AS (
 	SELECT
         ST_SetSRID(ST_MakePoint(x, y, z), 28992) as geom, z
 	FROM
-        --ahn3, bounds
         ahn3, bounds
 	WHERE
         --ST_DWithin(geom, Geometry(pa),10)
@@ -36,6 +35,12 @@ footprints AS (
 	FROM bgt_kunstwerkdeel a, bounds b
 	WHERE
 	    (plus_type = 'steiger') AND
+        (NOT
+        ((a.col_ymax < _south) OR
+        (a.col_ymin  > _north) OR
+        (a.col_xmax  < _west) OR
+        (a.col_xmin  > _east))
+        ) AND
 	    [a.wkt] Intersects [b.geom]
 ),
 papoints AS ( --get points from intersecting patches

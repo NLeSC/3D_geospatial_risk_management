@@ -13,7 +13,7 @@ set _segmentlength = 10;
 DROP SEQUENCE "counter";
 CREATE SEQUENCE "counter" AS INTEGER;
 
- with
+with
 bounds AS (
 	SELECT ST_MakeEnvelope(_west, _south, _east, _north, 28992) as geom
 ),
@@ -31,4 +31,4 @@ pointcloud_unclassified AS(
 points_filtered AS (
 	SELECT * FROM pointcloud_unclassified WHERE rand() > 0.2
 )
-SELECT NEXT VALUE FOR "counter" as id, 'ground' as type, '0.2 0.2 0.2' as color, ST_AsX3D(ST_Collect(geom), 4.0, 0) as geom FROM points_filtered a;
+SELECT NEXT VALUE FOR "counter" as id, 'ground' as type, 'brown' as color, ST_AsX3D(ST_Collect(geom), 4.0, 0) as geom FROM points_filtered a;

@@ -33,4 +33,4 @@ pointcloud_unclassified AS(
     Contains(geom, x, y, z, 28992) --patches should be INSIDE bounds
     --[geom] Contains [x, y, z, 28992] --patches should be INSIDE bounds
 )
-SELECT NEXT VALUE for "counter" as id, 'tree' as type, '0 ' || rand() * 0.1 ||' 0' as color, ST_AsX3D(ST_Collect(geom), 4.0, 0) as geom FROM pointcloud_unclassified a;
+SELECT NEXT VALUE for "counter" as id, 'tree' as type, 'green' as color, ST_AsX3D(ST_Collect(geom), 4.0, 0) as geom FROM pointcloud_unclassified a;

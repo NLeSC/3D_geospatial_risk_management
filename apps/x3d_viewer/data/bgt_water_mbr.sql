@@ -24,18 +24,26 @@ pointcloud_water AS (
 	SELECT
         x, y, z
 	FROM
-        --ahn3, bounds
         ahn3, bounds
 	WHERE
         --ST_Intersects(geom, Geometry(pa))
         x between _west and _east and
         y between _south and _north and
-    	Contains(geom, x, y, z, 28992) and
-    	--[geom] Contains [x, y, z, 28992] and
+    	--Contains(geom, x, y, z, 28992) and
+    	[geom] Contains [x, y, z, 28992] and
         c = 9
 ),
 terrain_ AS (
-	SELECT NEXT VALUE FOR "counter" as id, ogc_fid as fid, plus_type as typ, 'water' as class, ST_Intersection(a.wkt, b.geom) as geom FROM  bgt_waterdeel a, bounds b WHERE [a.wkt] Intersects [b.geom]
+	SELECT NEXT VALUE FOR "counter" as id, ogc_fid as fid, plus_type as typ, 'water' as class, ST_Intersection(a.wkt, b.geom) as geom 
+    FROM  bgt_waterdeel a, bounds b
+    WHERE
+    (NOT
+    ((a.col_ymax < _south) OR
+    (a.col_ymin  > _north) OR
+    (a.col_xmax  < _west) OR
+    (a.col_xmin  > _east))
+    ) AND
+    [a.wkt] Intersects [b.geom]
 ),
 terrain_dump AS (
 	SELECT parent as id, polygonWKB as geom FROM ST_Dump((select geom, id from terrain_)) a
@@ -84,4 +92,4 @@ assign_triags AS (
     [ST_Centroid(b.geom)] Intersects [c.geom]
 	AND a.polygon_id = b.polygon_id
 )
-SELECT p.id AS id, 'water' as type, ST_AsX3D(ST_Collect(p.geom),4.0, 0) as geom FROM assign_triags p GROUP BY id, type;
+SELECT p.id AS id, 'water' as type, 'blue' as color, ST_AsX3D(ST_Collect(p.geom),4.0, 0) as geom FROM assign_triags p GROUP BY id, type;

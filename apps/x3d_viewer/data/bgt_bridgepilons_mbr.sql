@@ -26,10 +26,16 @@ footprints_ AS (
         ST_Force3D(a.wkt) as geom,
     	a.ogc_fid as id, 'pijler' as type
 	FROM bgt_overbruggingsdeel a, bounds_ b
-	WHERE 1 = 1
-	AND typeoverbruggingsdeel = 'pijler'
-	AND [a.wkt] Intersects [b.geom]
-	AND [ST_Centroid(a.wkt)] Intersects [b.geom]
+	WHERE
+	typeoverbruggingsdeel = 'pijler' AND
+    (NOT
+    ((a.col_ymax < _south) OR
+    (a.col_ymin  > _north) OR
+    (a.col_xmax  < _west) OR
+    (a.col_xmin  > _east))
+    ) AND
+	[a.wkt] Intersects [b.geom] AND
+	[ST_Centroid(a.wkt)] Intersects [b.geom]
 ),
 papoints_ AS ( --get points from intersecting patches
 	SELECT 
@@ -76,4 +82,4 @@ stats_ AS (
 polygons_ AS (
 	SELECT id, type,ST_Extrude(ST_Tesselate(ST_Translate(geom,0,0, min)), 0,0,avg-min -0.1) as geom FROM stats_
 )
-SELECT id, type, '0.66 0.37 0.13' as color, ST_AsX3D(polygons_.geom, 4.0, 0) as geom FROM polygons_;
+SELECT id, type, 'yellow' as color, ST_AsX3D(polygons_.geom, 4.0, 0) as geom FROM polygons_;

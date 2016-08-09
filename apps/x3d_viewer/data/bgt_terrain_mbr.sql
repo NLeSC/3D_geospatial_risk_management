@@ -3,14 +3,14 @@ declare _south decimal(7,1);
 declare _east decimal(7,1);
 declare _north decimal(7,1);
 declare _segmentlength decimal(7,1);
-
 set _west = 93816.0;
 set _east = 93916.0;
 set _south = 463891.0;
 set _north = 463991.0;
 set _segmentlength = 10;
 
-trace with
+
+with
 bounds AS (
     SELECT ST_Segmentize(ST_MakeEnvelope(_west, _south, _east, _north, 28992), _segmentlength) as geom
 ),
@@ -136,4 +136,4 @@ assign_triags AS (
 	AND a.id = b.id
 )
 
-SELECT p.id as id, p.type as type, ST_AsX3D(ST_Collect(p.geom),4.0, 0) as geom FROM assign_triags p GROUP BY id, type;
+SELECT p.id as id, p.type as type, 'grey' as color, ST_AsX3D(ST_Collect(p.geom),4.0, 0) as geom FROM assign_triags p GROUP BY id, type;

@@ -3,12 +3,12 @@ declare _south decimal(7,1);
 declare _east decimal(7,1);
 declare _north decimal(7,1);
 declare _segmentlength decimal(7,1);
-
 set _west = 93816.0;
 set _east = 93916.0;
 set _south = 463891.0;
 set _north = 463991.0;
 set _segmentlength = 10;
+
 
 
  with
@@ -17,36 +17,56 @@ bounds AS (
 ),
 bgt_wegdeel_light AS (
 	--SELECT a.ogc_fid, 'road' AS class, a.bgt_functie as type, ST_Intersection(a.wkt,c.geom) as geom 
-	SELECT a.ogc_fid, 'road' AS class, a.bgt_status as type, a.wkt as wkt, ST_Intersection(a.wkt,c.geom) as geom 
+	SELECT a.ogc_fid, 'road' AS class, a.bgt_status as type, a.wkt as wkt, ST_Intersection(a.wkt,c.geom) as geom, col_xmin, col_xmax, col_ymin, col_ymax 
 	FROM bgt_wegdeel a, bounds c
 	WHERE 
     a.relatieveHoogteligging = 0 AND
 	a.eindregistratie Is Null AND
+    (NOT
+    ((a.col_ymax < _south) OR
+    (a.col_ymin  > _north) OR
+    (a.col_xmax  < _west) OR
+    (a.col_xmin  > _east))
+    ) AND
 	[geom] Intersects [a.wkt]
 ),
 mainroads AS (
 	SELECT a.ogc_fid, a.class, a.type, a.geom 
 	FROM bgt_wegdeel_light a
 	LEFT JOIN bgt_overbruggingsdeel b
-	ON ([a.wkt] Intersects [b.wkt]) AND [ST_buffer((b.wkt),1)] Contains [a.wkt]
+	ON ([a.wkt] Intersects [b.wkt] AND [ST_buffer((b.wkt),1)] Contains [a.wkt])
 	WHERE 
 	--AND ST_CurveToLine(b.wkt) Is Null
 	b.eindregistratie Is Null
-	AND [geom] Intersects [a.wkt]
+	--AND [geom] Intersects [a.wkt]
 ),
 auxroads AS (
 	SELECT ogc_fid, 'road' AS class, bgt_functie as type, ST_Intersection(wkt,geom) as geom
-	FROM bgt_ondersteunendwegdeel, bounds
-	WHERE relatieveHoogteligging = 0
-	AND eindregistratie Is Null
+	FROM bgt_ondersteunendwegdeel a, bounds b
+	WHERE
+    relatieveHoogteligging = 0 AND
+	eindregistratie Is Null AND
 	--AND ST_Intersects(geom, wkb_geometry)
-	AND [geom] Intersects [wkt]
+    (NOT
+    ((a.col_ymax < _south) OR
+    (a.col_ymin  > _north) OR
+    (a.col_xmax  < _west) OR
+    (a.col_xmin  > _east))
+    ) AND
+	[geom] Intersects [wkt]
 ),
 tunnels AS (
 	SELECT ogc_fid, 'road' AS class, 'tunnel' as type, ST_Intersection(wkt,geom) as geom
-	FROM bgt_tunneldeel, bounds
-	WHERE eindregistratie Is Null
-	AND [geom] Intersects [wkt]
+	FROM bgt_tunneldeel a, bounds b
+	WHERE
+    eindregistratie Is Null AND
+    (NOT
+    ((a.col_ymax < _south) OR
+    (a.col_ymin  > _north) OR
+    (a.col_xmax  < _west) OR
+    (a.col_xmin  > _east))
+    ) AND
+	[geom] Intersects [wkt]
 ),
 pointcloud_ground AS (
 	SELECT x, y, z
@@ -58,8 +78,8 @@ pointcloud_ground AS (
     c = 2 and
     x between _west and _east and
     y between _south and _north and
-    Contains(geom, x, y, z, 28992)
-    --[geom] Contains [x, y, z, 28992]
+    --Contains(geom, x, y, z, 28992)
+    [geom] Contains [x, y, z, 28992]
 ),
 polygons_b AS (
 	SELECT ogc_fid as fid, type, class, geom
@@ -133,4 +153,4 @@ assign_triags AS (
 	[b.geom] Contains [a.geom]
 )
 
-SELECT p.id as id, p.type as type, ST_AsX3D(ST_Collect(p.geom),5.0, 0) as geom FROM assign_triags p GROUP BY p.id, p.type;
+SELECT p.id as id, p.type as type, 'gray' as color, ST_AsX3D(ST_Collect(p.geom),5.0, 0) as geom FROM assign_triags p GROUP BY p.id, p.type;

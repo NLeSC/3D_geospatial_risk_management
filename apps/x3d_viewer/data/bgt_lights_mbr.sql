@@ -31,6 +31,12 @@ points AS (
 	SELECT a.gml_id as id, a.wkt as geom
 	FROM bgt_paal a, bounds d
 	WHERE
+    (NOT
+    ((a.col_ymax < _south) OR
+    (a.col_ymin  > _north) OR
+    (a.col_xmax  < _west) OR
+    (a.col_xmin  > _east))
+    ) AND
     (plus_type = 'lichtmast' OR plus_type Is Null)
 	AND [a.wkt] Intersects [d.geom]
 ),
@@ -43,4 +49,4 @@ pointsz As (
     [b.geom] DWithin [a.geom,1]
 	GROUP BY a.id, a.geom
 )
-SELECT id, 'light' as type, 'orange' as color, ST_X(geom) as x, ST_Y(geom) as y, ST_Z(geom) as z FROM pointsz;
+SELECT id, 'light' as type, ST_X(geom) as x, ST_Y(geom) as y, ST_Z(geom) as z FROM pointsz;

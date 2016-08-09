@@ -34,10 +34,16 @@ footprints AS (
 	SELECT ST_Force3D(ST_Intersection(a.wkt, b.geom)) as geom,
 	a.ogc_fid as id
 	FROM bgt_scheiding a, bounds b
-	WHERE 1 = 1
-	AND bgt_type = 'kademuur'
-	AND [a.wkt] Intersects [b.geom]
-	AND [ST_Centroid(a.wkt)] Intersects [b.geom]
+	WHERE
+	bgt_type = 'kademuur' AND 
+    (NOT
+    ((a.col_ymax < _south) OR
+    (a.col_ymin  > _north) OR
+    (a.col_xmax  < _west) OR
+    (a.col_xmin  > _east))
+    ) AND
+	[a.wkt] Intersects [b.geom] AND
+	[ST_Centroid(a.wkt)] Intersects [b.geom]
 ),
 papoints AS ( --get points from intersecting patches
 	SELECT

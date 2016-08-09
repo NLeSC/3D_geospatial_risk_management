@@ -21,8 +21,8 @@ pointcloud_building AS (
     y between _south and _north and
     --ST_DWithin(geom, ST_MakePoint(x, y, z),10) --patches should be INSIDE bounds
     --[geom] DWithin [x, y, z, 28992, 10] --patches should be INSIDE bounds
-    Contains(geom, x, y, z, 28992)
-    --[geom] Contains [x, y, z, 28992]
+    --Contains(geom, x, y, z, 28992)
+    [geom] Contains [x, y, z, 28992]
     and c = 1
     and r = 1
     and i > 150
@@ -32,10 +32,17 @@ bgt_scheiding_light AS (
     --ST_Force3D(ST_CurveToLine(a.wkt)) as geom
     ST_Force3D(a.wkt) as geom
 	FROM bgt_scheiding a, bounds c
-	WHERE a.relatieveHoogteligging > -1
-	AND bgt_type = 'muur'
-	AND [a.wkt] Intersects [c.geom]
-	AND [ST_Centroid(a.wkt)] Intersects [c.geom]
+	WHERE
+    a.relatieveHoogteligging > -1 AND
+	bgt_type = 'muur' AND
+    (NOT
+    ((a.col_ymax < _south) OR
+    (a.col_ymin  > _north) OR
+    (a.col_xmax  < _west) OR
+    (a.col_xmin  > _east))
+    ) AND
+	[a.wkt] Intersects [c.geom] AND
+	[ST_Centroid(a.wkt)] Intersects [c.geom]
 ),
 footprints AS (
 	SELECT a.id, a.class, a.type, a.geom
