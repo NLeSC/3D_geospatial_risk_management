@@ -1,0 +1,6 @@
+
+
+% .polygons,	.L2,	.L2,	.L2 # table_name
+% id,	type,	color,	geom # name
+% int,	char,	char,	clob # type
+% 1,	8,	14,	0 # length

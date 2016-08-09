@@ -1,0 +1,6 @@
+
+
+% .p,	.L1,	.L1,	.L1 # table_name
+% id,	type,	color,	geom # name
+% bigint,	char,	char,	clob # type
+% 1,	7,	4,	0 # length

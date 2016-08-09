@@ -1,3 +1,4 @@
+./add_bgt
 echo bgt_bridgepilons_mbr.sql
 time ../../monetdb/scripts/mclient optimized sql < bgt_bridgepilons_mbr.sql 1> bgt_bridgepilons_mbr.out
 echo bgt_buildings_mbr.sql
