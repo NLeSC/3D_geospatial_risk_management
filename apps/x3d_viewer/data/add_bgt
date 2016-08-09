@@ -1,0 +1,2 @@
+sed -i '1i declare _west decimal(7,1);\ndeclare _south decimal(7,1);\ndeclare _east decimal(7,1);\ndeclare _north decimal(7,1);\ndeclare _segmentlength decimal(7,1);\n\nset _west = 93816.0;\nset _east = 93916.0;\nset _south = 463891.0;\nset _north = 463991.0;\nset _segmentlength = 10;' bgt_*.sql
+  

@@ -1,0 +1,22 @@
+echo bgt_bridgepilons_mbr.sql
+time ../../monetdb/scripts/mclient optimized sql < bgt_bridgepilons_mbr.sql 1> bgt_bridgepilons_mbr.out
+echo bgt_buildings_mbr.sql
+time ../../monetdb/scripts/mclient optimized sql < bgt_buildings_mbr.sql > bgt_buildings_mbr.out
+echo bgt_groundpoints_mbr.sql
+time ../../monetdb/scripts/mclient optimized sql < bgt_groundpoints_mbr.sql 1> bgt_groundpoints_mbr.out
+echo bgt_kade_mbr.sql
+time ../../monetdb/scripts/mclient optimized sql < bgt_kade_mbr.sql 1> bgt_kade_mbr.out
+echo bgt_lights_mbr.sql
+time ../../monetdb/scripts/mclient optimized sql < bgt_lights_mbr.sql 1> bgt_lights_mbr.out
+echo bgt_road_mbr.sql
+time ../../monetdb/scripts/mclient optimized sql < bgt_road_mbr.sql 1> bgt_road_mbr.out
+echo bgt_scheiding_mbr.sql
+time ../../monetdb/scripts/mclient optimized sql < bgt_scheiding_mbr.sql 1> bgt_scheiding_mbr.out
+echo bgt_steiger_mbr.sql
+time ../../monetdb/scripts/mclient optimized sql < bgt_steiger_mbr.sql 1> bgt_steiger_mbr.out
+echo bgt_treepoints_mbr.sql
+time ../../monetdb/scripts/mclient optimized sql < bgt_treepoints_mbr.sql 1> bgt_treepoints_mbr.out
+echo bgt_terrain_mbr.sql
+time ../../monetdb/scripts/mclient optimized sql < bgt_terrain_mbr.sql 1> bgt_terrain_mbr.out
+echo bgt_water_mbr.sql
+time ../../monetdb/scripts/mclient optimized sql < bgt_water_mbr.sql 1> bgt_water_mbr.out
