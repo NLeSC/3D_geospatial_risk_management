@@ -4,16 +4,11 @@ declare _east decimal(7,1);
 declare _north decimal(7,1);
 declare _segmentlength decimal(7,1);
 
---set _west = 93468.9;
---set _east = 93667.9;
---set _south = 462610.7;
---set _north = 462735.3;
-set _segmentlength = 10;
-
 set _west = 93816.0;
 set _east = 93916.0;
 set _south = 463891.0;
 set _north = 463991.0;
+set _segmentlength = 10;
 
 with
 bounds AS (

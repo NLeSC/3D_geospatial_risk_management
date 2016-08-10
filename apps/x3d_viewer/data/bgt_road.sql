@@ -4,10 +4,10 @@ declare _east decimal(7,1);
 declare _north decimal(7,1);
 declare _segmentlength decimal(7,1);
 
-set _west = 93816.0;
-set _east = 93916.0;
-set _south = 463891.0;
-set _north = 463991.0;
+set _west = 93468.9;
+set _east = 93667.9;
+set _south = 462610.7;
+set _north = 462735.3;
 set _segmentlength = 10;
 
 with
@@ -71,17 +71,17 @@ polygons_b AS (
 	FROM tunnels
 ),
 polygons_Dump AS (
-    SELECT parent as id, ST_SetSRID(polygonWKB, 28992) as geom
+    SELECT parent as id, next value for "counter" as polygon_id, ST_SetSRID(polygonWKB, 28992) as geom
     FROM ST_Dump((select geom, id from polygons_b)) d
 ),
 polygons AS (
-   select a.id, a.fid, a.type, a.class, b.geom
+   select a.id, a.fid, a.type, a.class, b.polygon_id, b.geom
    FROM
    polygons_b a LEFT JOIN polygons_Dump b
    ON a.id = b.id
 ),
 polygonsz AS (
-	SELECT id, fid, type, class, geom
+	SELECT id, fid, polygon_id, type, class, geom
 	FROM polygons a
 	LEFT JOIN pointcloud_ground b
 	--ON ST_Intersects(geom,Geometry(b.pa))
@@ -89,37 +89,38 @@ polygonsz AS (
 	WHERE 
         --ST_IsValid(geom)
     [geom] IsValidD [ST_MakePoint(1.0, 1.0, 1.0)]
-	GROUP BY id, fid, type, class, geom
+	GROUP BY id, fid, polygon_id, type, class, geom
 ),
 edge_points AS (
     --SELECT parent as id, cast(path as int) as path, ST_SetSRID(pointg, 28992) as geom FROM ST_DumpPoints((select geom, fid from polygonsz)) d
-    SELECT parent as id, cast((SUBSTRING(path, POSITION(',' IN path)+1)) as int) as path, ST_SetSRID(pointg, 28992) as geom FROM ST_DumpPoints((select geom, id from polygonsz)) d
+    --SELECT parent as id, cast((SUBSTRING(path, POSITION(',' IN path)+1)) as int) as path, ST_SetSRID(pointg, 28992) as geom FROM ST_DumpPoints((select geom, id from polygonsz)) d
+    SELECT parent as polygon_id, cast((SUBSTRING(path, 0, POSITION(',' IN path)-1)) as int) as subpolygon_id, cast((SUBSTRING(path, POSITION(',' IN path)+1)) as int) as path, ST_SetSRID(pointg, 28992) as geom FROM ST_DumpPoints((select geom, polygon_id from polygonsz)) d
 ),
 emptyz AS (
-    SELECT id, a.path as path, a.geom as geom , b.z as z, ST_Distance(a.geom, x, y, z, 28992) as dist FROM edge_points a, pointcloud_ground b WHERE [a.geom] DWithin [x, y, z, 28992, 10]
+    SELECT polygon_id, subpolygon_id, a.path as path, a.geom as geom , b.z as z, ST_Distance(a.geom, x, y, z, 28992) as dist FROM edge_points a, pointcloud_ground b WHERE [a.geom] DWithin [x, y, z, 28992, 10]
 ),
 ranktest AS (
-    select id, path, geom, z, dist, RANK() over (PARTITION BY id, path order by id, path, dist ASC) as rank from emptyz
+    select polygon_id, subpolygon_id, path, geom, z, dist, RANK() over (PARTITION BY polygon_id, subpolygon_id, path order by polygon_id, subpolygon_id, path, dist ASC) as rank from emptyz
 ),
 filledz AS (
     --select id, path, ST_MakePoint(ST_X(geom), ST_Y(geom), z) as geom from ranktest where rank = 1 order by path
-    select id, path, ST_MakePoint(ST_X(geom), ST_Y(geom), z) as geom from ranktest where rank = 1
+    select polygon_id, subpolygon_id, path, ST_MakePoint(ST_X(geom), ST_Y(geom), z) as geom from ranktest where rank = 1
 ),
 line_z AS (
-    SELECT id, ST_MakeLine(geom) as geom FROM filledz group by id
+    SELECT polygon_id, subpolygon_id, ST_MakeLine(geom) as geom FROM filledz group by polygon_id, subpolygon_id
 ),
 basepoints AS (
-	SELECT id, ST_Triangulate2DZ(ST_Collect(geom),0) as geom FROM line_z
+	SELECT polygon_id, subpolygon_id, ST_Triangulate2DZ(ST_Collect(geom),0) as geom FROM line_z
 	WHERE 
     --ST_IsValid(geom)
     [geom] IsValidD [ST_MakePoint(1.0, 1.0, 1.0)]
-    GROUP BY id
+    GROUP BY polygon_id, subpolygon_id
 ),
 triangles AS (
-    SELECT parent as id, ST_SetSRID(ST_MakePolygon(ST_ExteriorRing( a.polygonWKB)), 28992) as geom FROM ST_Dump((select geom, id from basepoints)) a
+    SELECT parent as polygon_id, ST_SetSRID(ST_MakePolygon(ST_ExteriorRing( a.polygonWKB)), 28992) as geom FROM ST_Dump((select geom, polygon_id from basepoints)) a
 ),
 assign_triags AS (
-	SELECT 	a.*, b.type, b.class
+	SELECT 	a.*, b.id, b.type, b.class
 	FROM triangles a
 	--INNER JOIN polygons b
 	, polygons b
@@ -127,7 +128,7 @@ assign_triags AS (
 	WHERE 
     --ST_Intersects(ST_Centroid(b.geom), c.geom) AND
     [ST_Centroid(b.geom)] Intersects [c.geom] AND
-	a.id = b.id AND
+	a.polygon_id = b.polygon_id AND
 	--ON ST_Contains(b.geom, a.geom)
 	[b.geom] Contains [a.geom] AND
     [a.geom] IsValidD [ST_MakePoint(1.0, 1.0, 1.0)]
