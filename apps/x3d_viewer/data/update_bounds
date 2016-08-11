@@ -1,0 +1,5 @@
+#Leiden prof wijk
+sed -i 's/93816.0/93468.9/g' bgt_*_mbr.sql
+sed -i 's/93916.0/93667.9/g' bgt_*_mbr.sql
+sed -i 's/463891.0/462610.7/g' bgt_*_mbr.sql
+sed -i 's/463991.0/462735.3/g' bgt_*_mbr.sql
