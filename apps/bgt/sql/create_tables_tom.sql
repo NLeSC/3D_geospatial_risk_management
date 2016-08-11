@@ -233,7 +233,7 @@ create table bgt_wegdeel (
 	wegdeeloptalud boolean
 );
 
-create table bgt_paal_(
+create table bgt_paal(
     ogc_fid integer default next value for "count",
     wkt geometry,
 	gml_id string,
