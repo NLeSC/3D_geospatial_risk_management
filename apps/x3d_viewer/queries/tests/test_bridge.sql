@@ -3,12 +3,14 @@ declare _south integer;
 declare _east integer;
 declare _north integer;
 declare _segmentlength integer;
+declare _zoom integer;
 
 set _west = 93816.0;
 set _east = 93916.0;
 set _south = 463891.0;
 set _north = 463991.0;
 set _segmentlength = 10;
+set _zoom = 10;
 
 DROP SEQUENCE "counter";
 CREATE SEQUENCE "counter" AS INTEGER;
@@ -217,7 +219,7 @@ create table innerpoints AS (
 	--AND Not ST_DWithin(a.geom, ST_ExteriorRing(b.geom),1)
 	--Not [a.geom] DWithin [ST_ExteriorRing(b.geom),1]
 	Not [a.geom] DWithin [ST_ExteriorRing(b.geom),1]
-	AND random() < (0.1 * _zoom)
+	AND rand() < (0.1 * _zoom)
 	AND (b.type <> 'road')
 ) WITH DATA;
 
