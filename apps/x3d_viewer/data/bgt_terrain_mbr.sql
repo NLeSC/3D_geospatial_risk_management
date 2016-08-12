@@ -10,6 +10,7 @@ set _south = 463891.0;
 set _north = 463991.0;
 set _segmentlength = 10;
 
+
 with
 bounds AS (
     SELECT ST_Segmentize(ST_MakeEnvelope(_west, _south, _east, _north, 28992), _segmentlength) as geom
@@ -53,12 +54,12 @@ pointcloud_ground AS (
 	FROM ahn3, bounds
 	--FROM ahn3, bounds
 	WHERE
-    c = 2 and
     x between _west and _east and
     y between _south and _north and
     --ST_Intersects(geom, Geometry(pa))
 	--Contains(geom, x, y, z, 28992)
 	[geom] Contains [x, y, z, 28992]
+    and c = 2
 ),
 polygons_ AS (
     SELECT NEXT VALUE FOR "counter" as id, ogc_fid as fid, COALESCE(type,'transitie') as type, class, geom
