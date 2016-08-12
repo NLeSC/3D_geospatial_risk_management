@@ -74,11 +74,11 @@ pointcloud_ground AS (
 	WHERE 
     --ST_Intersects(geom, x, y, z, 28992) AND
     --[geom] Intersects [x, y, z, 28992] AND
-    c = 2 and
     x between _west and _east and
     y between _south and _north and
     --Contains(geom, x, y, z, 28992)
     [geom] Contains [x, y, z, 28992]
+    AND c = 2
 ),
 polygons_b AS (
 	SELECT next value for "counter" as id, ogc_fid as fid, type, class, geom
