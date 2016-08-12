@@ -228,6 +228,8 @@ create table bgt_wegdeel (
 	relatievehoogteligging integer,
 	bgt_status string,
 	plus_status string,
+    bgt_functie string,
+    plus_functie string,
 	bgt_fysiekvoorkomen string,
 	plus_fysiekvoorkomen string,
 	wegdeeloptalud boolean
