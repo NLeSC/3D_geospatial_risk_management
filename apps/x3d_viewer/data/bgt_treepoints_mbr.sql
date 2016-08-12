@@ -3,6 +3,7 @@ declare _south decimal(7,1);
 declare _east decimal(7,1);
 declare _north decimal(7,1);
 declare _segmentlength decimal(7,1);
+
 set _west = 93816.0;
 set _east = 93916.0;
 set _south = 463891.0;
@@ -10,8 +11,7 @@ set _north = 463991.0;
 set _segmentlength = 10;
 
 
-DROP SEQUENCE "counter";
-CREATE SEQUENCE "counter" AS INTEGER;
+
 
  with
 bounds AS (
