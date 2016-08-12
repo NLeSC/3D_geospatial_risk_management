@@ -34,5 +34,5 @@ COPY (SELECT ogc_fid,ST_AsText(wkb_geometry) wkt,namespace,lokaalid,objectbegint
 FROM bgt_import2.tunneldeel_2d) TO '/tmp/tunneldeel_2d.csv'  WITH DELIMITER '|' CSV HEADER;
 
 /* Still a problem with wegdeel since it has curvey geometries */
-COPY (SELECT ogc_fid,ST_AsText(wkb_geometry) wkt,namespace,lokaalid,objectbegintijd,objecteindtijd,tijdstipregistratie,eindregistratie,lv_publicatiedatum,bronhouder,CASE WHEN inonderzoek = true THEN 'true' ELSE 'false' END AS inonderzoek,relatievehoogteligging,bgt_status,plus_status,bgt_fysiekvoorkomen,plus_fysiekvoorkomen, CASE WHEN wegdeeloptalud  = true THEN 'true' ELSE 'false' END AS wegdeeloptalud 
+COPY (SELECT ogc_fid,ST_AsText(wkb_geometry) wkt,namespace,lokaalid,objectbegintijd,objecteindtijd,tijdstipregistratie,eindregistratie,lv_publicatiedatum,bronhouder,CASE WHEN inonderzoek = true THEN 'true' ELSE 'false' END AS inonderzoek,relatievehoogteligging,bgt_status,plus_status,bgt_functie,plus_functie,bgt_fysiekvoorkomen,plus_fysiekvoorkomen, CASE WHEN wegdeeloptalud  = true THEN 'true' ELSE 'false' END AS wegdeeloptalud 
 FROM bgt_import2.wegdeel_2d) TO '/tmp/wegdeel_2d.csv'  WITH DELIMITER '|' CSV HEADER;
