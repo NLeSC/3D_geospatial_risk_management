@@ -10,3 +10,5 @@ alter table bgt_scheiding set read only;
 alter table bgt_tunneldeel set read only;
 alter table bgt_waterdeel set read only;
 alter table bgt_wegdeel set read only;
+alter table bgt_paal set read only;
+alter table bgt_kunstwerkdeel set read only;
