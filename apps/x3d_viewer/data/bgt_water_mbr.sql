@@ -10,8 +10,6 @@ set _south = 463891.0;
 set _north = 463991.0;
 set _segmentlength = 10;
 
-DROP SEQUENCE "counter";
-CREATE SEQUENCE "counter" AS INTEGER;
 
 with
 bounds AS (
@@ -27,8 +25,8 @@ pointcloud_water AS (
         x between _west and _east and
         y between _south and _north and
     	--Contains(geom, x, y, z, 28992) and
-    	[geom] Contains [x, y, z, 28992] and
-        c = 9
+    	[geom] Contains [x, y, z, 28992]
+        and c = 9
 ),
 terrain_ AS (
 	SELECT NEXT VALUE FOR "counter" as id, ogc_fid as fid, plus_type as typ, 'water' as class, ST_Intersection(a.wkt, b.geom) as geom 
