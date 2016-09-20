@@ -63,7 +63,7 @@ var themeconfig = {
 	 materials: {
 	 	land: {diffuseColor: 'orange',transparency: '0'},
 		pand: {diffuseColor: 'orange',transparency: '0'},
-		waterloop: {specularColor: '0.823529 0.705882 0.54902', diffuseColor: '0.9 1 1', shininess: '1'},
+		water: {specularColor: '0.823529 0.705882 0.54902', diffuseColor: '0.9 1 1', shininess: '1'},
 		voetpad: {diffuseColor: 'gray'},
 		rijbaan_lokale_weg: {diffuseColor: 'gray'},
 		open_verharding:{diffuseColor: 'gray'},
@@ -83,7 +83,7 @@ var themeconfig = {
 	  materials: {
 	  land: {emissiveColor: '0.9 0.9 0.9',diffuseColor: 'white'},
 		pand: {emissiveColor: '0.9 0.9 0.9',diffuseColor: 'white'},
-		waterloop: {diffuseColor: '0.7 0.7 1.0'},
+		water: {diffuseColor: '0.7 0.7 1.0'},
 		light: {emissiveColor: 'black', transparency: 1},
 		scene: {skyColor: '0.4 0.6 0.8'},
 		erf:{diffuseColor: 'white'},
@@ -257,16 +257,16 @@ div.append('button').on('click', function(){
 var loadlist = [
     {name: 'bridge', reload: true, url: '/service/monetdb_3d'},
     //{name: 'bridgepilons', reload: true, url: '/service/monetdb_3d'},
-    //{name: 'buildings', reload: true, url: '/service/monetdb_3d'},
-    {name: 'groundpoints', reload: true, url: '/service/monetdb_3d'},
-    //{name: 'kade', reload: true, url: '/service/monetdb_3d'},
-    {name: 'lights', reload: true, url: '/service/monetdb_3d'},
-    //{name: 'road', reload: true, url: '/service/monetdb_3d'},
-    //{name: 'scheiding', reload: true, url: '/service/monetdb_3d'},
+    {name: 'buildings', reload: true, url: '/service/monetdb_3d'},
+    //{name: 'groundpoints', reload: true, url: '/service/monetdb_3d'},
+    {name: 'kade', reload: true, url: '/service/monetdb_3d'},
+    //{name: 'lights', reload: true, url: '/service/monetdb_3d'},
+    {name: 'road', reload: true, url: '/service/monetdb_3d'},
+    {name: 'scheiding', reload: true, url: '/service/monetdb_3d'},
     //{name: 'steiger', reload: true, url: '/service/monetdb_3d'},
-    //{name: 'terrain', reload: true, url: '/service/monetdb_3d'},
-    {name: 'treepoints', reload: true, url: '/service/monetdb_3d'}
-    //{name: 'water', reload: true, url: '/service/monetdb_3d'}
+    {name: 'terrain', reload: true, url: '/service/monetdb_3d'},
+    {name: 'treepoints', reload: true, url: '/service/monetdb_3d'},
+    {name: 'water', reload: true, url: '/service/monetdb_3d'}
 ]; 
 
 render(wxs3, 'webgl1', {
@@ -274,8 +274,10 @@ render(wxs3, 'webgl1', {
 	//bbox:'188045,428786, 188411,429044', //klein stukje nijmegen (Valkhof)
 	//bbox: '154459,463904,154947,464231', //Amersfoort
 	//bbox: '154678.0,463991.2,154783.9,464063.7', //Amersfoort_small
-	bbox: '93816,463891,93916,463991' //Leiden
-	//bbox: '93468.9,462610.7,93667.9,462735.3', //Leiden prof wijk
+	//bbox: '93816,463891,93916,463991' //Leiden
+	//bbox: '93116,463191,93916,463991' //Leiden Tom
+	bbox: '93716,463791,93916,463991' //Leiden Romulo
+	//bbox: '93468.9,462610.7,93667.9,462735.3' //Leiden prof wijk
 	//bbox: '78657,455471,78828,455679', //Scheveningen
 	//bbox: '148945,411439, 148975,411471', //Den Bosch
 	//bbox: '90870,391146, 91346,392412'

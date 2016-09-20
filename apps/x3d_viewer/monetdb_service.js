@@ -13,17 +13,18 @@ var app = express( ), server = http.createServer(), socket = require('socket.io'
 var fs = require( 'fs' );
 var MDB = require('monetdb')();
 var sets = {
-        bridgepilons: { file : 'data/bgt_bridgepilons.sql',sql: ''},
-        buildings: { file : 'data/bgt_buildings.sql',sql: ''},
-        groundpoints: { file : 'data/bgt_groundpoints.sql',sql: ''},
-        kade: { file : 'data/bgt_kade.sql',sql: ''},
-        lights: { file : 'data/bgt_lights.sql',sql: ''},
-        road: { file : 'data/bgt_road.sql',sql: ''},
-        scheiding: { file : 'data/bgt_scheiding.sql',sql: ''},
-        steiger: { file : 'data/bgt_steiger.sql',sql: ''},
-        terrain: { file : 'data/bgt_terrain.sql',sql: ''},
-        treepoints: { file : 'data/bgt_treepoints.sql',sql: ''},
-        water: { file : 'data/bgt_water.sql',sql: ''}
+        bridge: { file : 'data/bgt_bridge_mbr.sql',sql: ''},
+        bridgepilons: { file : 'data/bgt_bridgepilons_mbr.sql',sql: ''},
+        buildings: { file : 'data/bgt_buildings_mbr.sql',sql: ''},
+        groundpoints: { file : 'data/bgt_groundpoints_mbr.sql',sql: ''},
+        kade: { file : 'data/bgt_kade_mbr.sql',sql: ''},
+        lights: { file : 'data/bgt_lights_mbr.sql',sql: ''},
+        road: { file : 'data/bgt_road_mbr.sql',sql: ''},
+        scheiding: { file : 'data/bgt_scheiding_mbr.sql',sql: ''},
+        steiger: { file : 'data/bgt_steiger_mbr.sql',sql: ''},
+        terrain: { file : 'data/bgt_terrain_mbr.sql',sql: ''},
+        water: { file : 'data/bgt_water_mbr.sql',sql: ''},
+        treepoints: { file : 'data/bgt_treepoints_mbr.sql',sql: ''}
 };
 for( var s in sets ) {
         sets [ s ].sql = fs.readFileSync( sets [ s ].file ).toString( );
