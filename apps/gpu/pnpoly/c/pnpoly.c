@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
+#include <sys/time.h>
 
 
 int pnpoly_cn(int **res, int nvert, double *vx, double *vy, int npoint, double *px, double *py)
