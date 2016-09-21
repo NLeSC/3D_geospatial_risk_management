@@ -12,6 +12,8 @@ var static = require('node-static');
 var app = express( ), server = http.createServer(), socket = require('socket.io').listen(server);
 var fs = require( 'fs' );
 var MDB = require('monetdb')();
+var MonetDBPool = require("monetdb-pool");
+
 var sets = {
         bridge: { file : 'data/bgt_bridge_mbr.sql',sql: ''},
         bridgepilons: { file : 'data/bgt_bridgepilons_mbr.sql',sql: ''},
@@ -31,17 +33,34 @@ for( var s in sets ) {
 };
 
 var options = {
-host     : 'localhost',
-           port     : 55000,
-           dbname   : 'bgt',
-           user     : 'monetdb',
-           password : 'monetdb',
-           maxReconnects : 100,
-           reconnectTimeout : 30000
+	host     : 'localhost',
+    port     : 55000,
+    dbname   : 'bgt',
+    user     : 'monetdb',
+    password : 'monetdb',
+    maxReconnects : 100,
+    reconnectTimeout : 30000
 };
 
-var client = new MDB(options);
-var p = client.connect();
+//var client = new MDB(options);
+//var p = client.connect();
+
+var poolOptions = {
+	nrConnections: 8
+};
+
+var dbOptions = {
+	host     : 'localhost',
+    port     : 55000,
+    dbname   : 'bgt',
+    user     : 'monetdb',
+    password : 'monetdb',
+    maxReconnects : 100,
+    reconnectTimeout : 30000
+};
+
+var pool = new MonetDBPool(poolOptions, dbOptions);
+pool.connect();
 
 app.use(express.static('public'));
 app.use( cors( ));
@@ -76,13 +95,14 @@ app.get( '/service/monetdb_3d', function( req, res ) {
                 console.log('running: ',querystring);
                 //var client = new MDB(options);
                 //var p = client.connect();
-                p.then(function( err ) {
-                        if( err ) {
-                            res.send( 'Romulo could not connect to monetdb');
-                            client.disconnect();
-                        }
+                //p.then(function( err ) {
+                //        if( err ) {
+                //            res.send( 'Romulo could not connect to monetdb');
+                //            client.disconnect();
+                //        }
+                var err;        
                         console.log('Set: ',set);
-                        client.query( querystring).then(function( result) {
+                        pool.query( querystring).then(function( result) {
                                 if( err ) {
                                 console.warn( err, querystring );
                                 }
@@ -112,7 +132,7 @@ app.get( '/service/monetdb_3d', function( req, res ) {
                         } ).catch(function(e){                          
                             console.warn('monetdb did a boo boo',e);   
                             });                                             
-                } );
+                //} );
 } );                                                                            
 
 app.listen( 8083, function( ) {                                 
