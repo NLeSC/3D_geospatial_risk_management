@@ -5,9 +5,9 @@ declare _north integer;
 declare _segmentlength integer;
 declare _zoom integer;
 
-set _west = 93816.0;
+set _west = 93716.0;
 set _east = 93916.0;
-set _south = 463891.0;
+set _south = 463791.0;
 set _north = 463991.0;
 set _segmentlength = 10;
 set _zoom = 10;
@@ -29,6 +29,8 @@ create table pointcloud AS (
 	FROM ahn3, bounds
 	WHERE 
         --ST_DWithin(geom, x, y, z, 28992, 10) --patches should be INSIDE bounds
+          x between _west and _east and
+          y between _south and _north and
         [geom] DWithin [x, y, z, 28992, 10] --patches should be INSIDE bounds
         and c = 26
 ) WITH DATA;
@@ -121,7 +123,7 @@ create table edge_points_patch AS ( --get closest patch to every vertex
 	FROM edge_points a LEFT JOIN pointcloud b
 	--ON ST_Intersects(a.geom, geometry(pa))
 	--ON (ST_Intersects(a.geom, x, y, z, 28992) OR ST_DWITHIN(a.geom, x, y, z, 28992, 10))
-	ON [a.geom] Intersects [x, y, z, 28992] OR [a.geom] DWITHIN [x, y, z, 28992, 100]
+	ON [a.geom] Intersects [x, y, z, 28992] OR [a.geom] DWITHIN [x, y, z, 28992, 10]
 	--ON [a.geom] DWITHIN [x, y, z, 28992, 100]
 ) WITH DATA;
 
@@ -152,7 +154,8 @@ create table filter AS (
 
 drop table filledz;
 create table filledz AS (
-	SELECT id, fid, ring_id, ring_point_id, type, path, ring, ST_Translate(St_Force3D(geom), 0,0,avg(z)) as geom
+	--SELECT id, fid, ring_id, ring_point_id, type, path, ring, ST_Translate(St_Force3D(geom), 0,0,avg(z)) as geom
+	SELECT id, fid, ring_id, ring_point_id, type, path, ring, ST_Translate(St_Force3D(geom), 0,0,2) as geom
 	FROM filter
 	GROUP BY id, fid, ring_id, ring_point_id, type, path, ring, geom
 	ORDER BY id, ring_id,ring_point_id, ring, path
