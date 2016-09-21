@@ -1,2 +1,0 @@
-gcc -O3 pnpoly.c -o pnpoly
-#gcc -g pnpoly.c -o pnpoly
