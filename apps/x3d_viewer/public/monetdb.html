@@ -160,7 +160,7 @@ document.onload= function()
     viewFunc(null);
 }
 
-var tilesize = 100;
+var tilesize = 150;
 /* Some UI changeable settings **/
 var div = d3.select('#debug');
 div.append('div').html('Location');
@@ -255,7 +255,7 @@ div.append('button').on('click', function(){
 
 /** End of UI settings **/
 var loadlist = [
-    {name: 'bridge', reload: true, url: '/service/monetdb_3d'},
+    //{name: 'bridge', reload: true, url: '/service/monetdb_3d'},
     //{name: 'bridgepilons', reload: true, url: '/service/monetdb_3d'},
     {name: 'buildings', reload: true, url: '/service/monetdb_3d'},
     //{name: 'groundpoints', reload: true, url: '/service/monetdb_3d'},
@@ -277,6 +277,8 @@ render(wxs3, 'webgl1', {
 	//bbox: '93816,463891,93916,463991' //Leiden
 	//bbox: '93116,463191,93916,463991' //Leiden Tom
 	bbox: '93616,463541,93916,463930' //Leiden Romulo
+	//bbox: '92116,462141,93916,463930' //Leiden Romulo
+	//bbox: '115000,481250,127292,493749' //Amsterdam Romulo
 	//bbox: '93468.9,462610.7,93667.9,462735.3' //Leiden prof wijk
 	//bbox: '78657,455471,78828,455679', //Scheveningen
 	//bbox: '148945,411439, 148975,411471', //Den Bosch
