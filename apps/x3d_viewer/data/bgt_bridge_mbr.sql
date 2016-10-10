@@ -1,14 +1,4 @@
-declare _west decimal(7,1);
-declare _south decimal(7,1);
-declare _east decimal(7,1);
-declare _north decimal(7,1);
-declare _segmentlength decimal(7,1);
 
-set _west = 93816.0;
-set _east = 93916.0;
-set _south = 463891.0;
-set _north = 463991.0;
-set _segmentlength = 10;
 
 with
 bounds AS (
@@ -17,6 +7,7 @@ bounds AS (
 pointcloud AS (
 	SELECT x, y, z
 	FROM ahn3, bounds
+	--FROM C_30FZ1, bounds
 	WHERE 
     x between _west and _east and
     y between _south and _north and
@@ -24,7 +15,7 @@ pointcloud AS (
     and c = 26
 ),
 footprints AS (
-	SELECT next value for "counter" as id, ogc_fid as fid, 'bridge' AS class, 'dek' AS type,
+	SELECT next value for "counter" as id, ogc_fig as fid, 'bridge' AS class, 'dek' AS type,
 	--ST_CurveToLine(a.wkt) as geom
 	a.wkt as geom
 	FROM bgt_overbruggingsdeel a, bounds b
@@ -42,7 +33,7 @@ footprints AS (
 	AND [ST_Centroid(a.wkt)] Intersects [b.geom]
 ),
 wegdeel_light AS (
-	SELECT next value for "counter" as id, a.ogc_fid as fid, 'bridge' AS class, 
+	SELECT next value for "counter" as id, a.ogc_fig as fid, 'bridge' AS class, 
     a.bgt_functie as type, 
     a.wkt as geom
 	FROM bgt_wegdeel a, bounds c
@@ -63,19 +54,20 @@ roads AS (
 	LEFT JOIN bgt_overbruggingsdeel b
 	--ON (St_Intersects((a.wkb_geometry), (b.wkb_geometry)) AND St_Contains(ST_buffer((b.wkb_geometry),1), (a.wkb_geometry)))
 	ON ([a.geom] Intersects [b.wkt] AND [ST_buffer(b.wkt,1)] Contains [a.geom])
+	--ON ([a.geom] Intersects [b.wkt] AND [ST_Centroid(b.wkt)] Intersects [a.geom])
 	WHERE
 	b.eindregistratie Is Null
 ),
 polygons AS (
 	SELECT * FROM footprints
 	WHERE 
-    --ST_GeometryType(geom) = 'ST_Polygon'
-    [geom] IsType ['ST_Polygon']
+    ST_GeometryType(geom) = 'ST_Polygon'
+    --[geom] IsType ['ST_Polygon']
 	UNION ALL
 	SELECT * FROM roads
 	WHERE 
-    --ST_GeometryType(geom) = 'ST_Polygon'
-    [geom] IsType ['ST_Polygon']
+    ST_GeometryType(geom) = 'ST_Polygon'
+    --[geom] IsType ['ST_Polygon']
 ),
 rings_dump AS (
     SELECT parent as fid, next value for "counter" as ring_id, cast(path as int) as path, polygonWKB as geom
@@ -106,8 +98,8 @@ edge_points_patch AS ( --get closest patch to every vertex
 	FROM edge_points a LEFT JOIN pointcloud b
 	--ON ST_Intersects(a.geom, geometry(pa))
 	--ON (ST_Intersects(a.geom, x, y, z, 28992) OR ST_DWITHIN(a.geom, x, y, z, 28992, 10))
-	ON [a.geom] Intersects [x, y, z, 28992] OR [a.geom] DWITHIN [x, y, z, 28992, 100]
-	--ON [a.geom] DWITHIN [x, y, z, 28992, 100]
+	--ON [a.geom] Intersects [x, y, z, 28992] OR [a.geom] DWITHIN [x, y, z, 28992, 100]
+	ON [a.geom] DWITHIN [x, y, z, 28992, 60]
 ),
 emptyz AS (
 	SELECT
@@ -157,9 +149,9 @@ innerrings AS (
 ),
 polygonsz AS (
 	--SELECT a.id, a.fid, a.type, COALESCE(ST_MakePolygon(a.geom, b.arr),ST_MakePolygon(a.geom)) as geom --We do not have MakePolygon outer ring and list of inner rings.
-	SELECT a.id, a.fid, ring_id, a.type, ST_Polygon(a.geom, 28992) as geom
+	--SELECT a.id, a.fid, ring_id, a.type, ST_Polygon(a.geom, 28992) as geom
+	SELECT a.id, a.fid, a.type, ST_MakePolygon(a.geom) as geom
 	FROM outerrings a
-	LEFT JOIN innerrings b ON a.id = b.id
 ),
 terrain_polygons AS (
     SELECT * FROM polygonsz
@@ -198,12 +190,15 @@ triangles AS (
 			ELSE a.geom
 		END as geom, b.type
 	FROM triangles a
-	INNER JOIN polygons b
-	ON [ST_SetSRID(b.geom, 28992)] Contains [ST_SetSRID(a.geom, 28992)]
+	--INNER JOIN polygons b
+	--ON [ST_SetSRID(b.geom, 28992)] Contains [ST_SetSRID(a.geom, 28992)]
+	, polygons b
 	,bounds c
 	WHERE 
     --ST_Intersects(ST_Centroid(b.geom), c.geom)
     [ST_Centroid(b.geom)] Intersects [c.geom]
+	--ON [ST_SetSRID(b.geom, 28992)] Contains [ST_SetSRID(a.geom, 28992)]
+	AND [ST_SetSRID(b.geom, 28992)] Contains [ST_SetSRID(a.geom, 28992)]
 	AND a.id = b.id
 )
 SELECT p.id AS id, p.type as type, ST_AsX3D(ST_Collect(p.geom),3.0, 0) as geom FROM assign_triags p GROUP BY p.id, p.type;
