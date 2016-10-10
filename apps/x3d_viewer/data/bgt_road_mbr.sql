@@ -1,22 +1,12 @@
-declare _west decimal(7,1);
-declare _south decimal(7,1);
-declare _east decimal(7,1);
-declare _north decimal(7,1);
-declare _segmentlength decimal(7,1);
 
-set _west = 93468.9;
-set _east = 93667.9;
-set _south = 462610.7;
-set _north = 462735.3;
-set _segmentlength = 10;
 
 with
 bounds AS (
 	SELECT ST_Segmentize(ST_MakeEnvelope(_west, _south, _east, _north, 28992),_segmentlength) as geom
 ),
 bgt_wegdeel_light AS (
-	--SELECT a.ogc_fid, 'road' AS class, a.bgt_functie as type, ST_Intersection(a.wkt,c.geom) as geom 
-	SELECT a.ogc_fid, 'road' AS class, a.bgt_status as type, a.wkt as wkt, ST_Intersection(a.wkt,c.geom) as geom, col_xmin, col_xmax, col_ymin, col_ymax 
+	--SELECT a.ogc_fig, 'road' AS class, a.bgt_functie as type, ST_Intersection(a.wkt,c.geom) as geom 
+	SELECT a.ogc_fig, 'road' AS class, a.bgt_status as type, a.wkt as wkt, ST_Intersection(a.wkt,c.geom) as geom, col_xmin, col_xmax, col_ymin, col_ymax 
 	FROM bgt_wegdeel a, bounds c
 	WHERE 
     a.relatieveHoogteligging = 0 AND
@@ -30,7 +20,7 @@ bgt_wegdeel_light AS (
 	[geom] Intersects [a.wkt]
 ),
 mainroads AS (
-	SELECT a.ogc_fid, a.class, a.type, a.geom 
+	SELECT a.ogc_fig, a.class, a.type, a.geom 
 	FROM bgt_wegdeel_light a
 	LEFT JOIN bgt_overbruggingsdeel b
 	ON ([a.wkt] Intersects [b.wkt] AND [ST_buffer((b.wkt),1)] Contains [a.wkt])
@@ -40,7 +30,7 @@ mainroads AS (
 	--AND [geom] Intersects [a.wkt]
 ),
 auxroads AS (
-	SELECT ogc_fid, 'road' AS class, bgt_functie as type, ST_Intersection(wkt,geom) as geom
+	SELECT ogc_fig, 'road' AS class, bgt_functie as type, ST_Intersection(wkt,geom) as geom
 	FROM bgt_ondersteunendwegdeel a, bounds b
 	WHERE
     relatieveHoogteligging = 0 AND
@@ -55,7 +45,7 @@ auxroads AS (
 	[geom] Intersects [wkt]
 ),
 tunnels AS (
-	SELECT ogc_fid, 'road' AS class, 'tunnel' as type, ST_Intersection(wkt,geom) as geom
+	SELECT ogc_fig, 'road' AS class, 'tunnel' as type, ST_Intersection(wkt,geom) as geom
 	FROM bgt_tunneldeel a, bounds b
 	WHERE
     eindregistratie Is Null AND
@@ -81,13 +71,13 @@ pointcloud_ground AS (
     AND c = 2
 ),
 polygons_b AS (
-	SELECT next value for "counter" as id, ogc_fid as fid, type, class, geom
+	SELECT next value for "counter" as id, ogc_fig as fid, type, class, geom
 	FROM mainroads
 	UNION ALL
-	SELECT next value for "counter" as id, ogc_fid as fid, type, class, geom
+	SELECT next value for "counter" as id, ogc_fig as fid, type, class, geom
 	FROM auxroads
 	UNION ALL
-	SELECT next value for "counter" as id, ogc_fid as fid, type, class, geom
+	SELECT next value for "counter" as id, ogc_fig as fid, type, class, geom
 	FROM tunnels
 ),
 polygons_Dump AS (
@@ -114,27 +104,28 @@ polygonsz AS (
 edge_points AS (
     --SELECT parent as id, cast(path as int) as path, ST_SetSRID(pointg, 28992) as geom FROM ST_DumpPoints((select geom, fid from polygonsz)) d
     --SELECT parent as id, cast((SUBSTRING(path, POSITION(',' IN path)+1)) as int) as path, ST_SetSRID(pointg, 28992) as geom FROM ST_DumpPoints((select geom, id from polygonsz)) d
-    SELECT parent as polygon_id, cast((SUBSTRING(path, 0, POSITION(',' IN path)-1)) as int) as subpolygon_id, cast((SUBSTRING(path, POSITION(',' IN path)+1)) as int) as path, ST_SetSRID(pointg, 28992) as geom FROM ST_DumpPoints((select geom, polygon_id from polygonsz)) d
+    SELECT parent as polygon_id, cast((SUBSTRING(path, 0, POSITION(',' IN path)-1)) as int) as line_id, cast((SUBSTRING(path, POSITION(',' IN path)+1)) as int) as point_id, ST_SetSRID(pointg, 28992) as geom FROM ST_DumpPoints((select geom, polygon_id from polygonsz)) d
 ),
 emptyz AS (
-    SELECT polygon_id, subpolygon_id, a.path as path, a.geom as geom , b.z as z, ST_Distance(a.geom, x, y, z, 28992) as dist FROM edge_points a, pointcloud_ground b WHERE [a.geom] DWithin [x, y, z, 28992, 10]
+    SELECT polygon_id, line_id, point_id, a.geom as geom , b.z as z, ST_Distance(a.geom, x, y, z, 28992) as dist FROM edge_points a, pointcloud_ground b WHERE [a.geom] DWithin [x, y, z, 28992, 10]
 ),
 ranktest AS (
-    select polygon_id, subpolygon_id, path, geom, z, dist, RANK() over (PARTITION BY polygon_id, subpolygon_id, path order by polygon_id, subpolygon_id, path, dist ASC) as rank from emptyz
+    select polygon_id, line_id, point_id, geom, z, dist, RANK() over (PARTITION BY polygon_id, line_id, point_id order by polygon_id, line_id, point_id, dist ASC) as rank from emptyz
 ),
 filledz AS (
     --select id, path, ST_MakePoint(ST_X(geom), ST_Y(geom), z) as geom from ranktest where rank = 1 order by path
-    select polygon_id, subpolygon_id, path, ST_MakePoint(ST_X(geom), ST_Y(geom), z) as geom from ranktest where rank = 1
+    select polygon_id, line_id, point_id, ST_MakePoint(ST_X(geom), ST_Y(geom), z) as geom from ranktest where rank = 1
 ),
 line_z AS (
-    SELECT polygon_id, subpolygon_id, ST_MakeLine(geom) as geom FROM filledz group by polygon_id, subpolygon_id
+    SELECT polygon_id, line_id, ST_MakeLine(geom) as geom FROM filledz group by polygon_id, line_id
 ),
 basepoints AS (
-	SELECT polygon_id, subpolygon_id, ST_Triangulate2DZ(ST_Collect(geom),0) as geom FROM line_z
+	--SELECT polygon_id, line_id, ST_Triangulate2DZ(ST_Collect(geom),0) as geom FROM line_z
+	SELECT polygon_id, ST_Triangulate2DZ(ST_Collect(geom),0) as geom FROM line_z
 	WHERE 
     --ST_IsValid(geom)
     [geom] IsValidD [ST_MakePoint(1.0, 1.0, 1.0)]
-    GROUP BY polygon_id, subpolygon_id
+    GROUP BY polygon_id--, line_id
 ),
 triangles AS (
     SELECT parent as polygon_id, ST_SetSRID(ST_MakePolygon(ST_ExteriorRing( a.polygonWKB)), 28992) as geom FROM ST_Dump((select geom, polygon_id from basepoints)) a
