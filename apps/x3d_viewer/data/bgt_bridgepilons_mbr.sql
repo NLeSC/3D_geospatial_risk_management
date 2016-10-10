@@ -1,13 +1,4 @@
-declare _west decimal(7,1);
-declare _south decimal(7,1);
-declare _east decimal(7,1);
-declare _north decimal(7,1);
-declare _segmentlength decimal(7,1);
-set _west = 93816.0;
-set _east = 93916.0;
-set _south = 463891.0;
-set _north = 463991.0;
-set _segmentlength = 10;
+
 
 
  with
@@ -18,13 +9,15 @@ pointcloud_unclassified_ AS (
 	SELECT x, y,z
 	FROM ahn3, bounds_ 
 	WHERE 
-        [geom] DWithin [x, y, z, 28992,10]
-        AND c = 26
+    x between _west and _east and
+    y between _south and _north and
+    [geom] DWithin [x, y, z, 28992,10]
+    AND c = 26
 ),
 footprints_ AS (
 	SELECT 
         ST_Force3D(a.wkt) as geom,
-    	a.ogc_fid as id, 'pijler' as type
+	a.ogc_fig as id, 'pijler' as type
 	FROM bgt_overbruggingsdeel a, bounds_ b
 	WHERE
 	typeoverbruggingsdeel = 'pijler' AND
@@ -80,6 +73,7 @@ stats_ AS (
 	GROUP BY id, geom, type, max, min, avg, z
 ),
 polygons_ AS (
-	SELECT id, type,ST_Extrude(ST_Tesselate(ST_Translate(geom,0,0, min)), 0,0,avg-min -0.1) as geom FROM stats_
+	--SELECT id, type,ST_Extrude(ST_Tesselate(ST_Translate(geom,0,0, min)), 0,0,avg-min -0.1) as geom FROM stats_
+	SELECT id, type,ST_Extrude(ST_Translate(geom,0,0, min), 0,0,avg-min -0.1) as geom FROM stats_
 )
 SELECT id, type, 'yellow' as color, ST_AsX3D(polygons_.geom, 4.0, 0) as geom FROM polygons_;
