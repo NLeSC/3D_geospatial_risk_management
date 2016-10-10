@@ -1,15 +1,3 @@
-declare _west decimal(7,1);
-declare _south decimal(7,1);
-declare _east decimal(7,1);
-declare _north decimal(7,1);
-declare _segmentlength decimal(7,1);
-
-set _west = 93616.0;
-set _east = 93916.0;
-set _south = 463691.0;
-set _north = 463991.0;
-set _segmentlength = 10;
-
 
 
 with
@@ -17,7 +5,7 @@ bounds AS (
     SELECT ST_Segmentize(ST_MakeEnvelope(_west, _south, _east, _north, 28992), _segmentlength) as geom
 ),
 plantcover AS (
-	SELECT ogc_fid, 'plantcover' AS class, bgt_fysiekvoorkomen as type, St_Intersection(wkt, geom) as geom 
+	SELECT ogc_fig, 'plantcover' AS class, bgt_fysiekvoorkomen as type, St_Intersection(wkt, geom) as geom 
 	FROM bgt_begroeidterreindeel a, bounds b
 	WHERE 
     eindregistratie Is Null AND
@@ -34,7 +22,7 @@ plantcover AS (
     --[wkt] IsType ['ST_Polygon']
 ),
 bare AS (
-	SELECT ogc_fid, 'bare' AS class, bgt_fysiekVoorkomen as type, St_Intersection(wkt, geom) as geom
+	SELECT ogc_fig, 'bare' AS class, bgt_fysiekVoorkomen as type, St_Intersection(wkt, geom) as geom
 	FROM bgt_onbegroeidterreindeel a, bounds b
 	WHERE
     eindregistratie Is Null AND
@@ -49,7 +37,7 @@ bare AS (
     --ST_GeometryType(wkt) = 'ST_Polygon'
     --[wkt] IsType ['ST_Polygon']
     col_type = 'ST_Polygon'
-	and a.ogc_fid = 798958
+	--and a.ogc_fig = 798958
 ),
 pointcloud_ground AS (
 	SELECT x, y, z
@@ -64,10 +52,10 @@ pointcloud_ground AS (
     and c = 2
 ),
 polygons_ AS (
-    --SELECT NEXT VALUE FOR "counter" as id, ogc_fid as fid, COALESCE(type,'transitie') as type, class, geom
-    --FROM plantcover
-    --UNION ALL
-    SELECT NEXT VALUE FOR "counter" as id, ogc_fid as fid, COALESCE(type,'transitie') as type, class, geom
+    SELECT NEXT VALUE FOR "counter" as id, ogc_fig as fid, COALESCE(type,'transitie') as type, class, geom
+    FROM plantcover
+    UNION ALL
+    SELECT NEXT VALUE FOR "counter" as id, ogc_fig as fid, COALESCE(type,'transitie') as type, class, geom
     FROM bare
 ),
 polygons_Dump AS (
@@ -82,7 +70,8 @@ polygons AS (
 ),
 polygonsz AS (
 	--SELECT id, fid, type, class, patch_to_geom(geom) as geom
-	SELECT id, fid, polygon_id, type, class, ST_ExteriorRing(geom) as geom
+	--SELECT id, fid, polygon_id, type, class, ST_ExteriorRing(geom) as geom
+	SELECT id, fid, polygon_id, type, class, geom as geom
     FROM polygons a
     LEFT JOIN pointcloud_ground b
     --ON ST_Intersects(geom, x, y, z, 28992)
@@ -130,13 +119,16 @@ triangles AS (
 assign_triags AS (
 	SELECT 	a.*, b.id, b.type, b.class
 	FROM triangles a
-	INNER JOIN polygons b
+	--INNER JOIN polygons b
 	--ON ST_Contains(ST_SetSRID(b.geom, 28992), ST_SetSRID(a.geom, 28992))
-	ON [ST_SetSRID(b.geom, 28992)] Contains [ST_SetSRID(a.geom, 28992)]
+	--ON [ST_SetSRID(b.geom, 28992)] Contains [ST_SetSRID(a.geom, 28992)]
+	, polygons b
 	, bounds c
 	WHERE
     --ST_Intersects(ST_Centroid(b.geom), c.geom)
     [ST_Centroid(b.geom)] Intersects [c.geom]
+	--ON [ST_SetSRID(b.geom, 28992)] Contains [ST_SetSRID(a.geom, 28992)]
+	AND [ST_SetSRID(b.geom, 28992)] Contains [ST_SetSRID(a.geom, 28992)]
 	AND a.polygon_id = b.polygon_id
 )
 
