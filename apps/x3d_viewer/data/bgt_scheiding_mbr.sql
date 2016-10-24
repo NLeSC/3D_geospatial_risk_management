@@ -1,13 +1,4 @@
-declare _west decimal(7,1);
-declare _south decimal(7,1);
-declare _east decimal(7,1);
-declare _north decimal(7,1);
-declare _segmentlength decimal(7,1);
-set _west = 93816.0;
-set _east = 93916.0;
-set _south = 463891.0;
-set _north = 463991.0;
-set _segmentlength = 10;
+
 
  with
 bounds AS (
@@ -20,15 +11,15 @@ pointcloud_building AS (
     x between _west and _east and
     y between _south and _north and
     --ST_DWithin(geom, ST_MakePoint(x, y, z),10) --patches should be INSIDE bounds
-    --[geom] DWithin [x, y, z, 28992, 10] --patches should be INSIDE bounds
+    [geom] DWithin [x, y, z, 28992, 10] --patches should be INSIDE bounds
     --Contains(geom, x, y, z, 28992)
-    [geom] Contains [x, y, z, 28992]
+    --[geom] Contains [x, y, z, 28992]
     and c = 1
     and r = 1
     and i > 150
 ),
 bgt_scheiding_light AS (
-	SELECT a.ogc_fid as id, 'border' as class, a.bgt_type as type,
+	SELECT a.ogc_fig as id, 'border' as class, a.bgt_type as type,
     --ST_Force3D(ST_CurveToLine(a.wkt)) as geom
     ST_Force3D(a.wkt) as geom
 	FROM bgt_scheiding a, bounds c
