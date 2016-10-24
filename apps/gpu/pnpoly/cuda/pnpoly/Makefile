@@ -40,14 +40,15 @@ else
 ifeq ($(ARMv7),1)
   GCC ?= arm-linux-gnueabihf-g++
 else
-  GCC ?= g++
+  #GCC ?= g++
+  GCC ?= /opt/sw/gcc-4.9.3/bin/
 endif
 endif
 NVCC := $(CUDA_PATH)/bin/nvcc -ccbin $(GCC)
 
 # internal flags
 NVCCFLAGS   := -m${OS_SIZE} ${ARCH_FLAGS}
-CCFLAGS     :=
+CCFLAGS     := -fPIC
 LDFLAGS     :=
 
 # Extra user flags
@@ -95,6 +96,7 @@ ifeq ($(dbg),1)
       NVCCFLAGS += -g -G
       TARGET := debug
 else
+      NVCCFLAGS += -O3
       TARGET := release
 endif
 
@@ -121,7 +123,8 @@ SAMPLE_ENABLED := 1
 ifeq ($(OS_ARCH),armv7l)
 SMS ?= 20 30 32 35 37 50
 else
-SMS ?= 12 20 30 35 37 50
+#SMS ?= 12 20 30 35 37 50
+SMS ?= 30 35 37 50
 endif
 
 ifeq ($(SMS),)
@@ -149,7 +152,7 @@ endif
 # Target rules
 all: build
 
-build: pnpoly_file
+build: pnpoly_file g_pnpoly
 
 check.deps:
 ifeq ($(SAMPLE_ENABLED),0)
@@ -157,6 +160,13 @@ ifeq ($(SAMPLE_ENABLED),0)
 else
 	@echo "Sample is ready - all dependencies have been met"
 endif
+
+g_pnpoly:g_pnpoly.cu
+	$(EXEC) $(NVCC) $(INCLUDES) $(ALL_CCFLAGS) $(GENCODE_FLAGS) -o $@.o -c $<
+	$(EXEC) mkdir -p ../lib/$(OS_ARCH)/$(OSLOWER)/$(TARGET)$(if $(abi),/$(abi))
+	$(EXEC) mkdir -p ../include/$(OS_ARCH)/$(OSLOWER)/$(TARGET)$(if $(abi),/$(abi))
+	$(EXEC) cp $@.o ../lib/$(OS_ARCH)/$(OSLOWER)/$(TARGET)$(if $(abi),/$(abi))
+	$(EXEC) cp $@.h ../include/$(OS_ARCH)/$(OSLOWER)/$(TARGET)$(if $(abi),/$(abi))
 
 pnpoly_file.o:pnpoly_file.cu
 	$(EXEC) $(NVCC) $(INCLUDES) $(ALL_CCFLAGS) $(GENCODE_FLAGS) -o $@ -c $<
@@ -172,5 +182,6 @@ run: build
 clean:
 	rm -f pnpoly_file pnpoly_file.o
 	rm -rf ../bin/$(OS_ARCH)/$(OSLOWER)/$(TARGET)$(if $(abi),/$(abi))/pnpoly_file
-
+	rm -rf ../lib/$(OS_ARCH)/$(OSLOWER)/$(TARGET)$(if $(abi),/$(abi))/g_pnpoly.o
+	rm -rf ../include/$(OS_ARCH)/$(OSLOWER)/$(TARGET)$(if $(abi),/$(abi))/g_pnpoly.h
 clobber: clean
