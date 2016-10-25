@@ -53,7 +53,7 @@ __device__ __forceinline__ int is_between(float a, float b, float c) {
     #endif
 }
 
-__global__ void cn_pnpolyBEN(char* bitmap, float *px, float *py, int npoints, int nverts) {
+__global__ void cn_pnpolyBEN(signed char* bitmap, float *px, float *py, int npoints, int nverts) {
     int i = blockIdx.x * block_size_x * tile_size + threadIdx.x;
     if (i < npoints) {
 
@@ -239,15 +239,16 @@ void reset_GPU() {
 
 int pnpoly_GPU(signed char **mc, int nvert, int npoint, float *mpx, float *mpy, float *mvx, float *mvy) {
     /*GPU*/
-    bool bPinGenericMemory = false;                 // Allocate generic memory with malloc() and pin it later instead of using cudaHostAlloc()
+    bool bPinGenericMemory = true;                 // Allocate generic memory with malloc() and pin it later instead of using cudaHostAlloc()
     unsigned int flags;
     size_t pbytes, vbytes, cbytes;
     float *px, *py, *vx, *vy;
     float *d_px, *d_py, *d_vx, *d_vy;              // Device pointers for mapped memory
-    char *c, *c_UA, *d_c;                            // Device pointers for mapped memory
+    //char *c, *c_UA, *d_c;                            // Device pointers for mapped memory
+    signed char *c, *d_c;                            // Device pointers for mapped memory
     struct timeval stop, start;
     unsigned long long t;
-    int i, count = 0;
+    //int i, count = 0;
     float *h_slopes;
     cudaError_t err;
 
@@ -262,6 +263,7 @@ int pnpoly_GPU(signed char **mc, int nvert, int npoint, float *mpx, float *mpy, 
     /*CUDA monitoring*/
     cudaEvent_t cstart, cstop;
 
+#if G_PNPOLY_DEBUG == 1
     if (bPinGenericMemory) {
 	/*Return str with the error*/
         printf("> Using Generic System Paged Memory (malloc)\n");
@@ -269,11 +271,14 @@ int pnpoly_GPU(signed char **mc, int nvert, int npoint, float *mpx, float *mpy, 
 	/*Return str with the error*/
         printf("> Using CUDA Host Allocated (cudaHostAlloc)\n");
     }
+#endif
 
     pbytes = npoint*sizeof(float);
     vbytes = nvert*sizeof(float);
     cbytes = npoint*sizeof(char);
+#if G_PNPOLY_DEBUG == 1
     printf("Bytes allocated for npoints %d and nvert %d: pbytes %zu, vbytes %zu, cbytes %zu\n", npoint, nvert, pbytes, vbytes, cbytes);
+#endif
 
     err = cudaHostAlloc((void **)&h_slopes, nvert*sizeof(float), cudaHostAllocMapped);
     if (err != cudaSuccess) {
@@ -282,23 +287,28 @@ int pnpoly_GPU(signed char **mc, int nvert, int npoint, float *mpx, float *mpy, 
 
     if (bPinGenericMemory) {
 #if CUDART_VERSION >= 4000
+#if G_PNPOLY_DEBUG == 1
         gettimeofday(&start, NULL);
-        c_UA = (char *) malloc(cbytes + MEMORY_ALIGNMENT);
-        c = (char *) ALIGN_UP(c_UA, MEMORY_ALIGNMENT);
+#endif
+        //c_UA = (char *) malloc(cbytes + MEMORY_ALIGNMENT);
+        //c = (char *) ALIGN_UP(c_UA, MEMORY_ALIGNMENT);
 
         px = mpx;
         py = mpy;
         vx = mvx;
         vy = mvy;
+        c = *mc;
 
         checkCudaErrors(cudaHostRegister(px, pbytes, CU_MEMHOSTALLOC_DEVICEMAP));
         checkCudaErrors(cudaHostRegister(py, pbytes, CU_MEMHOSTALLOC_DEVICEMAP));
         checkCudaErrors(cudaHostRegister(vx, vbytes, CU_MEMHOSTALLOC_DEVICEMAP));
         checkCudaErrors(cudaHostRegister(vy, vbytes, CU_MEMHOSTALLOC_DEVICEMAP));
         checkCudaErrors(cudaHostRegister(c, cbytes, CU_MEMHOSTALLOC_DEVICEMAP));
+#if G_PNPOLY_DEBUG == 1
         gettimeofday(&stop, NULL);
         t = 1000 * (stop.tv_sec - start.tv_sec) + (stop.tv_usec - start.tv_usec) / 1000;
         printf("PinGenericMemory took %llu ms\n", t);
+#endif
 #endif
     } else {
 #if CUDART_VERSION >= 2020
@@ -307,22 +317,31 @@ int pnpoly_GPU(signed char **mc, int nvert, int npoint, float *mpx, float *mpy, 
         checkCudaErrors(cudaHostAlloc((void **)&py, pbytes, flags));
         checkCudaErrors(cudaHostAlloc((void **)&vx, vbytes, flags));
         checkCudaErrors(cudaHostAlloc((void **)&vy, vbytes, flags));
-        checkCudaErrors(cudaHostAlloc((void **)&c, cbytes, flags));
+        //checkCudaErrors(cudaHostAlloc((void **)&c, cbytes, flags));
+        c = *mc;
+        checkCudaErrors(cudaHostRegister(c, cbytes, CU_MEMHOSTALLOC_DEVICEMAP));
 
 		/*Copy point and vertices*/
+#if G_PNPOLY_DEBUG == 1
     	gettimeofday(&start, NULL);
+#endif
 		memcpy(px, mpx, pbytes); 
 		memcpy(py, mpy, pbytes); 
 		memcpy(vx, mvx, vbytes); 
 		memcpy(vy, mvy, vbytes); 
+#if G_PNPOLY_DEBUG == 1
     	gettimeofday(&stop, NULL);
     	t = 1000 * (stop.tv_sec - start.tv_sec) + (stop.tv_usec - start.tv_usec) / 1000;
     	printf("MemCopy took %llu ms\n", t);
+#endif
 
 #endif
     }
 
     //transfer vertices to d_vertices
+#if G_PNPOLY_DEBUG == 1
+    gettimeofday(&start, NULL);
+#endif
     err = cudaMemcpyToSymbolAsync(d_verticesX, vx, nvert*sizeof(float), 0, cudaMemcpyHostToDevice, stream[0]);
     if (err != cudaSuccess) {
         fprintf(stderr, "Error in cudaMemcpyToSymbolAsync: %s\n", cudaGetErrorString(err));
@@ -347,25 +366,29 @@ int pnpoly_GPU(signed char **mc, int nvert, int npoint, float *mpx, float *mpy, 
     /* Get the device pointers for the pinned CPU memory mapped into the GPU
        memory space. */
 #if CUDART_VERSION >= 2020
-    gettimeofday(&start, NULL);
     checkCudaErrors(cudaHostGetDevicePointer((void **)&d_px, (void *)px, 0));
     checkCudaErrors(cudaHostGetDevicePointer((void **)&d_py, (void *)py, 0));
     checkCudaErrors(cudaHostGetDevicePointer((void **)&d_vx, (void *)vx, 0));
     checkCudaErrors(cudaHostGetDevicePointer((void **)&d_vy, (void *)vy, 0));
     checkCudaErrors(cudaHostGetDevicePointer((void **)&d_c, (void *)c, 0));
+#endif
+#if G_PNPOLY_DEBUG == 1
     gettimeofday(&stop, NULL);
     t = 1000 * (stop.tv_sec - start.tv_sec) + (stop.tv_usec - start.tv_usec) / 1000;
     printf("Get devie pointers took %llu ms\n", t);
 #endif
 
     /* Call the GPU kernel using the CPU pointers residing in CPU mapped memory. */
+#if G_PNPOLY_DEBUG == 1
     printf("> pnpoly_GPU kernel will check which points are in the Polygon using mapped CPU memory...\n");
+#endif
     //dim3 block(256);
     dim3 block(BLOCK_SIZE);
     dim3 grid((unsigned int)ceil(npoint/(float)block.x));
 
     cudaEventCreate(&cstart);
     cudaEventCreate(&cstop);
+    gettimeofday(&start, NULL);
     cudaEventRecord(cstart, stream[0]);
     //size_t sh_size = 2*nvert*sizeof(float);
     //pnpoly_cnGPU<<<grid, block, sh_size>>>(d_c, d_px, d_py, d_vx, d_vy, npoint, nvert);
@@ -377,27 +400,30 @@ int pnpoly_GPU(signed char **mc, int nvert, int npoint, float *mpx, float *mpy, 
     checkCudaErrors(cudaDeviceSynchronize());
     getLastCudaError("pnpoly_cnGPU() execution failed");
 
-    gettimeofday(&stop, NULL);
-    t = 1000 * (stop.tv_sec - start.tv_sec) + (stop.tv_usec - start.tv_usec) / 1000;
-
     cudaEventSynchronize(cstop);
     float milliseconds = 0;
     cudaEventElapsedTime(&milliseconds, cstart, cstop);
 
+    gettimeofday(&stop, NULL);
+    t = 1000 * (stop.tv_sec - start.tv_sec) + (stop.tv_usec - start.tv_usec) / 1000;
     printf("PnPoly took %llu ms and %f msecs CUDA\n", t, milliseconds);
 
+#if G_PNPOLY_DEBUG == 1
     gettimeofday(&start, NULL);
+#endif
     /* Output results */
-	for (i = 0; i < cbytes; i++) {
-		char is = c[i];
-		if (is == 1)
-			count++;
-	}
-	printf("It has %d\n", count);
-    memcpy(*mc, c, cbytes);
+	//for (i = 0; i < cbytes; i++) {
+	//	char is = c[i];
+	//	if (is == 1)
+	//		count++;
+	//}
+	//printf("It has %d\n", count);
+    //memcpy(*mc, c, cbytes);
 
     /* Memory clean up */
+#if G_PNPOLY_DEBUG == 1
     printf("> Releasing CPU memory...\n");
+#endif
 
     if (bPinGenericMemory) {
 #if CUDART_VERSION >= 4000
@@ -406,7 +432,7 @@ int pnpoly_GPU(signed char **mc, int nvert, int npoint, float *mpx, float *mpy, 
         checkCudaErrors(cudaHostUnregister(vx));
         checkCudaErrors(cudaHostUnregister(vy));
         checkCudaErrors(cudaHostUnregister(c));
-        free(c_UA);
+        //free(c_UA);
 #endif
     } else {
 #if CUDART_VERSION >= 2020
@@ -414,16 +440,19 @@ int pnpoly_GPU(signed char **mc, int nvert, int npoint, float *mpx, float *mpy, 
         checkCudaErrors(cudaFreeHost(py));
         checkCudaErrors(cudaFreeHost(vx));
         checkCudaErrors(cudaFreeHost(vy));
-        checkCudaErrors(cudaFreeHost(c));
+        //checkCudaErrors(cudaFreeHost(c));
+        checkCudaErrors(cudaHostUnregister(c));
 #endif
     }
     cudaFreeHost(h_slopes);
     for (int i=0; i<max_streams; i++) {
         err = cudaStreamDestroy(stream[i]);
     }
+#if G_PNPOLY_DEBUG == 1
     gettimeofday(&stop, NULL);
     t = 1000 * (stop.tv_sec - start.tv_sec) + (stop.tv_usec - start.tv_usec) / 1000;
     printf("Output results %llu ms\n", t);
+#endif
 
     return 0;
 }
